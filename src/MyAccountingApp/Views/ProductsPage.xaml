@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             x:Class="MyAccountingApp.Views.ProductsPage"
+             x:DataType="vm:ProductsViewModel"
+             Title="{loc:Translate Nav_Products}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{loc:Translate Common_Add}" Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
+        <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
+                   SearchCommand="{Binding LoadCommand}" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="8">
+            <Switch IsToggled="{Binding ShowInactive}" VerticalOptions="Center" />
+            <Label Text="{loc:Translate Common_ShowInactive}" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ProductRow">
+                    <Border Style="{StaticResource Card}" Margin="0,4" Opacity="{Binding Opacity}">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                            <Label Text="{Binding Name}" Style="{StaticResource ItemTitle}" />
+                            <Label Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource Caption}" />
+                            <Label Grid.Column="1" Text="{Binding Price}" Style="{StaticResource Amount}" />
+                            <Label Grid.Column="1" Grid.Row="1" Style="{StaticResource Caption}" HorizontalOptions="End">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{loc:Translate Product_Stock}" />
+                                        <Span Text=": " />
+                                        <Span Text="{Binding Stock}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer CommandParameter="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductsViewModel}}, Path=OpenCommand, x:DataType=vm:ProductsViewModel}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

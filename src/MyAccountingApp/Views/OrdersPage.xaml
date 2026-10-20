@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             x:Class="MyAccountingApp.Views.OrdersPage"
+             x:DataType="vm:OrdersViewModel"
+             Title="{loc:Translate Nav_Orders}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{loc:Translate Common_Add}" Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
+        <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Order_SearchHint}"
+                   SearchCommand="{Binding LoadCommand}" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Picker ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding TypeFilter}" />
+            <Picker Grid.Column="1" ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding StatusFilter}" />
+        </Grid>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:OrderRow">
+                    <Border Style="{StaticResource Card}" Margin="0,4">
+                        <Grid ColumnDefinitions="4,*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                            <BoxView Grid.RowSpan="2" Color="{Binding StatusColor}" CornerRadius="2" />
+                            <Label Grid.Column="1" Text="{Binding Title}" Style="{StaticResource ItemTitle}" />
+                            <Label Grid.Column="1" Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource Caption}" />
+                            <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Total}" Style="{StaticResource Amount}" />
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer CommandParameter="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=OpenCommand, x:DataType=vm:OrdersViewModel}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

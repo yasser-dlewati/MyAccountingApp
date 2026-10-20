@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MyAccountingApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+    xmlns:views="clr-namespace:MyAccountingApp.Views"
+    Title="{loc:Translate App_Title}"
+    FlyoutBehavior="Flyout">
+
+    <FlyoutItem Title="{loc:Translate Nav_Dashboard}">
+        <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" Route="dashboard" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Orders}">
+        <ShellContent ContentTemplate="{DataTemplate views:OrdersPage}" Route="orders" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Products}">
+        <ShellContent ContentTemplate="{DataTemplate views:ProductsPage}" Route="products" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Categories}">
+        <ShellContent ContentTemplate="{DataTemplate views:CategoriesPage}" Route="categories" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Contacts}">
+        <ShellContent ContentTemplate="{DataTemplate views:ContactsPage}" Route="contacts" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Stock}">
+        <ShellContent ContentTemplate="{DataTemplate views:StockPage}" Route="stock" />
+    </FlyoutItem>
+    <FlyoutItem Title="{loc:Translate Nav_Settings}">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="settings" />
+    </FlyoutItem>
+
+</Shell>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             x:Class="MyAccountingApp.Views.StockPage"
+             x:DataType="vm:StockViewModel"
+             Title="{loc:Translate Nav_Stock}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
+        <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
+                   SearchCommand="{Binding LoadCommand}" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+            <Label Text="{loc:Translate Stock_TotalValue}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
+            <Label Grid.Column="1" Text="{Binding TotalValue}" Style="{StaticResource KpiValue}" />
+        </Grid>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:StockLine">
+                    <Border Style="{StaticResource Card}" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                            <Label Text="{Binding Name}" Style="{StaticResource ItemTitle}" />
+                            <Label Grid.Column="1" Text="{Binding Quantity}" Style="{StaticResource KpiValue}" HorizontalOptions="End"
+                                   TextColor="{Binding QuantityColor, TargetNullValue={AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}}" />
+                            <Label Grid.Row="1" Style="{StaticResource Caption}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding Barcode}" />
+                                        <Span Text=" · " />
+                                        <Span Text="{loc:Translate Stock_LastCost}" />
+                                        <Span Text=": " />
+                                        <Span Text="{Binding LastCost}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Value}" Style="{StaticResource Caption}" HorizontalOptions="End" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

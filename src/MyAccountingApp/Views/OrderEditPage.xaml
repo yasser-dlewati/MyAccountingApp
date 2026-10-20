@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:e="clr-namespace:MyAccountingApp.Core.Entities;assembly=MyAccountingApp.Core"
+             x:Class="MyAccountingApp.Views.OrderEditPage"
+             x:DataType="vm:OrderEditViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="4">
+                <Label Text="{Binding StatusLabel}" Style="{StaticResource Caption}" />
+
+                <Label Text="{Binding ContactLabel}" Style="{StaticResource FormLabel}" />
+                <Picker ItemsSource="{Binding Contacts}" SelectedItem="{Binding Contact}" IsEnabled="{Binding IsDraft}" />
+
+                <!-- Add product: type a name or scan/type a barcode -->
+                <SearchBar Text="{Binding ProductSearchText}" Placeholder="{loc:Translate Order_AddProductHint}"
+                           SearchCommand="{Binding SearchProductsCommand}" IsVisible="{Binding IsDraft}" Margin="0,8,0,0" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding ProductResults}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="e:Product">
+                            <Grid ColumnDefinitions="*,Auto" Padding="8,10">
+                                <Label Text="{Binding Name}" />
+                                <Label Grid.Column="1" Text="{Binding Barcode}" Style="{StaticResource Caption}" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding .}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=PickProductCommand, x:DataType=vm:OrderEditViewModel}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="{loc:Translate Order_Items}" Style="{StaticResource SectionTitle}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}">
+                    <BindableLayout.EmptyView>
+                        <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" />
+                    </BindableLayout.EmptyView>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:OrderLineViewModel">
+                            <Border Style="{StaticResource Card}" Margin="0,4">
+                                <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+                                    <Label Grid.ColumnSpan="2" Text="{Binding ProductName}" Style="{StaticResource ItemTitle}" />
+                                    <Button Grid.Column="2" Text="✕" Style="{StaticResource SecondaryButton}" Padding="12,0"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}"
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=RemoveLineCommand, x:DataType=vm:OrderEditViewModel}" />
+                                    <Label Grid.Row="1" Text="{loc:Translate Field_Quantity}" Style="{StaticResource FormLabel}" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{loc:Translate Field_UnitPrice}" Style="{StaticResource FormLabel}" />
+                                    <Entry Grid.Row="2" Text="{Binding Quantity}" Keyboard="Numeric"
+                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}" />
+                                    <Entry Grid.Row="2" Grid.Column="1" Text="{Binding UnitPrice}" Keyboard="Numeric"
+                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}" />
+                                    <Label Grid.Row="2" Grid.Column="2" Text="{Binding LineTotal}" Style="{StaticResource Amount}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Footer: total + actions -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" StrokeShape="Rectangle" Padding="16,10">
+            <VerticalStackLayout Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="{loc:Translate Order_Total}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="{Binding Total}" Style="{StaticResource KpiValue}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsDraft}">
+                    <Button Text="{loc:Translate Order_SaveDraft}" Style="{StaticResource SecondaryButton}" Command="{Binding SaveCommand}" />
+                    <Button Grid.Column="1" Text="{loc:Translate Order_Confirm}" Command="{Binding ConfirmCommand}" />
+                </Grid>
+                <Button Text="{loc:Translate Order_DeleteDraft}" Style="{StaticResource DangerButton}"
+                        Command="{Binding DeleteCommand}" IsVisible="{Binding CanDelete}" />
+                <Button Text="{loc:Translate Order_CancelOrder}" Style="{StaticResource DangerButton}"
+                        Command="{Binding CancelOrderCommand}" IsVisible="{Binding IsConfirmed}" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

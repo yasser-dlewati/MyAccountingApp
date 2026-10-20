@@ -9,3 +9,7 @@ obj/
 
 # OS-generated files
 .DS_Store
+
+# Local databases (EF design-time, tests)
+*.db3
+*.db3-*

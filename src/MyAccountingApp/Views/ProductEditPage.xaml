@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             x:Class="MyAccountingApp.Views.ProductEditPage"
+             x:DataType="vm:ProductEditViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="4">
+            <Label Text="{Binding StockInfo}" Style="{StaticResource Caption}" IsVisible="{Binding IsExisting}" />
+
+            <Label Text="{loc:Translate Field_Name}" Style="{StaticResource FormLabel}" />
+            <Entry Text="{Binding Name}" />
+            <Label Text="{loc:Translate Field_Barcode}" Style="{StaticResource FormLabel}" />
+            <Entry Text="{Binding Barcode}" />
+            <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
+            <Entry Text="{Binding Price}" Keyboard="Numeric" />
+            <Label Text="{loc:Translate Field_Category}" Style="{StaticResource FormLabel}" />
+            <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" />
+            <Label Text="{loc:Translate Field_DefaultSupplier}" Style="{StaticResource FormLabel}" />
+            <Picker ItemsSource="{Binding Suppliers}" SelectedItem="{Binding DefaultSupplier}" />
+            <HorizontalStackLayout Spacing="8" Margin="0,8">
+                <Switch IsToggled="{Binding IsActive}" />
+                <Label Text="{loc:Translate Field_Active}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <Button Text="{loc:Translate Common_Save}" Command="{Binding SaveCommand}" Margin="0,8" />
+
+            <VerticalStackLayout IsVisible="{Binding IsExisting}" Spacing="4">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="{loc:Translate Product_Suppliers}" Style="{StaticResource SectionTitle}" />
+                    <Button Grid.Column="1" Text="{loc:Translate Common_Add}" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding AddSupplierCommand}" />
+                </Grid>
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding SupplierCosts}">
+                    <BindableLayout.EmptyView>
+                        <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" />
+                    </BindableLayout.EmptyView>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SupplierCostRow">
+                            <Border Style="{StaticResource Card}" Margin="0,4">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                    <Label Text="{Binding Name}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding Cost}" Style="{StaticResource Amount}" />
+                                    <Button Grid.Column="2" Text="✕" Style="{StaticResource SecondaryButton}" Padding="12,0"
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductEditViewModel}}, Path=RemoveSupplierCommand, x:DataType=vm:ProductEditViewModel}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

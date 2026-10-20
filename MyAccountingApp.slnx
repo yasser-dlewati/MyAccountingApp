@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MyAccountingApp.Core/MyAccountingApp.Core.csproj" />
+    <Project Path="src/MyAccountingApp/MyAccountingApp.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MyAccountingApp.Core.Tests/MyAccountingApp.Core.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UI strings. Every key must exist in both AppResources.resx and AppResources.ar.resx. -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="App_Title" xml:space="preserve"><value>محاسبتي</value></data>
+  <data name="Nav_Dashboard" xml:space="preserve"><value>الرئيسية</value></data>
+  <data name="Nav_Orders" xml:space="preserve"><value>الفواتير</value></data>
+  <data name="Nav_Products" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Nav_Categories" xml:space="preserve"><value>التصنيفات</value></data>
+  <data name="Nav_Contacts" xml:space="preserve"><value>جهات الاتصال</value></data>
+  <data name="Nav_Stock" xml:space="preserve"><value>المخزون</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="Common_Add" xml:space="preserve"><value>إضافة</value></data>
+  <data name="Common_All" xml:space="preserve"><value>الكل</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Common_Ok" xml:space="preserve"><value>موافق</value></data>
+  <data name="Common_Yes" xml:space="preserve"><value>نعم</value></data>
+  <data name="Common_No" xml:space="preserve"><value>لا</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="Common_Search" xml:space="preserve"><value>بحث</value></data>
+  <data name="Common_Empty" xml:space="preserve"><value>لا توجد بيانات بعد</value></data>
+  <data name="Common_ShowInactive" xml:space="preserve"><value>إظهار غير النشط</value></data>
+  <data name="Common_Rename" xml:space="preserve"><value>إعادة تسمية</value></data>
+  <data name="Common_Activate" xml:space="preserve"><value>تفعيل</value></data>
+  <data name="Common_Deactivate" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Field_Name" xml:space="preserve"><value>الاسم</value></data>
+  <data name="Field_Phone" xml:space="preserve"><value>الهاتف</value></data>
+  <data name="Field_Address" xml:space="preserve"><value>العنوان</value></data>
+  <data name="Field_ContactType" xml:space="preserve"><value>النوع</value></data>
+  <data name="Field_Active" xml:space="preserve"><value>نشط</value></data>
+  <data name="Field_Barcode" xml:space="preserve"><value>الباركود</value></data>
+  <data name="Field_Price" xml:space="preserve"><value>سعر البيع</value></data>
+  <data name="Field_Category" xml:space="preserve"><value>التصنيف</value></data>
+  <data name="Field_DefaultSupplier" xml:space="preserve"><value>المورد الافتراضي</value></data>
+  <data name="Field_Quantity" xml:space="preserve"><value>الكمية</value></data>
+  <data name="Field_UnitPrice" xml:space="preserve"><value>سعر الوحدة</value></data>
+  <data name="Category_New" xml:space="preserve"><value>تصنيف جديد</value></data>
+  <data name="Category_Edit" xml:space="preserve"><value>اسم التصنيف</value></data>
+  <data name="Contact_New" xml:space="preserve"><value>جهة اتصال جديدة</value></data>
+  <data name="ContactType_Customer" xml:space="preserve"><value>عميل</value></data>
+  <data name="ContactType_Supplier" xml:space="preserve"><value>مورد</value></data>
+  <data name="ContactType_Both" xml:space="preserve"><value>عميل ومورد</value></data>
+  <data name="Product_New" xml:space="preserve"><value>منتج جديد</value></data>
+  <data name="Product_NoSupplier" xml:space="preserve"><value>(بدون)</value></data>
+  <data name="Product_SearchHint" xml:space="preserve"><value>الاسم أو الباركود</value></data>
+  <data name="Product_Stock" xml:space="preserve"><value>المخزون</value></data>
+  <data name="Product_StockInfo" xml:space="preserve"><value>المتوفر: {0} · آخر تكلفة: {1}</value></data>
+  <data name="Product_Suppliers" xml:space="preserve"><value>الموردون</value></data>
+  <data name="Product_AddSupplier" xml:space="preserve"><value>إضافة مورد</value></data>
+  <data name="Product_CostPrice" xml:space="preserve"><value>سعر التكلفة</value></data>
+  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>إزالة المورد {0} من هذا المنتج؟</value></data>
+  <data name="OrderType_Sale" xml:space="preserve"><value>بيع</value></data>
+  <data name="OrderType_Purchase" xml:space="preserve"><value>شراء</value></data>
+  <data name="OrderType_SaleReturn" xml:space="preserve"><value>مرتجع بيع</value></data>
+  <data name="OrderType_PurchaseReturn" xml:space="preserve"><value>مرتجع شراء</value></data>
+  <data name="OrderStatus_Draft" xml:space="preserve"><value>مسودة</value></data>
+  <data name="OrderStatus_Confirmed" xml:space="preserve"><value>مؤكدة</value></data>
+  <data name="OrderStatus_Cancelled" xml:space="preserve"><value>ملغاة</value></data>
+  <data name="Order_New" xml:space="preserve"><value>فاتورة جديدة</value></data>
+  <data name="Order_NewOfType" xml:space="preserve"><value>{0} جديد</value></data>
+  <data name="Order_SearchHint" xml:space="preserve"><value>الرقم أو جهة الاتصال</value></data>
+  <data name="Order_Customer" xml:space="preserve"><value>العميل</value></data>
+  <data name="Order_Supplier" xml:space="preserve"><value>المورد</value></data>
+  <data name="Order_AddProductHint" xml:space="preserve"><value>إضافة منتج: الاسم أو الباركود</value></data>
+  <data name="Order_Items" xml:space="preserve"><value>الأصناف</value></data>
+  <data name="Order_Total" xml:space="preserve"><value>الإجمالي</value></data>
+  <data name="Order_SaveDraft" xml:space="preserve"><value>حفظ كمسودة</value></data>
+  <data name="Order_Confirm" xml:space="preserve"><value>تأكيد</value></data>
+  <data name="Order_DeleteDraft" xml:space="preserve"><value>حذف المسودة</value></data>
+  <data name="Order_CancelOrder" xml:space="preserve"><value>إلغاء الفاتورة</value></data>
+  <data name="Order_ConfirmPrompt" xml:space="preserve"><value>تأكيد الفاتورة؟ سيتم تحديث المخزون ولن يمكن تعديلها بعد ذلك.</value></data>
+  <data name="Order_ShortageConfirm" xml:space="preserve"><value>المخزون غير كافٍ (المتوفر / المطلوب):
+{0}
+
+التأكيد على أي حال؟</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>إلغاء الفاتورة؟ سيتم عكس حركات المخزون الخاصة بها.</value></data>
+  <data name="Order_DeletePrompt" xml:space="preserve"><value>حذف هذه المسودة؟</value></data>
+  <data name="Stock_TotalValue" xml:space="preserve"><value>قيمة المخزون (بالتكلفة)</value></data>
+  <data name="Stock_LastCost" xml:space="preserve"><value>آخر تكلفة</value></data>
+  <data name="Dashboard_NewSale" xml:space="preserve"><value>بيع جديد</value></data>
+  <data name="Dashboard_NewPurchase" xml:space="preserve"><value>شراء جديد</value></data>
+  <data name="Dashboard_Today" xml:space="preserve"><value>اليوم</value></data>
+  <data name="Dashboard_ThisMonth" xml:space="preserve"><value>هذا الشهر</value></data>
+  <data name="Dashboard_Sales" xml:space="preserve"><value>المبيعات</value></data>
+  <data name="Dashboard_Profit" xml:space="preserve"><value>الربح</value></data>
+  <data name="Dashboard_Orders" xml:space="preserve"><value>الفواتير</value></data>
+  <data name="Dashboard_LowStock" xml:space="preserve"><value>مخزون منخفض</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>اللغة</value></data>
+  <data name="Settings_Data" xml:space="preserve"><value>البيانات</value></data>
+  <data name="Settings_DataHint" xml:space="preserve"><value>بياناتك محفوظة على هذا الجهاز فقط. احتفظ بنسخة احتياطية بانتظام.</value></data>
+  <data name="Settings_Backup" xml:space="preserve"><value>نسخ احتياطي لقاعدة البيانات</value></data>
+  <data name="Settings_BackupFailed" xml:space="preserve"><value>فشل النسخ الاحتياطي: {0}</value></data>
+  <data name="Settings_Restore" xml:space="preserve"><value>استعادة من نسخة احتياطية</value></data>
+  <data name="Settings_RestorePrompt" xml:space="preserve"><value>الاستعادة ستستبدل كل البيانات الحالية بالنسخة الاحتياطية. متابعة؟</value></data>
+  <data name="Settings_RestoreDone" xml:space="preserve"><value>تمت الاستعادة.</value></data>
+  <data name="Settings_RestoreFailed" xml:space="preserve"><value>فشلت الاستعادة: {0}</value></data>
+  <data name="Error_NameRequired" xml:space="preserve"><value>الاسم مطلوب.</value></data>
+  <data name="Error_PhoneRequired" xml:space="preserve"><value>رقم الهاتف مطلوب.</value></data>
+  <data name="Error_BarcodeRequired" xml:space="preserve"><value>الباركود مطلوب.</value></data>
+  <data name="Error_BarcodeExists" xml:space="preserve"><value>الباركود {0} مستخدم لمنتج آخر.</value></data>
+  <data name="Error_PriceNegative" xml:space="preserve"><value>أدخل سعرًا صحيحًا (صفر أو أكثر).</value></data>
+  <data name="Error_CategoryRequired" xml:space="preserve"><value>اختر التصنيف.</value></data>
+  <data name="Error_ContactRequired" xml:space="preserve"><value>اختر جهة الاتصال.</value></data>
+  <data name="Error_NotASupplier" xml:space="preserve"><value>{0} ليس موردًا.</value></data>
+  <data name="Error_NotACustomer" xml:space="preserve"><value>{0} ليس عميلًا.</value></data>
+  <data name="Error_OrderHasNoItems" xml:space="preserve"><value>أضف صنفًا واحدًا على الأقل.</value></data>
+  <data name="Error_QuantityNotPositive" xml:space="preserve"><value>يجب أن تكون الكميات أكبر من صفر.</value></data>
+  <data name="Error_OrderNotDraft" xml:space="preserve"><value>الفاتورة {0} ليست مسودة ولا يمكن تعديلها.</value></data>
+  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>يمكن إلغاء الفواتير المؤكدة فقط ({0}).</value></data>
+  <data name="Error_InsufficientStock" xml:space="preserve"><value>المخزون غير كافٍ لـ: {0}</value></data>
+  <data name="Error_NotFound" xml:space="preserve"><value>السجل غير موجود.</value></data>
+</root>

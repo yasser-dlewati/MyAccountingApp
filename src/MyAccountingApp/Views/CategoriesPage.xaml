@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:e="clr-namespace:MyAccountingApp.Core.Entities;assembly=MyAccountingApp.Core"
+             x:Class="MyAccountingApp.Views.CategoriesPage"
+             x:DataType="vm:CategoriesViewModel"
+             Title="{loc:Translate Nav_Categories}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{loc:Translate Common_Add}" Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="Auto,*" Padding="16,8">
+        <HorizontalStackLayout Spacing="8">
+            <Switch IsToggled="{Binding ShowInactive}" VerticalOptions="Center" />
+            <Label Text="{loc:Translate Common_ShowInactive}" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="e:Category">
+                    <Border Style="{StaticResource Card}" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Name}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
+                            <Switch Grid.Column="1" IsToggled="{Binding IsActive, Mode=OneWay}" IsEnabled="False" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoriesViewModel}}, Path=EditCommand, x:DataType=vm:CategoriesViewModel}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

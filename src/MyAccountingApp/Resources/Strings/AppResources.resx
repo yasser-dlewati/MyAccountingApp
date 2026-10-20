@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UI strings. Every key must exist in both AppResources.resx and AppResources.ar.resx. -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="App_Title" xml:space="preserve"><value>My Accounting</value></data>
+  <data name="Nav_Dashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Nav_Orders" xml:space="preserve"><value>Orders</value></data>
+  <data name="Nav_Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Nav_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Nav_Contacts" xml:space="preserve"><value>Contacts</value></data>
+  <data name="Nav_Stock" xml:space="preserve"><value>Stock</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Common_Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Common_All" xml:space="preserve"><value>All</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Common_No" xml:space="preserve"><value>No</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Common_Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Common_Empty" xml:space="preserve"><value>Nothing here yet</value></data>
+  <data name="Common_ShowInactive" xml:space="preserve"><value>Show inactive</value></data>
+  <data name="Common_Rename" xml:space="preserve"><value>Rename</value></data>
+  <data name="Common_Activate" xml:space="preserve"><value>Activate</value></data>
+  <data name="Common_Deactivate" xml:space="preserve"><value>Deactivate</value></data>
+  <data name="Field_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Field_Phone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Field_Address" xml:space="preserve"><value>Address</value></data>
+  <data name="Field_ContactType" xml:space="preserve"><value>Type</value></data>
+  <data name="Field_Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Field_Barcode" xml:space="preserve"><value>Barcode</value></data>
+  <data name="Field_Price" xml:space="preserve"><value>Selling price</value></data>
+  <data name="Field_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Field_DefaultSupplier" xml:space="preserve"><value>Default supplier</value></data>
+  <data name="Field_Quantity" xml:space="preserve"><value>Quantity</value></data>
+  <data name="Field_UnitPrice" xml:space="preserve"><value>Unit price</value></data>
+  <data name="Category_New" xml:space="preserve"><value>New category</value></data>
+  <data name="Category_Edit" xml:space="preserve"><value>Category name</value></data>
+  <data name="Contact_New" xml:space="preserve"><value>New contact</value></data>
+  <data name="ContactType_Customer" xml:space="preserve"><value>Customer</value></data>
+  <data name="ContactType_Supplier" xml:space="preserve"><value>Supplier</value></data>
+  <data name="ContactType_Both" xml:space="preserve"><value>Customer &amp; supplier</value></data>
+  <data name="Product_New" xml:space="preserve"><value>New product</value></data>
+  <data name="Product_NoSupplier" xml:space="preserve"><value>(none)</value></data>
+  <data name="Product_SearchHint" xml:space="preserve"><value>Name or barcode</value></data>
+  <data name="Product_Stock" xml:space="preserve"><value>Stock</value></data>
+  <data name="Product_StockInfo" xml:space="preserve"><value>In stock: {0} · Last cost: {1}</value></data>
+  <data name="Product_Suppliers" xml:space="preserve"><value>Suppliers</value></data>
+  <data name="Product_AddSupplier" xml:space="preserve"><value>Add supplier</value></data>
+  <data name="Product_CostPrice" xml:space="preserve"><value>Cost price</value></data>
+  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>Remove supplier {0} from this product?</value></data>
+  <data name="OrderType_Sale" xml:space="preserve"><value>Sale</value></data>
+  <data name="OrderType_Purchase" xml:space="preserve"><value>Purchase</value></data>
+  <data name="OrderType_SaleReturn" xml:space="preserve"><value>Sale return</value></data>
+  <data name="OrderType_PurchaseReturn" xml:space="preserve"><value>Purchase return</value></data>
+  <data name="OrderStatus_Draft" xml:space="preserve"><value>Draft</value></data>
+  <data name="OrderStatus_Confirmed" xml:space="preserve"><value>Confirmed</value></data>
+  <data name="OrderStatus_Cancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="Order_New" xml:space="preserve"><value>New order</value></data>
+  <data name="Order_NewOfType" xml:space="preserve"><value>New {0}</value></data>
+  <data name="Order_SearchHint" xml:space="preserve"><value>Number or contact</value></data>
+  <data name="Order_Customer" xml:space="preserve"><value>Customer</value></data>
+  <data name="Order_Supplier" xml:space="preserve"><value>Supplier</value></data>
+  <data name="Order_AddProductHint" xml:space="preserve"><value>Add product: name or barcode</value></data>
+  <data name="Order_Items" xml:space="preserve"><value>Items</value></data>
+  <data name="Order_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Order_SaveDraft" xml:space="preserve"><value>Save draft</value></data>
+  <data name="Order_Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Order_DeleteDraft" xml:space="preserve"><value>Delete draft</value></data>
+  <data name="Order_CancelOrder" xml:space="preserve"><value>Cancel order</value></data>
+  <data name="Order_ConfirmPrompt" xml:space="preserve"><value>Confirm this order? Stock will be updated and the order can no longer be edited.</value></data>
+  <data name="Order_ShortageConfirm" xml:space="preserve"><value>Not enough stock (available / requested):
+{0}
+
+Confirm anyway?</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>Cancel this order? Its stock movements will be reversed.</value></data>
+  <data name="Order_DeletePrompt" xml:space="preserve"><value>Delete this draft?</value></data>
+  <data name="Stock_TotalValue" xml:space="preserve"><value>Stock value (at cost)</value></data>
+  <data name="Stock_LastCost" xml:space="preserve"><value>Last cost</value></data>
+  <data name="Dashboard_NewSale" xml:space="preserve"><value>New sale</value></data>
+  <data name="Dashboard_NewPurchase" xml:space="preserve"><value>New purchase</value></data>
+  <data name="Dashboard_Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Dashboard_ThisMonth" xml:space="preserve"><value>This month</value></data>
+  <data name="Dashboard_Sales" xml:space="preserve"><value>Sales</value></data>
+  <data name="Dashboard_Profit" xml:space="preserve"><value>Profit</value></data>
+  <data name="Dashboard_Orders" xml:space="preserve"><value>Invoices</value></data>
+  <data name="Dashboard_LowStock" xml:space="preserve"><value>Low stock</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_Data" xml:space="preserve"><value>Data</value></data>
+  <data name="Settings_DataHint" xml:space="preserve"><value>Your data is stored only on this device. Back it up regularly.</value></data>
+  <data name="Settings_Backup" xml:space="preserve"><value>Back up database</value></data>
+  <data name="Settings_BackupFailed" xml:space="preserve"><value>Backup failed: {0}</value></data>
+  <data name="Settings_Restore" xml:space="preserve"><value>Restore from backup</value></data>
+  <data name="Settings_RestorePrompt" xml:space="preserve"><value>Restoring replaces ALL current data with the backup. Continue?</value></data>
+  <data name="Settings_RestoreDone" xml:space="preserve"><value>Backup restored.</value></data>
+  <data name="Settings_RestoreFailed" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="Error_NameRequired" xml:space="preserve"><value>Name is required.</value></data>
+  <data name="Error_PhoneRequired" xml:space="preserve"><value>Phone is required.</value></data>
+  <data name="Error_BarcodeRequired" xml:space="preserve"><value>Barcode is required.</value></data>
+  <data name="Error_BarcodeExists" xml:space="preserve"><value>Barcode {0} is already used by another product.</value></data>
+  <data name="Error_PriceNegative" xml:space="preserve"><value>Enter a valid price (0 or more).</value></data>
+  <data name="Error_CategoryRequired" xml:space="preserve"><value>Choose a category.</value></data>
+  <data name="Error_ContactRequired" xml:space="preserve"><value>Choose a contact.</value></data>
+  <data name="Error_NotASupplier" xml:space="preserve"><value>{0} is not a supplier.</value></data>
+  <data name="Error_NotACustomer" xml:space="preserve"><value>{0} is not a customer.</value></data>
+  <data name="Error_OrderHasNoItems" xml:space="preserve"><value>Add at least one item.</value></data>
+  <data name="Error_QuantityNotPositive" xml:space="preserve"><value>Quantities must be greater than zero.</value></data>
+  <data name="Error_OrderNotDraft" xml:space="preserve"><value>Order {0} is not a draft and can't be changed.</value></data>
+  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>Only confirmed orders can be cancelled ({0}).</value></data>
+  <data name="Error_InsufficientStock" xml:space="preserve"><value>Not enough stock for: {0}</value></data>
+  <data name="Error_NotFound" xml:space="preserve"><value>The record was not found.</value></data>
+</root>
