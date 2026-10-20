@@ -17,8 +17,12 @@
                 <Picker ItemsSource="{Binding Contacts}" SelectedItem="{Binding Contact}" IsEnabled="{Binding IsDraft}" />
 
                 <!-- Add product: type a name or scan/type a barcode -->
-                <SearchBar Text="{Binding ProductSearchText}" Placeholder="{loc:Translate Order_AddProductHint}"
-                           SearchCommand="{Binding SearchProductsCommand}" IsVisible="{Binding IsDraft}" Margin="0,8,0,0" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsDraft}" Margin="0,8,0,0">
+                    <SearchBar Text="{Binding ProductSearchText}" Placeholder="{loc:Translate Order_AddProductHint}"
+                               SearchCommand="{Binding SearchProductsCommand}" />
+                    <Button Grid.Column="1" Text="{loc:Translate Scan_Button}" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ScanProductCommand}" VerticalOptions="Center" />
+                </Grid>
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding ProductResults}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="e:Product">

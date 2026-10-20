@@ -14,7 +14,11 @@
             <Label Text="{loc:Translate Field_Name}" Style="{StaticResource FormLabel}" />
             <Entry Text="{Binding Name}" />
             <Label Text="{loc:Translate Field_Barcode}" Style="{StaticResource FormLabel}" />
-            <Entry Text="{Binding Barcode}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Entry Text="{Binding Barcode}" />
+                <Button Grid.Column="1" Text="{loc:Translate Scan_Button}" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding ScanBarcodeCommand}" VerticalOptions="Center" />
+            </Grid>
             <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
             <Entry Text="{Binding Price}" Keyboard="Numeric" />
             <Label Text="{loc:Translate Field_Category}" Style="{StaticResource FormLabel}" />

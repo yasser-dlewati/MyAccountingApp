@@ -97,6 +97,14 @@
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>الاستعادة ستستبدل كل البيانات الحالية بالنسخة الاحتياطية. متابعة؟</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>تمت الاستعادة.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>فشلت الاستعادة: {0}</value></data>
+  <data name="Scan_Button" xml:space="preserve"><value>مسح</value></data>
+  <data name="Scan_Hint" xml:space="preserve"><value>وجّه الكاميرا نحو الباركود</value></data>
+  <data name="Scan_Torch" xml:space="preserve"><value>الفلاش</value></data>
+  <data name="Scan_NoCamera" xml:space="preserve"><value>لا توجد كاميرا في هذا الجهاز. اكتب الباركود يدويًا.</value></data>
+  <data name="Scan_PermissionRationale" xml:space="preserve"><value>نحتاج إلى الكاميرا لمسح الباركود. تُستخدم في هذه الشاشة فقط ولا يتم تسجيل أو إرسال أي شيء.</value></data>
+  <data name="Scan_PermissionDenied" xml:space="preserve"><value>الوصول إلى الكاميرا متوقف لهذا التطبيق. هل تريد فتح إعدادات التطبيق للسماح به؟</value></data>
+  <data name="Scan_ProductNotFound" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}.</value></data>
+  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}. هل تريد إنشاءه؟</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>الاسم مطلوب.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>رقم الهاتف مطلوب.</value></data>
   <data name="Error_BarcodeRequired" xml:space="preserve"><value>الباركود مطلوب.</value></data>

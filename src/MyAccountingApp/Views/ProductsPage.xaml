@@ -12,8 +12,12 @@
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
-        <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
-                   SearchCommand="{Binding LoadCommand}" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
+                       SearchCommand="{Binding LoadCommand}" />
+            <Button Grid.Column="1" Text="{loc:Translate Scan_Button}" Style="{StaticResource SecondaryButton}"
+                    Command="{Binding ScanCommand}" VerticalOptions="Center" />
+        </Grid>
         <HorizontalStackLayout Grid.Row="1" Spacing="8">
             <Switch IsToggled="{Binding ShowInactive}" VerticalOptions="Center" />
             <Label Text="{loc:Translate Common_ShowInactive}" VerticalOptions="Center" />

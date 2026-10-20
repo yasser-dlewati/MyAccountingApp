@@ -16,16 +16,18 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     private readonly CategoryService _categories;
     private readonly ContactService _contacts;
     private readonly InventoryService _inventory;
+    private readonly BarcodeScannerService _scanner;
     private Product _product = new();
     private readonly Option<int?> _noSupplier = new(LocalizationService.Get("Product_NoSupplier"), null);
 
     public ProductEditViewModel(ProductService products, CategoryService categories, ContactService contacts,
-        InventoryService inventory, DialogService dialogs) : base(dialogs)
+        InventoryService inventory, BarcodeScannerService scanner, DialogService dialogs) : base(dialogs)
     {
         _products = products;
         _categories = categories;
         _contacts = contacts;
         _inventory = inventory;
+        _scanner = scanner;
         Title = LocalizationService.Get("Product_New");
     }
 
@@ -56,7 +58,12 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
             if (query.TryGetValue("id", out var value) && value is int id && id != 0)
                 await LoadProductAsync(id);
             else
+            {
                 DefaultSupplier = _noSupplier;
+                // New product from an unknown scanned barcode (Products page).
+                if (query.TryGetValue("barcode", out var barcode) && barcode is string b)
+                    Barcode = b;
+            }
         });
     }
 
@@ -114,6 +121,13 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
         await _products.SaveAsync(_product);
         await GoBackAsync();
     });
+
+    [RelayCommand]
+    private async Task ScanBarcodeAsync()
+    {
+        var barcode = await _scanner.ScanAsync();
+        if (barcode is not null) Barcode = barcode;
+    }
 
     [RelayCommand]
     private async Task AddSupplierAsync()

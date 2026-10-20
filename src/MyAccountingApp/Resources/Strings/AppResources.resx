@@ -97,6 +97,14 @@ Confirm anyway?</value></data>
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>Restoring replaces ALL current data with the backup. Continue?</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>Backup restored.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="Scan_Button" xml:space="preserve"><value>Scan</value></data>
+  <data name="Scan_Hint" xml:space="preserve"><value>Point the camera at a barcode</value></data>
+  <data name="Scan_Torch" xml:space="preserve"><value>Flashlight</value></data>
+  <data name="Scan_NoCamera" xml:space="preserve"><value>This device has no camera. Type the barcode instead.</value></data>
+  <data name="Scan_PermissionRationale" xml:space="preserve"><value>The camera is needed to scan barcodes. It is used only on this screen and nothing is recorded or sent.</value></data>
+  <data name="Scan_PermissionDenied" xml:space="preserve"><value>Camera access is turned off for this app. Open the app settings to allow it?</value></data>
+  <data name="Scan_ProductNotFound" xml:space="preserve"><value>No product with barcode {0}.</value></data>
+  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>No product with barcode {0}. Create one?</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>Name is required.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>Phone is required.</value></data>
   <data name="Error_BarcodeRequired" xml:space="preserve"><value>Barcode is required.</value></data>

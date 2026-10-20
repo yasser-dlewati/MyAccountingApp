@@ -6,6 +6,7 @@ using MyAccountingApp.Core.Services;
 using MyAccountingApp.Localization;
 using MyAccountingApp.ViewModels;
 using MyAccountingApp.Views;
+using ZXing.Net.Maui.Controls;
 
 namespace MyAccountingApp;
 
@@ -18,6 +19,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseBarcodeReader()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -35,6 +37,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<OrderService>();
 		builder.Services.AddSingleton<DialogService>();
 		builder.Services.AddSingleton<BackupService>();
+		builder.Services.AddSingleton<BarcodeScannerService>();
 
 		builder.Services.AddTransient<DashboardPage>().AddTransient<DashboardViewModel>();
 		builder.Services.AddTransient<OrdersPage>().AddTransient<OrdersViewModel>();

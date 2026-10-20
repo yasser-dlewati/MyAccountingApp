@@ -12,7 +12,8 @@ using MyAccountingApp.Localization;
 namespace MyAccountingApp.ViewModels;
 
 public partial class OrderEditViewModel(
-    OrderService orders, ContactService contacts, ProductService products, InventoryService inventory, DialogService dialogs)
+    OrderService orders, ContactService contacts, ProductService products, InventoryService inventory,
+    BarcodeScannerService scanner, DialogService dialogs)
     : BaseViewModel(dialogs), IQueryAttributable
 {
     private int _orderId;
@@ -90,20 +91,33 @@ public partial class OrderEditViewModel(
         Total = Formats.Money(Lines.Sum(l => l.QuantityValue * Math.Max(l.UnitPriceValue, 0)));
 
     [RelayCommand]
-    private Task SearchProductsAsync() => RunAsync(async () =>
+    private Task SearchProductsAsync() => RunAsync(() => FindProductAsync(scanned: false));
+
+    [RelayCommand]
+    private async Task ScanProductAsync()
+    {
+        var barcode = await scanner.ScanAsync();
+        if (barcode is null) return;
+        ProductSearchText = barcode;
+        await RunAsync(() => FindProductAsync(scanned: true));
+    }
+
+    private async Task FindProductAsync(bool scanned)
     {
         ProductResults.Clear();
         if (string.IsNullOrWhiteSpace(ProductSearchText)) return;
 
         var found = await products.SearchAsync(ProductSearchText);
-        // A scanned / typed barcode that matches exactly is added straight away.
+        // A scanned / typed barcode that matches exactly is added straight away (again = quantity + 1).
         if (found.Count > 0 && found[0].Barcode == ProductSearchText.Trim())
         {
             await AddLineAsync(found[0]);
             return;
         }
         foreach (var p in found.Take(20)) ProductResults.Add(p);
-    });
+        if (scanned)
+            await Dialogs.AlertAsync(LocalizationService.Format("Scan_ProductNotFound", ProductSearchText.Trim()));
+    }
 
     [RelayCommand]
     private Task PickProductAsync(Product product) => RunAsync(() => AddLineAsync(product));

@@ -3,4 +3,10 @@
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- Barcode scanning (runtime permission, requested by BarcodeScannerService). -->
+	<uses-permission android:name="android.permission.CAMERA" />
+	<!-- Haptic "beep" on a successful scan (install-time, no prompt). -->
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<!-- Camera is optional: the app still installs on devices without one (barcode is then typed). -->
+	<uses-feature android:name="android.hardware.camera.any" android:required="false" />
 </manifest>

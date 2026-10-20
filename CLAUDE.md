@@ -21,7 +21,8 @@ MyAccountingApp.slnx
 src/MyAccountingApp/            MAUI app
   Views/                        XAML pages (code-behind only sets BindingContext / calls LoadCommand)
   ViewModels/                   one VM per page; BaseViewModel.RunAsync shows BusinessRuleException to the user
-  AppServices/                  DialogService (alerts/prompts), BackupService (backup/restore .db3)
+  AppServices/                  DialogService (alerts/prompts), BackupService (backup/restore .db3),
+                                BarcodeScannerService (camera permission + scanner page)
   Localization/                 LocalizationService, {loc:Translate Key} markup extension
   Helpers/                      Formats (number/date format + parsing), Option<T> (picker items), EnumLabels
   Resources/Strings/            AppResources.resx (en) + AppResources.ar.resx (ar)
@@ -103,6 +104,16 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 - `Contact` clashes with `Microsoft.Maui.ApplicationModel.Communication.Contact` — add `using Contact = MyAccountingApp.Core.Entities.Contact;` in app files that use it.
 - Styles: template `Styles.xaml` + app styles in `Resources/Styles/AppStyles.xaml` (`Card`, `ItemTitle`, `Caption`, `Amount`, `KpiValue`, `SecondaryButton`, `DangerButton`, `FormLabel`).
 
+## Barcode scanning (camera)
+
+- Package: `ZXing.Net.Maui.Controls` (on-device decoding, works offline), registered with `.UseBarcodeReader()` in `MauiProgram`.
+- Entry point: `BarcodeScannerService.ScanAsync()` → barcode string, or null (cancelled / no camera / permission denied). VMs call only this, never the camera control.
+- Permission flow (always via the service, before the camera opens): `CheckStatusAsync` → if previously denied show `Scan_PermissionRationale` → `RequestAsync` → if denied and Android won't ask again (`ShouldShowRationale` false), offer `AppInfo.ShowSettingsUI()`.
+- `Views/BarcodeScanPage` is a **modal** page created by the service (not a Shell route, not in DI). Its logic stays in code-behind because the camera control is event-based. It sets its own `FlowDirection` (modals don't inherit the Shell's), and on disappearing it disconnects the camera handler.
+- Formats: EAN-13/8, UPC-A/E, Code 128/39/93, ITF, QR. Codabar/RSS are left out because they give false positives.
+- Used in: order edit (scan → exact match adds the line, or +1 qty; no match → `Scan_ProductNotFound`), product edit (fills the barcode field), products list (opens the product, or offers to create one with `["barcode"]` pre-filled).
+- Manifest: `CAMERA`, `VIBRATE` (scan haptic), `uses-feature camera.any required=false`. iOS/Mac Info.plist: `NSCameraUsageDescription`.
+
 ## Local-only considerations
 
 - The phone holds the only copy of the data. Settings → Backup shares a `VACUUM INTO` copy of the DB; Restore validates the picked file, replaces the DB and runs migrations.
@@ -111,5 +122,5 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 
 ## Not done yet / ideas
 
-- Camera barcode scanning (barcode is typed or pasted; an exact barcode match in the order search adds the line directly).
+- Continuous scanning mode for orders (scan many items without reopening the scanner).
 - Customer/supplier balances & payments (no payments table yet), date-range reports, receipt printing/sharing.
