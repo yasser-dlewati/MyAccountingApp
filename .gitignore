@@ -13,3 +13,6 @@ obj/
 # Local databases (EF design-time, tests)
 *.db3
 *.db3-*
+
+# Release packages
+artifacts/
