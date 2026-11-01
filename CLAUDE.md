@@ -56,13 +56,13 @@ There is **no global `is_active` query filter**: old orders must still show inac
 |---|---|---|
 | categories | id, name (req), is_active | |
 | contacts | id, name, phone, address?, is_active, type, created_at | `type` = `ContactType` |
-| products | id, name, category_id, **supplier_id?**, barcode (unique), price, is_active, created_at | `supplier_id` = default/preferred supplier (nullable) |
+| products | id, name, **category_id?**, **supplier_id?**, barcode (unique), price, is_active, created_at | `supplier_id` = default/preferred supplier (nullable); `category_id` null = built-in "General" |
 | product_suppliers | id, product_id, contact_id, cost_price (**decimal**), is_active, created_at | all suppliers of a product; unique (product_id, contact_id) |
-| orders | id, order_number (unique), order_type, contact_id, status, total_amount, created_at, modified_at | |
+| orders | id, order_number (unique), order_type, **contact_id?**, status, total_amount, created_at, modified_at | `contact_id` null = walk-in customer / supplier |
 | order_items | id, order_id, product_id, quantity, unit_price | |
 | ledger | id, product_id, document_type, document_id, quantity, unit_cost, unit_price, created_at | inventory journal |
 
-Changes vs. the original design: `product_suppliers.cost_price` int → decimal; `products.supplier_id` nullable (default supplier); `categories.name` required; unique indexes on barcode / order_number / (product, supplier); `created_at` and `modified_at` are stamped in UTC by `AppDbContext.SaveChanges`.
+Changes vs. the original design: `product_suppliers.cost_price` int → decimal; `products.supplier_id` nullable (default supplier); `products.category_id` and `orders.contact_id` nullable; `categories.name` required; unique indexes on barcode / order_number / (product, supplier); `created_at` and `modified_at` are stamped in UTC by `AppDbContext.SaveChanges`.
 
 Enums (stored as int):
 - `ContactType`: Customer=1, Supplier=2, Both=3
@@ -83,7 +83,9 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 - Stock-out orders that exceed stock throw `Error_InsufficientStock` unless `allowNegativeStock: true` (the UI asks the user first).
 - **`ledger.unit_cost`**: purchase = its unit price; every other type = **last purchase cost** of the product = unit cost of the latest ledger row of a still-*Confirmed* purchase (cancelled purchases ignored), 0 if never purchased.
 - Confirming a purchase upserts `product_suppliers.cost_price` for that supplier and sets `products.supplier_id` if it was empty.
-- Contact must match the order side: Sale/SaleReturn → customer, Purchase/PurchaseReturn → supplier (`Both` matches either).
+- Contact is optional: null = walk-in customer / supplier (`DisplayNames.WalkIn`, shown as the first picker entry with Id 0). A walk-in purchase records no supplier cost / default supplier. Allowed per side via Settings → Walk-in orders (`WalkInSettings`, `Preferences` "allow_walkin_customer" / "allow_walkin_supplier", default on); the app passes `allowWalkIn` to `Create/UpdateDraftAsync`, which throw `Error_ContactRequired` when off. A posted walk-in order still shows its walk-in label.
+- Category: `ProductService.SaveAsync(product, categoryRequired)`. The app passes `CategorySettings.Enabled` (Settings → Categories, `Preferences` "use_categories", default on). Off: the category picker and the Categories flyout item are hidden, new products get a null category (shown as "General" via `DisplayNames.CategoryOf`), existing products keep theirs.
+- Contact, when set, must match the order side: Sale/SaleReturn → customer, Purchase/PurchaseReturn → supplier (`Both` matches either).
 - `order_number` = per-type prefix + 6 digits: `S-000001`, `P-…`, `SR-…`, `PR-…`, assigned when the draft is created.
 - Sales summary / profit (dashboard): over Sale + SaleReturn ledger rows, `revenue = Σ −qty × unit_price`, `cost = Σ −qty × unit_cost` — this nets out returns and cancellations automatically.
 - Validation errors are `BusinessRuleException(ErrorKey, args)`; `ErrorKey` is a resx key (`ErrorKeys` class), so Core never contains UI text.

@@ -93,6 +93,16 @@ Confirm anyway?</value></data>
   <data name="Theme_System" xml:space="preserve"><value>System default</value></data>
   <data name="Theme_Light" xml:space="preserve"><value>Light</value></data>
   <data name="Theme_Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Contact_WalkInCustomer" xml:space="preserve"><value>Walk-in customer</value></data>
+  <data name="Contact_WalkInSupplier" xml:space="preserve"><value>Walk-in supplier</value></data>
+  <data name="Category_General" xml:space="preserve"><value>General</value></data>
+  <data name="Settings_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Settings_UseCategories" xml:space="preserve"><value>Require a category for each product</value></data>
+  <data name="Settings_UseCategoriesHint" xml:space="preserve"><value>When off, the category field is hidden and new products go under “General”.</value></data>
+  <data name="Settings_WalkIn" xml:space="preserve"><value>Walk-in orders</value></data>
+  <data name="Settings_AllowWalkInCustomer" xml:space="preserve"><value>Allow sales without a customer</value></data>
+  <data name="Settings_AllowWalkInSupplier" xml:space="preserve"><value>Allow purchases without a supplier</value></data>
+  <data name="Settings_WalkInHint" xml:space="preserve"><value>When on, orders can use “Walk-in customer” / “Walk-in supplier”. When off, a contact must be chosen.</value></data>
   <data name="Settings_Data" xml:space="preserve"><value>Data</value></data>
   <data name="Settings_DataHint" xml:space="preserve"><value>Your data is stored only on this device. Back it up regularly.</value></data>
   <data name="Settings_Backup" xml:space="preserve"><value>Back up database</value></data>

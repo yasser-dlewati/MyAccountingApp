@@ -59,7 +59,7 @@ public partial class OrdersViewModel : BaseViewModel
 
 public record OrderRow(Order Order)
 {
-    public string Title => $"{Order.OrderNumber} · {Order.Contact?.Name}";
+    public string Title => $"{Order.OrderNumber} · {DisplayNames.ContactOf(Order)}";
     public string Subtitle => $"{EnumLabels.Of(Order.OrderType)} · {EnumLabels.Of(Order.Status)} · {Formats.Date(Order.CreatedAt)}";
     public string Total => Formats.Money(Order.TotalAmount);
     public Color StatusColor => Order.Status switch

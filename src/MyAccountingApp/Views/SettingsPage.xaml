@@ -15,6 +15,24 @@
             <Label Text="{loc:Translate Settings_Theme}" Style="{StaticResource SectionTitle}" />
             <Picker ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}" />
 
+            <Label Text="{loc:Translate Settings_Categories}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_UseCategories}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding UseCategories}" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_UseCategoriesHint}" Style="{StaticResource Caption}" />
+
+            <Label Text="{loc:Translate Settings_WalkIn}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_AllowWalkInCustomer}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding AllowWalkInCustomer}" VerticalOptions="Center" />
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_AllowWalkInSupplier}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding AllowWalkInSupplier}" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_WalkInHint}" Style="{StaticResource Caption}" />
+
             <Label Text="{loc:Translate Settings_Data}" Style="{StaticResource SectionTitle}" />
             <Label Text="{loc:Translate Settings_DataHint}" Style="{StaticResource Caption}" />
             <Button Text="{loc:Translate Settings_Backup}" Command="{Binding BackupCommand}" />

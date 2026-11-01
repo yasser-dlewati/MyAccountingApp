@@ -27,9 +27,10 @@ public partial class ProductsViewModel(
     {
         var list = await products.SearchAsync(SearchText, includeInactive: ShowInactive);
         var stock = (await inventory.GetStockReportAsync()).ToDictionary(r => r.ProductId, r => r.Quantity);
+        var showCategory = CategorySettings.Enabled;
         Items.Clear();
         foreach (var p in list)
-            Items.Add(new ProductRow(p.Id, p.Name, $"{p.Barcode} · {p.Category?.Name}",
+            Items.Add(new ProductRow(p.Id, p.Name, showCategory ? $"{p.Barcode} · {DisplayNames.CategoryOf(p)}" : p.Barcode,
                 Formats.Money(p.Price), Formats.Quantity(stock.GetValueOrDefault(p.Id)), p.IsActive ? 1 : 0.45));
     });
 

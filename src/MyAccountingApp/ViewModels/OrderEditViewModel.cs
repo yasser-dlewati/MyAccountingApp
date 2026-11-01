@@ -82,12 +82,16 @@ public partial class OrderEditViewModel(
     {
         var role = OrderService.IsSalesSide(OrderType) ? ContactType.Customer : ContactType.Supplier;
         Contacts.Clear();
+        // Id 0 = no contact (walk-in), so orders work before any customer / supplier exists.
+        // Offered when allowed in settings; always kept on a posted walk-in order so it still shows.
+        if (WalkInSettings.IsAllowed(OrderType) || (current is null && !IsDraft))
+            Contacts.Add(new Contact { Name = DisplayNames.WalkIn(OrderType) });
         foreach (var c in await contacts.SearchAsync(role: role)) Contacts.Add(c);
 
         // Keep an inactive contact selectable on an existing order.
         if (current is not null && Contacts.All(c => c.Id != current.Id))
             Contacts.Add(current);
-        Contact = current is null ? null : Contacts.First(c => c.Id == current.Id);
+        Contact = Contacts.FirstOrDefault(c => c.Id == (current?.Id ?? 0));
     }
 
     private void UpdateTotal() =>
@@ -211,17 +215,17 @@ public partial class OrderEditViewModel(
 
     private async Task SaveDraftAsync()
     {
-        if (Contact is null)
-            throw new BusinessRuleException(ErrorKeys.ContactRequired);
         if (Lines.Any(l => l.QuantityValue <= 0))
             throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
         if (Lines.Any(l => l.UnitPriceValue < 0))
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
 
+        int? contactId = Contact is { Id: not 0 } c ? c.Id : null;
+        var allowWalkIn = WalkInSettings.IsAllowed(OrderType);
         var input = Lines.Select(l => new OrderLineInput(l.ProductId, l.QuantityValue, l.UnitPriceValue)).ToList();
         if (_orderId == 0)
-            _orderId = (await orders.CreateDraftAsync(OrderType, Contact.Id, input)).Id;
+            _orderId = (await orders.CreateDraftAsync(OrderType, contactId, input, allowWalkIn)).Id;
         else
-            await orders.UpdateDraftAsync(_orderId, Contact.Id, input);
+            await orders.UpdateDraftAsync(_orderId, contactId, input, allowWalkIn);
     }
 }

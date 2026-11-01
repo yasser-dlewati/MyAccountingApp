@@ -133,7 +133,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<int>("ContactId")
+                    b.Property<int?>("ContactId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("contact_id");
 
@@ -222,7 +222,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("barcode");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("category_id");
 
@@ -313,8 +313,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                     b.HasOne("MyAccountingApp.Core.Entities.Contact", "Contact")
                         .WithMany()
                         .HasForeignKey("ContactId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Contact");
                 });
@@ -343,8 +342,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                     b.HasOne("MyAccountingApp.Core.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MyAccountingApp.Core.Entities.Contact", "Supplier")
                         .WithMany()

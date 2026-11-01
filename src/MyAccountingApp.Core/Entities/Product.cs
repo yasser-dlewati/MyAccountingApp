@@ -4,7 +4,8 @@ public class Product : IHasCreatedAt
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";
-    public int CategoryId { get; set; }
+    /// <summary>Null = the built-in "General" category (used when categories are turned off).</summary>
+    public int? CategoryId { get; set; }
     /// <summary>Default / preferred supplier. All suppliers live in ProductSuppliers.</summary>
     public int? SupplierId { get; set; }
     public string Barcode { get; set; } = "";

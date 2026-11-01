@@ -10,7 +10,7 @@ public class OrderServiceTests : IDisposable
 
     public void Dispose() => _t.Dispose();
 
-    private async Task<int> ConfirmedAsync(OrderType type, int contactId, int productId, decimal qty, decimal price)
+    private async Task<int> ConfirmedAsync(OrderType type, int? contactId, int productId, decimal qty, decimal price)
     {
         var order = await _t.Orders.CreateDraftAsync(type, contactId, [new OrderLineInput(productId, qty, price)]);
         await _t.Orders.ConfirmAsync(order.Id);
@@ -38,6 +38,43 @@ public class OrderServiceTests : IDisposable
         Assert.Equal(OrderStatus.Confirmed, order!.Status);
         Assert.Equal(6m, order.TotalAmount);
         Assert.StartsWith("S-", order.OrderNumber);
+    }
+
+    [Fact]
+    public async Task Walk_in_orders_need_no_contact()
+    {
+        var (_, _, product) = await _t.SeedAsync();
+
+        await ConfirmedAsync(OrderType.Purchase, null, product.Id, 5, 1m);
+        var saleId = await ConfirmedAsync(OrderType.Sale, null, product.Id, 2, 2m);
+
+        Assert.Equal(3, await _t.Inventory.GetStockAsync(product.Id));
+        var sale = await _t.Orders.GetAsync(saleId);
+        Assert.Null(sale!.ContactId);
+        Assert.Null(sale.Contact);
+
+        // No supplier, so no supplier cost link / default supplier is recorded.
+        var saved = await _t.Products.GetAsync(product.Id);
+        Assert.Null(saved!.SupplierId);
+        Assert.Empty(saved.ProductSuppliers);
+    }
+
+    [Fact]
+    public async Task Contact_is_required_when_walk_in_is_off()
+    {
+        var (_, customer, product) = await _t.SeedAsync();
+        OrderLineInput[] lines = [new(product.Id, 1, 2m)];
+
+        var ex = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            _t.Orders.CreateDraftAsync(OrderType.Sale, null, lines, allowWalkIn: false));
+        Assert.Equal(ErrorKeys.ContactRequired, ex.ErrorKey);
+
+        var draft = await _t.Orders.CreateDraftAsync(OrderType.Sale, null, lines);
+        ex = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            _t.Orders.UpdateDraftAsync(draft.Id, null, lines, allowWalkIn: false));
+        Assert.Equal(ErrorKeys.ContactRequired, ex.ErrorKey);
+
+        await _t.Orders.UpdateDraftAsync(draft.Id, customer.Id, lines, allowWalkIn: false);
     }
 
     [Fact]

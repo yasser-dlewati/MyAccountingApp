@@ -52,10 +52,12 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<Order> CreateDraftAsync(OrderType type, int contactId, IReadOnlyList<OrderLineInput> lines)
+    /// <param name="allowWalkIn">False: a contact is required (walk-in turned off in settings).</param>
+    public async Task<Order> CreateDraftAsync(OrderType type, int? contactId, IReadOnlyList<OrderLineInput> lines,
+        bool allowWalkIn = true)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
-        await ValidateContactAsync(db, type, contactId);
+        await ValidateContactAsync(db, type, contactId, allowWalkIn);
         ValidateLines(lines);
 
         var order = new Order
@@ -73,14 +75,15 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
         return order;
     }
 
-    public async Task<Order> UpdateDraftAsync(int orderId, int contactId, IReadOnlyList<OrderLineInput> lines)
+    public async Task<Order> UpdateDraftAsync(int orderId, int? contactId, IReadOnlyList<OrderLineInput> lines,
+        bool allowWalkIn = true)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         var order = await LoadAsync(db, orderId);
         if (order.Status != OrderStatus.Draft)
             throw new BusinessRuleException(ErrorKeys.OrderNotDraft, order.OrderNumber);
 
-        await ValidateContactAsync(db, order.OrderType, contactId);
+        await ValidateContactAsync(db, order.OrderType, contactId, allowWalkIn);
         ValidateLines(lines);
 
         order.ContactId = contactId;
@@ -221,20 +224,29 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
 
     private static async Task UpdateSupplierCostsAsync(AppDbContext db, Order order)
     {
+        // Walk-in purchases have no supplier to remember a cost for.
+        if (order.ContactId is not int supplierId) return;
+
         foreach (var item in order.Items)
         {
-            await ProductService.UpsertSupplierCostAsync(db, item.ProductId, order.ContactId, item.UnitPrice);
+            await ProductService.UpsertSupplierCostAsync(db, item.ProductId, supplierId, item.UnitPrice);
             await db.SaveChangesAsync(); // so a repeated product in the same order finds the new link
         }
 
         // First supplier a product is bought from becomes its default supplier.
         var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
         await db.Products.Where(p => productIds.Contains(p.Id) && p.SupplierId == null)
-            .ExecuteUpdateAsync(s => s.SetProperty(p => p.SupplierId, order.ContactId));
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.SupplierId, supplierId));
     }
 
-    private static async Task ValidateContactAsync(AppDbContext db, OrderType type, int contactId)
+    /// <summary>A null contact is the walk-in customer / supplier, allowed when <paramref name="allowWalkIn"/>.</summary>
+    private static async Task ValidateContactAsync(AppDbContext db, OrderType type, int? contactId, bool allowWalkIn)
     {
+        if (contactId is null)
+        {
+            if (!allowWalkIn) throw new BusinessRuleException(ErrorKeys.ContactRequired);
+            return;
+        }
         var contact = await db.Contacts.AsNoTracking().FirstOrDefaultAsync(c => c.Id == contactId)
             ?? throw new BusinessRuleException(ErrorKeys.NotFound);
         if (IsSalesSide(type) && !contact.IsCustomer)

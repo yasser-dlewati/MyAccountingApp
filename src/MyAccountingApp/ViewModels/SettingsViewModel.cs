@@ -15,6 +15,9 @@ public partial class SettingsViewModel : BaseViewModel
         _backup = backup;
         Language = LanguageOptions.First(o => o.Value == LocalizationService.CurrentLanguage);
         Theme = ThemeOptions.FirstOrDefault(o => o.Value == ThemeService.CurrentTheme) ?? ThemeOptions[0];
+        UseCategories = CategorySettings.Enabled;
+        AllowWalkInCustomer = WalkInSettings.CustomerAllowed;
+        AllowWalkInSupplier = WalkInSettings.SupplierAllowed;
     }
 
     public List<Option<string>> LanguageOptions { get; } =
@@ -36,6 +39,15 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     public partial Option<AppTheme> Theme { get; set; }
 
+    [ObservableProperty]
+    public partial bool UseCategories { get; set; }
+
+    [ObservableProperty]
+    public partial bool AllowWalkInCustomer { get; set; }
+
+    [ObservableProperty]
+    public partial bool AllowWalkInSupplier { get; set; }
+
     public string AppVersion => AppInfo.Current.VersionString;
 
     partial void OnThemeChanged(Option<AppTheme> value)
@@ -43,6 +55,16 @@ public partial class SettingsViewModel : BaseViewModel
         if (value.Value != ThemeService.CurrentTheme)
             ThemeService.SetTheme(value.Value);
     }
+
+    partial void OnUseCategoriesChanged(bool value)
+    {
+        CategorySettings.Enabled = value;
+        AppShell.UpdateCategoriesVisibility();
+    }
+
+    partial void OnAllowWalkInCustomerChanged(bool value) => WalkInSettings.CustomerAllowed = value;
+
+    partial void OnAllowWalkInSupplierChanged(bool value) => WalkInSettings.SupplierAllowed = value;
 
     partial void OnLanguageChanged(Option<string> value)
     {

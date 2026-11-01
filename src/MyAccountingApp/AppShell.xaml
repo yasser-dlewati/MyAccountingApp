@@ -17,7 +17,7 @@
     <FlyoutItem Title="{loc:Translate Nav_Products}">
         <ShellContent ContentTemplate="{DataTemplate views:ProductsPage}" Route="products" />
     </FlyoutItem>
-    <FlyoutItem Title="{loc:Translate Nav_Categories}">
+    <FlyoutItem x:Name="CategoriesItem" Title="{loc:Translate Nav_Categories}">
         <ShellContent ContentTemplate="{DataTemplate views:CategoriesPage}" Route="categories" />
     </FlyoutItem>
     <FlyoutItem Title="{loc:Translate Nav_Contacts}">

@@ -43,7 +43,10 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
         return await db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Barcode == b);
     }
 
-    public async Task<Product> SaveAsync(Product product)
+    /// <param name="categoryRequired">
+    /// Categories turned on in settings: the product must have one. Off: a null category means "General".
+    /// </param>
+    public async Task<Product> SaveAsync(Product product, bool categoryRequired = true)
     {
         product.Name = product.Name.Trim();
         product.Barcode = product.Barcode.Trim();
@@ -53,7 +56,7 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
             throw new BusinessRuleException(ErrorKeys.BarcodeRequired);
         if (product.Price < 0)
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
-        if (product.CategoryId == 0)
+        if (categoryRequired && product.CategoryId is null)
             throw new BusinessRuleException(ErrorKeys.CategoryRequired);
 
         await using var db = await dbFactory.CreateDbContextAsync();

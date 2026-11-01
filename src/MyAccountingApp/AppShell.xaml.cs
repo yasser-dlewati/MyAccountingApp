@@ -1,3 +1,4 @@
+using MyAccountingApp.AppServices;
 using MyAccountingApp.Localization;
 using MyAccountingApp.Views;
 
@@ -16,5 +17,13 @@ public partial class AppShell : Shell
 	{
 		InitializeComponent();
 		FlowDirection = LocalizationService.FlowDirection;
+		CategoriesItem.FlyoutItemIsVisible = CategorySettings.Enabled;
+	}
+
+	/// <summary>Shows / hides the Categories page after the Settings switch changes.</summary>
+	public static void UpdateCategoriesVisibility()
+	{
+		if (Current is AppShell shell)
+			shell.CategoriesItem.FlyoutItemIsVisible = CategorySettings.Enabled;
 	}
 }

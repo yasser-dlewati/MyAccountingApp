@@ -50,6 +50,8 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
 
     public bool IsExisting => ProductId != 0;
 
+    public bool UseCategories { get; } = CategorySettings.Enabled;
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         await RunAsync(async () =>
@@ -91,7 +93,7 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
         // An inactive category / supplier still has to show for this product.
         if (_product.Category is not null && Categories.All(c => c.Id != _product.CategoryId))
             Categories.Add(_product.Category);
-        Category = Categories.First(c => c.Id == _product.CategoryId);
+        Category = Categories.FirstOrDefault(c => c.Id == _product.CategoryId);
 
         if (_product.Supplier is not null && Suppliers.All(s => s.Value != _product.SupplierId))
             Suppliers.Add(new Option<int?>(_product.Supplier.Name, _product.Supplier.Id));
@@ -115,10 +117,12 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
         _product.Name = Name;
         _product.Barcode = Barcode;
         _product.Price = price;
-        _product.CategoryId = Category?.Id ?? 0;
+        // Categories off: keep whatever the product had (new products stay in "General").
+        if (UseCategories)
+            _product.CategoryId = Category?.Id;
         _product.SupplierId = DefaultSupplier?.Value;
         _product.IsActive = IsActive;
-        await _products.SaveAsync(_product);
+        await _products.SaveAsync(_product, categoryRequired: UseCategories);
         await GoBackAsync();
     });
 

@@ -21,8 +21,8 @@
             </Grid>
             <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
             <Entry Text="{Binding Price}" Keyboard="Numeric" />
-            <Label Text="{loc:Translate Field_Category}" Style="{StaticResource FormLabel}" />
-            <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" />
+            <Label Text="{loc:Translate Field_Category}" Style="{StaticResource FormLabel}" IsVisible="{Binding UseCategories}" />
+            <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" IsVisible="{Binding UseCategories}" />
             <Label Text="{loc:Translate Field_DefaultSupplier}" Style="{StaticResource FormLabel}" />
             <Picker ItemsSource="{Binding Suppliers}" SelectedItem="{Binding DefaultSupplier}" />
             <HorizontalStackLayout Spacing="8" Margin="0,8">

@@ -20,6 +20,20 @@ public class ProductAndInventoryTests : IDisposable
     }
 
     [Fact]
+    public async Task Category_is_required_only_when_categories_are_on()
+    {
+        var ex = await Assert.ThrowsAsync<BusinessRuleException>(() => _t.Products.SaveAsync(
+            new Product { Name = "Bread", Barcode = "900", Price = 1 }));
+        Assert.Equal(ErrorKeys.CategoryRequired, ex.ErrorKey);
+
+        var general = await _t.Products.SaveAsync(
+            new Product { Name = "Bread", Barcode = "900", Price = 1 }, categoryRequired: false);
+        var loaded = await _t.Products.GetAsync(general.Id);
+        Assert.Null(loaded!.CategoryId);
+        Assert.Null(loaded.Category);
+    }
+
+    [Fact]
     public async Task Default_supplier_must_be_a_supplier()
     {
         var (_, customer, product) = await _t.SeedAsync();

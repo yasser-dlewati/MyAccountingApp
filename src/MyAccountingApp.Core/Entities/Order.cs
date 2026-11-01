@@ -7,7 +7,8 @@ public class Order : IHasCreatedAt
     public int Id { get; set; }
     public string OrderNumber { get; set; } = "";
     public OrderType OrderType { get; set; }
-    public int ContactId { get; set; }
+    /// <summary>Null = walk-in (cash) customer / supplier.</summary>
+    public int? ContactId { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Draft;
     public decimal TotalAmount { get; set; }
     public DateTime CreatedAt { get; set; }
