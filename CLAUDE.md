@@ -102,6 +102,7 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 - Pickers bind to `Option<T>` lists or entities with `ToString()` → `Name` (no `ItemDisplayBinding`, which conflicts with compiled bindings).
 - Item-template commands bind to the page VM with `{Binding Source={RelativeSource AncestorType={x:Type vm:XViewModel}}, Path=…, x:DataType=vm:XViewModel}`.
 - `Contact` clashes with `Microsoft.Maui.ApplicationModel.Communication.Contact` — add `using Contact = MyAccountingApp.Core.Entities.Contact;` in app files that use it.
+- Bottom nav: `Controls/BottomNavBar` (4 tabs + raised center scan button) sits in the last row of the main pages (Dashboard, Orders, Products, Stock) with `Current="<shell route>"`; tabs navigate with `//route`. Less-used pages stay in the flyout. The center button runs `QuickScanService`: known product → new sale / new purchase (`["productId"]` pre-adds the line in order edit) / open product; unknown → offer to create it.
 - Styles: template `Styles.xaml` + app styles in `Resources/Styles/AppStyles.xaml` (`Card`, `ItemTitle`, `Caption`, `Amount`, `KpiValue`, `SecondaryButton`, `DangerButton`, `FormLabel`).
 
 ## Barcode scanning (camera)

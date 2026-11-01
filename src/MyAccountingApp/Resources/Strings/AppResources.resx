@@ -104,6 +104,7 @@ Confirm anyway?</value></data>
   <data name="Scan_PermissionRationale" xml:space="preserve"><value>The camera is needed to scan barcodes. It is used only on this screen and nothing is recorded or sent.</value></data>
   <data name="Scan_PermissionDenied" xml:space="preserve"><value>Camera access is turned off for this app. Open the app settings to allow it?</value></data>
   <data name="Scan_ProductNotFound" xml:space="preserve"><value>No product with barcode {0}.</value></data>
+  <data name="Scan_OpenProduct" xml:space="preserve"><value>Open product</value></data>
   <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>No product with barcode {0}. Create one?</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>Name is required.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>Phone is required.</value></data>

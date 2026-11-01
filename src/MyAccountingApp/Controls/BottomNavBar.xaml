@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Bottom navigation for the main pages: 4 tabs + a raised barcode-scan button in the center.
+     Row 0 is the space the scan button rises into (no background, so it shows the page behind). -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             x:Class="MyAccountingApp.Controls.BottomNavBar">
+
+    <ContentView.Resources>
+        <Style x:Key="TabIcon" TargetType="Path">
+            <Setter Property="Aspect" Value="Uniform" />
+            <Setter Property="WidthRequest" Value="22" />
+            <Setter Property="HeightRequest" Value="22" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="TabLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+        <Style x:Key="Tab" TargetType="VerticalStackLayout">
+            <Setter Property="Spacing" Value="2" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Padding" Value="0,6" />
+        </Style>
+    </ContentView.Resources>
+
+    <Grid RowDefinitions="18,62" ColumnDefinitions="*,*,80,*,*">
+        <Border Grid.Row="1" Grid.ColumnSpan="5" StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+        <BoxView Grid.Row="1" Grid.ColumnSpan="5" HeightRequest="1" VerticalOptions="Start"
+                 Color="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+
+        <VerticalStackLayout x:Name="DashboardTab" Grid.Row="1" Grid.Column="0" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_Dashboard}">
+            <Path Style="{StaticResource TabIcon}"
+                  Data="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+            <Label Text="{loc:Translate Nav_Dashboard}" Style="{StaticResource TabLabel}" />
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="dashboard" />
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout x:Name="OrdersTab" Grid.Row="1" Grid.Column="1" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_Orders}">
+            <Path Style="{StaticResource TabIcon}"
+                  Data="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20z" />
+            <Label Text="{loc:Translate Nav_Orders}" Style="{StaticResource TabLabel}" />
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="orders" />
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+
+        <!-- Center: barcode scanner -->
+        <Border Grid.RowSpan="2" Grid.Column="2" WidthRequest="56" HeightRequest="56"
+                HorizontalOptions="Center" VerticalOptions="Start" StrokeThickness="4"
+                StrokeShape="Ellipse" BackgroundColor="{StaticResource Primary}"
+                Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                SemanticProperties.Description="{loc:Translate Scan_Button}">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.25" Radius="8" Offset="0,3" />
+            </Border.Shadow>
+            <Path Aspect="Uniform" WidthRequest="26" HeightRequest="26" Fill="White"
+                  HorizontalOptions="Center" VerticalOptions="Center"
+                  Data="M22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2zM6 7h1.5v10H6zM8.5 7h1v10h-1zM10.5 7h2v10h-2zM13.5 7h1v10h-1zM15.5 7h1v10h-1zM17.5 7h.5v10h-.5z" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnScanTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+        <Label Grid.Row="1" Grid.Column="2" Text="{loc:Translate Scan_Button}" Style="{StaticResource TabLabel}"
+               VerticalOptions="End" Margin="0,0,0,4" InputTransparent="True"
+               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
+        <VerticalStackLayout x:Name="ProductsTab" Grid.Row="1" Grid.Column="3" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_Products}">
+            <Path Style="{StaticResource TabIcon}"
+                  Data="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+            <Label Text="{loc:Translate Nav_Products}" Style="{StaticResource TabLabel}" />
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="products" />
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout x:Name="StockTab" Grid.Row="1" Grid.Column="4" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_Stock}">
+            <Path Style="{StaticResource TabIcon}"
+                  Data="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4l16-.02V7z" />
+            <Label Text="{loc:Translate Nav_Stock}" Style="{StaticResource TabLabel}" />
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="stock" />
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>

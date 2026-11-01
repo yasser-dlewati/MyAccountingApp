@@ -53,6 +53,9 @@ public partial class OrderEditViewModel(
                 Title = LocalizationService.Format("Order_NewOfType", EnumLabels.Of(OrderType));
                 StatusLabel = EnumLabels.Of(OrderStatus.Draft);
                 await LoadContactsAsync(null);
+                // Started from the bottom bar's scan button: the scanned product is the first line.
+                if (query.TryGetValue("productId", out var productId) && await products.GetAsync((int)productId) is { } product)
+                    await AddLineAsync(product);
             }
             OnPropertyChanged(nameof(ContactLabel));
         });

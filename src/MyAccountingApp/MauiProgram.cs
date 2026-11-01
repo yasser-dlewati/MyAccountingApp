@@ -38,6 +38,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<DialogService>();
 		builder.Services.AddSingleton<BackupService>();
 		builder.Services.AddSingleton<BarcodeScannerService>();
+		builder.Services.AddSingleton<QuickScanService>();
 
 		builder.Services.AddTransient<DashboardPage>().AddTransient<DashboardViewModel>();
 		builder.Services.AddTransient<OrdersPage>().AddTransient<OrdersViewModel>();

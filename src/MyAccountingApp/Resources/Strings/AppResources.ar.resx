@@ -104,6 +104,7 @@
   <data name="Scan_PermissionRationale" xml:space="preserve"><value>نحتاج إلى الكاميرا لمسح الباركود. تُستخدم في هذه الشاشة فقط ولا يتم تسجيل أو إرسال أي شيء.</value></data>
   <data name="Scan_PermissionDenied" xml:space="preserve"><value>الوصول إلى الكاميرا متوقف لهذا التطبيق. هل تريد فتح إعدادات التطبيق للسماح به؟</value></data>
   <data name="Scan_ProductNotFound" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}.</value></data>
+  <data name="Scan_OpenProduct" xml:space="preserve"><value>فتح المنتج</value></data>
   <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}. هل تريد إنشاءه؟</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>الاسم مطلوب.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>رقم الهاتف مطلوب.</value></data>
