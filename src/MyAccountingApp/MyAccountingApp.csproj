@@ -52,7 +52,8 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#2E7D32" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" BaseSize="200,200" />
+		<!-- Transparent: resizetizer fills the splash image with this color; the background comes from @color/app_splash_background. -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#00000000" BaseSize="200,200" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
