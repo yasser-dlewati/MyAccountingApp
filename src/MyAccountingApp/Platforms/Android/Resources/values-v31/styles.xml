@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Android 12+ system splash: theme-aware background, the app icon (its green circle is in splash.svg),
-         and the branding image at the bottom (max 200 x 80 dp). -->
+         and the branding image at the bottom (max 200 x 80 dp). The icon is maui_splash_image alone:
+         MAUI's default (maui_splash) also paints maui_splash_color behind it, which shows as a square. -->
     <style name="AppSplashTheme" parent="Maui.SplashTheme">
         <item name="android:windowSplashScreenBackground">@color/app_splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/maui_splash_image</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/splash_branding</item>
     </style>
 </resources>

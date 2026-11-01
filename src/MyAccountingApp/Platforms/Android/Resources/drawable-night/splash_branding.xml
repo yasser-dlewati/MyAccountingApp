@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash "Created by YASDLE" strip for the dark theme (Resources/Images/branding_on_dark.svg). -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android" android:src="@drawable/branding_on_dark" android:gravity="center" />

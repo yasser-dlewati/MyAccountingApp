@@ -56,7 +56,7 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\splash_branding.svg" BaseSize="200,80" />
+		<MauiImage Update="Resources\Images\branding_on_*.svg" BaseSize="200,80" />
 		
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />

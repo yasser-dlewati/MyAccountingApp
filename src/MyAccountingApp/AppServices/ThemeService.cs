@@ -24,5 +24,18 @@ public static class ThemeService
     {
         if (Application.Current is not null)
             Application.Current.UserAppTheme = theme;
+
+#if ANDROID
+        // Android 12+ also keeps it as the app's night mode, so the system splash screen
+        // (drawn before the app runs) uses the matching light/dark resources on the next launch.
+        if (OperatingSystem.IsAndroidVersionAtLeast(31)
+            && Platform.AppContext.GetSystemService(Android.Content.Context.UiModeService) is Android.App.UiModeManager uiMode)
+            uiMode.SetApplicationNightMode(theme switch
+            {
+                AppTheme.Light => (int)Android.App.UiNightMode.No,
+                AppTheme.Dark => (int)Android.App.UiNightMode.Yes,
+                _ => (int)Android.App.UiNightMode.Auto,
+            });
+#endif
     }
 }

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash "Created by YASDLE" strip for the light theme (Resources/Images/branding_on_light.svg). -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android" android:src="@drawable/branding_on_light" android:gravity="center" />
