@@ -5,7 +5,7 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="App_Title" xml:space="preserve"><value>محاسبتي</value></data>
+  <data name="App_Title" xml:space="preserve"><value>متجر وائل</value></data>
   <data name="Nav_Dashboard" xml:space="preserve"><value>الرئيسية</value></data>
   <data name="Nav_Orders" xml:space="preserve"><value>الفواتير</value></data>
   <data name="Nav_Products" xml:space="preserve"><value>المنتجات</value></data>
@@ -101,6 +101,8 @@
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>الاستعادة ستستبدل كل البيانات الحالية بالنسخة الاحتياطية. متابعة؟</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>تمت الاستعادة.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>فشلت الاستعادة: {0}</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>حول التطبيق</value></data>
+  <data name="About_CreatedBy" xml:space="preserve"><value>تطوير</value></data>
   <data name="Scan_Button" xml:space="preserve"><value>مسح</value></data>
   <data name="Scan_Hint" xml:space="preserve"><value>وجّه الكاميرا نحو الباركود</value></data>
   <data name="Scan_Torch" xml:space="preserve"><value>الفلاش</value></data>

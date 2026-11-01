@@ -5,7 +5,7 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="App_Title" xml:space="preserve"><value>My Accounting</value></data>
+  <data name="App_Title" xml:space="preserve"><value>Wael Store</value></data>
   <data name="Nav_Dashboard" xml:space="preserve"><value>Dashboard</value></data>
   <data name="Nav_Orders" xml:space="preserve"><value>Orders</value></data>
   <data name="Nav_Products" xml:space="preserve"><value>Products</value></data>
@@ -101,6 +101,8 @@ Confirm anyway?</value></data>
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>Restoring replaces ALL current data with the backup. Continue?</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>Backup restored.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>About</value></data>
+  <data name="About_CreatedBy" xml:space="preserve"><value>Created by</value></data>
   <data name="Scan_Button" xml:space="preserve"><value>Scan</value></data>
   <data name="Scan_Hint" xml:space="preserve"><value>Point the camera at a barcode</value></data>
   <data name="Scan_Torch" xml:space="preserve"><value>Flashlight</value></data>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pre-Android 12 splash: theme-aware background, the app icon centered, and the "Created by" branding at the bottom. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
+    <item android:drawable="@color/app_splash_background" />
+    <item android:gravity="center" android:drawable="@drawable/maui_splash_image" />
+    <item android:bottom="48dp" android:gravity="bottom|center_horizontal" android:drawable="@drawable/splash_branding" />
+</layer-list>

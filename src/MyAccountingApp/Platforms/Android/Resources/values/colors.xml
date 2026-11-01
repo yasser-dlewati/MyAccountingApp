@@ -3,4 +3,6 @@
     <color name="colorPrimary">#512BD4</color>
     <color name="colorPrimaryDark">#2B0B98</color>
     <color name="colorAccent">#2B0B98</color>
+    <!-- Splash background, matches the page background (values-night has the dark one). -->
+    <color name="app_splash_background">#FFFFFF</color>
 </resources>

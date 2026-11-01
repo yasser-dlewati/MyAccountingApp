@@ -20,7 +20,15 @@
             <Button Text="{loc:Translate Settings_Backup}" Command="{Binding BackupCommand}" />
             <Button Text="{loc:Translate Settings_Restore}" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreCommand}" />
 
-            <Label Text="{Binding AppVersion, StringFormat='v{0}'}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24" />
+            <Label Text="{loc:Translate Settings_About}" Style="{StaticResource SectionTitle}" />
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="{loc:Translate App_Title}" Style="{StaticResource ItemTitle}" HorizontalOptions="Center" />
+                    <Label Text="{Binding AppVersion, StringFormat='v{0}'}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
+                    <Label Text="{loc:Translate About_CreatedBy}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,8,0,0" />
+                    <Image Source="yasdle.png" HeightRequest="96" WidthRequest="79" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
