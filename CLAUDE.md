@@ -104,6 +104,7 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 - `Contact` clashes with `Microsoft.Maui.ApplicationModel.Communication.Contact` — add `using Contact = MyAccountingApp.Core.Entities.Contact;` in app files that use it.
 - Bottom nav: `Controls/BottomNavBar` (4 tabs + raised center scan button) sits in the last row of the main pages (Dashboard, Orders, Products, Stock) with `Current="<shell route>"`; tabs navigate with `//route`. Less-used pages stay in the flyout. The center button runs `QuickScanService`: known product → new sale / new purchase (`["productId"]` pre-adds the line in order edit) / open product; unknown → offer to create it.
 - Soft keyboard: `Platforms/Android/MainActivity.DispatchTouchEvent` hides it (and clears focus) on a tap outside the focused text field, app-wide — no per-page handling needed.
+- Theme: Settings → Theme (System / Light / Dark) via `AppServices/ThemeService`, saved in `Preferences` ("theme") and applied as `Application.UserAppTheme` (live, no Shell reload). Every color must use `AppThemeBinding`.
 - Styles: template `Styles.xaml` + app styles in `Resources/Styles/AppStyles.xaml` (`Card`, `ItemTitle`, `Caption`, `Amount`, `KpiValue`, `SecondaryButton`, `DangerButton`, `FormLabel`).
 
 ## Barcode scanning (camera)

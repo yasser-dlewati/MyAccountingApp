@@ -14,6 +14,7 @@ public partial class SettingsViewModel : BaseViewModel
     {
         _backup = backup;
         Language = LanguageOptions.First(o => o.Value == LocalizationService.CurrentLanguage);
+        Theme = ThemeOptions.FirstOrDefault(o => o.Value == ThemeService.CurrentTheme) ?? ThemeOptions[0];
     }
 
     public List<Option<string>> LanguageOptions { get; } =
@@ -25,7 +26,23 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     public partial Option<string> Language { get; set; }
 
+    public List<Option<AppTheme>> ThemeOptions { get; } =
+    [
+        new(LocalizationService.Get("Theme_System"), AppTheme.Unspecified),
+        new(LocalizationService.Get("Theme_Light"), AppTheme.Light),
+        new(LocalizationService.Get("Theme_Dark"), AppTheme.Dark)
+    ];
+
+    [ObservableProperty]
+    public partial Option<AppTheme> Theme { get; set; }
+
     public string AppVersion => AppInfo.Current.VersionString;
+
+    partial void OnThemeChanged(Option<AppTheme> value)
+    {
+        if (value.Value != ThemeService.CurrentTheme)
+            ThemeService.SetTheme(value.Value);
+    }
 
     partial void OnLanguageChanged(Option<string> value)
     {

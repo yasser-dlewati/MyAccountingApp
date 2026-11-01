@@ -1,3 +1,5 @@
+using MyAccountingApp.AppServices;
+
 namespace MyAccountingApp;
 
 public partial class App : Application
@@ -5,6 +7,7 @@ public partial class App : Application
 	public App()
 	{
 		InitializeComponent();
+		ThemeService.Initialize();
 	}
 
 	protected override Window CreateWindow(IActivationState? activationState)
