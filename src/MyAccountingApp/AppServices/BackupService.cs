@@ -1,11 +1,12 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyAccountingApp.Core.Data;
 
 namespace MyAccountingApp.AppServices;
 
 /// <summary>The database lives only on the device, so backup = share a copy of the .db3 file.</summary>
-public class BackupService(IDbContextFactory<AppDbContext> dbFactory)
+public class BackupService(IDbContextFactory<AppDbContext> dbFactory, ILogger<BackupService> logger)
 {
     public const string DatabaseFileName = "accounting.db3";
 
@@ -21,6 +22,7 @@ public class BackupService(IDbContextFactory<AppDbContext> dbFactory)
             if (File.Exists(backupPath)) File.Delete(backupPath);
             await db.Database.ExecuteSqlAsync($"VACUUM INTO {backupPath}");
         }
+        logger.LogInformation("Backup written ({Bytes} bytes), opening share sheet", new FileInfo(backupPath).Length);
 
         await Share.Default.RequestAsync(new ShareFileRequest(title, new ShareFile(backupPath)));
     }
@@ -35,6 +37,7 @@ public class BackupService(IDbContextFactory<AppDbContext> dbFactory)
         await using (var source = await file.OpenReadAsync())
         await using (var target = File.Create(tempPath))
             await source.CopyToAsync(target);
+        logger.LogInformation("Restoring from {File} ({Bytes} bytes)", file.FileName, new FileInfo(tempPath).Length);
 
         ValidateBackup(tempPath);
 
@@ -47,6 +50,7 @@ public class BackupService(IDbContextFactory<AppDbContext> dbFactory)
         // Bring an older backup up to the current schema.
         await using var db = await dbFactory.CreateDbContextAsync();
         await db.Database.MigrateAsync();
+        logger.LogInformation("Restore complete");
         return true;
     }
 

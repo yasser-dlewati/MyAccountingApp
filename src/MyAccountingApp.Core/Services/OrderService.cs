@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using MyAccountingApp.Core.Data;
 using MyAccountingApp.Core.Entities;
 using MyAccountingApp.Core.Enums;
@@ -9,8 +11,10 @@ public record OrderLineInput(int ProductId, decimal Quantity, decimal UnitPrice)
 
 public record ShortageInfo(int ProductId, string ProductName, decimal Available, decimal Requested);
 
-public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
+public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<OrderService>? logger = null)
 {
+    private readonly ILogger _log = logger ?? NullLogger<OrderService>.Instance;
+
     public static string PrefixFor(OrderType type) => type switch
     {
         OrderType.Sale => "S",
@@ -77,6 +81,8 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
 
         db.Orders.Add(order);
         await db.SaveChangesAsync();
+        _log.LogInformation("Draft {OrderNumber} created (id {OrderId}, {Lines} lines, contact {ContactId})",
+            order.OrderNumber, order.Id, order.Items.Count, contactId);
         return order;
     }
 
@@ -107,6 +113,7 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
             throw new BusinessRuleException(ErrorKeys.OrderNotDraft, order.OrderNumber);
         db.Orders.Remove(order);
         await db.SaveChangesAsync();
+        _log.LogInformation("Draft {OrderNumber} deleted (id {OrderId})", order.OrderNumber, order.Id);
     }
 
     /// <summary>Stock-out lines that exceed stock on hand. Empty for stock-in orders.</summary>
@@ -172,6 +179,8 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
 
         await db.SaveChangesAsync();
         await tx.CommitAsync();
+        _log.LogInformation("Order {OrderNumber} confirmed (id {OrderId}, {Lines} lines, total {Total}, negative stock allowed: {AllowNegative})",
+            order.OrderNumber, order.Id, order.Items.Count, order.TotalAmount, allowNegativeStock);
         return order;
     }
 
@@ -205,6 +214,8 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
         order.Status = OrderStatus.Cancelled;
         await db.SaveChangesAsync();
         await tx.CommitAsync();
+        _log.LogInformation("Order {OrderNumber} cancelled (id {OrderId}, {Rows} reversing ledger rows)",
+            order.OrderNumber, order.Id, posted.Count);
         return order;
     }
 

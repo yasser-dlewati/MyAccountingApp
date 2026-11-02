@@ -111,6 +111,9 @@ Confirm anyway?</value></data>
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>Restoring replaces ALL current data with the backup. Continue?</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>Backup restored.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>Restore failed: {0}</value></data>
+  <data name="Settings_ShareLogs" xml:space="preserve"><value>Share logs</value></data>
+  <data name="Settings_ShareLogsHint" xml:space="preserve"><value>Diagnostic logs of the last 7 days, to send to the developer when something goes wrong.</value></data>
+  <data name="Settings_ShareLogsFailed" xml:space="preserve"><value>Sharing logs failed: {0}</value></data>
   <data name="Settings_About" xml:space="preserve"><value>About</value></data>
   <data name="About_CreatedBy" xml:space="preserve"><value>Created by</value></data>
   <data name="Scan_Button" xml:space="preserve"><value>Scan</value></data>

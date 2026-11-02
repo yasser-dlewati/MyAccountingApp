@@ -111,6 +111,9 @@
   <data name="Settings_RestorePrompt" xml:space="preserve"><value>الاستعادة ستستبدل كل البيانات الحالية بالنسخة الاحتياطية. متابعة؟</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>تمت الاستعادة.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>فشلت الاستعادة: {0}</value></data>
+  <data name="Settings_ShareLogs" xml:space="preserve"><value>مشاركة السجلات</value></data>
+  <data name="Settings_ShareLogsHint" xml:space="preserve"><value>سجلات التشخيص لآخر 7 أيام، لإرسالها إلى المطوّر عند حدوث مشكلة.</value></data>
+  <data name="Settings_ShareLogsFailed" xml:space="preserve"><value>فشلت مشاركة السجلات: {0}</value></data>
   <data name="Settings_About" xml:space="preserve"><value>حول التطبيق</value></data>
   <data name="About_CreatedBy" xml:space="preserve"><value>تطوير</value></data>
   <data name="Scan_Button" xml:space="preserve"><value>مسح</value></data>

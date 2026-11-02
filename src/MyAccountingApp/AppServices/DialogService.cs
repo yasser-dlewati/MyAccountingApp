@@ -1,9 +1,10 @@
+using Microsoft.Extensions.Logging;
 using MyAccountingApp.Core.Services;
 using MyAccountingApp.Localization;
 
 namespace MyAccountingApp.AppServices;
 
-public class DialogService
+public class DialogService(ILogger<DialogService>? logger = null)
 {
     private static Page Page => Shell.Current ?? Application.Current!.Windows[0].Page!;
 
@@ -30,6 +31,9 @@ public class DialogService
         return choice == cancel ? null : choice;
     }
 
-    public Task ShowErrorAsync(BusinessRuleException ex) =>
-        AlertAsync(LocalizationService.Format(ex.ErrorKey, ex.Args));
+    public Task ShowErrorAsync(BusinessRuleException ex)
+    {
+        logger?.LogInformation("Business rule: {ErrorKey} {Args}", ex.ErrorKey, string.Join(", ", ex.Args));
+        return AlertAsync(LocalizationService.Format(ex.ErrorKey, ex.Args));
+    }
 }

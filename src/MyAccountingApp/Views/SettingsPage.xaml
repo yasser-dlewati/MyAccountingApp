@@ -50,6 +50,8 @@
             <Label Text="{loc:Translate Settings_DataHint}" Style="{StaticResource Caption}" />
             <Button Text="{loc:Translate Settings_Backup}" Command="{Binding BackupCommand}" />
             <Button Text="{loc:Translate Settings_Restore}" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreCommand}" />
+            <Button Text="{loc:Translate Settings_ShareLogs}" Style="{StaticResource SecondaryButton}" Command="{Binding ShareLogsCommand}" />
+            <Label Text="{loc:Translate Settings_ShareLogsHint}" Style="{StaticResource Caption}" />
 
             <Label Text="{loc:Translate Settings_About}" Style="{StaticResource SectionTitle}" />
             <Border Style="{StaticResource Card}">

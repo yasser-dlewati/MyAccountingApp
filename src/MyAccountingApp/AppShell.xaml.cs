@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MyAccountingApp.AppServices;
 using MyAccountingApp.Localization;
 using MyAccountingApp.Views;
@@ -62,6 +63,14 @@ public partial class AppShell : Shell
 		{
 			_exitPromptOpen = false;
 		}
+	}
+
+	/// <summary>Page breadcrumbs in the log file, so a crash can be traced to the screen it happened on.</summary>
+	protected override void OnNavigated(ShellNavigatedEventArgs args)
+	{
+		base.OnNavigated(args);
+		Handler?.MauiContext?.Services.GetService<ILogger<AppShell>>()
+			?.LogInformation("Navigated to {Location} ({Source})", args.Current?.Location, args.Source);
 	}
 
 	/// <summary>Shows / hides the Categories page after the Settings switch changes.</summary>

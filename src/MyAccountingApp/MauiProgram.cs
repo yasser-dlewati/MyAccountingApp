@@ -51,15 +51,40 @@ public static class MauiProgram
 		builder.Services.AddTransient<StockPage>().AddTransient<StockViewModel>();
 		builder.Services.AddTransient<SettingsPage>().AddTransient<SettingsViewModel>();
 
+		// Log files: see FileLoggerProvider.Directory; shared from Settings → Share logs.
+		builder.Logging.AddProvider(new FileLoggerProvider());
+		builder.Logging.SetMinimumLevel(LogLevel.Information);
+		builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
 #if DEBUG
 		builder.Logging.AddDebug();
+		builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
 #endif
 
 		var app = builder.Build();
 
+		var log = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("MyAccountingApp.Startup");
+		LogUnhandledExceptions(log);
+		log.LogInformation("App {Version} ({Build}) starting on {Platform} {OsVersion}, {Manufacturer} {Model}, language {Language}",
+			AppInfo.Current.VersionString, AppInfo.Current.BuildString, DeviceInfo.Current.Platform,
+			DeviceInfo.Current.VersionString, DeviceInfo.Current.Manufacturer, DeviceInfo.Current.Model,
+			LocalizationService.CurrentLanguage);
+
 		using (var db = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>().CreateDbContext())
+		{
+			var pending = db.Database.GetPendingMigrations().ToList();
+			if (pending.Count > 0)
+				log.LogInformation("Applying migrations: {Migrations}", string.Join(", ", pending));
 			db.Database.Migrate();
+		}
 
 		return app;
+	}
+
+	private static void LogUnhandledExceptions(ILogger log)
+	{
+		AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+			log.LogCritical(e.ExceptionObject as Exception, "Unhandled exception (terminating: {Terminating})", e.IsTerminating);
+		TaskScheduler.UnobservedTaskException += (_, e) =>
+			log.LogError(e.Exception, "Unobserved task exception");
 	}
 }

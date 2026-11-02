@@ -125,6 +125,13 @@ SQLite stores `decimal` as TEXT. EF translates `Sum`/comparisons fine (covered b
 - Used in: order edit (scan → exact match adds the line, or +1 qty; no match → `Scan_ProductNotFound`), product edit (fills the barcode field), products list (shows the product's details with an Edit button, or offers to create one with `["barcode"]` pre-filled).
 - Manifest: `CAMERA`, `VIBRATE` (scan haptic), `uses-feature camera.any required=false`. iOS/Mac Info.plist: `NSCameraUsageDescription`.
 
+## Logging
+
+- `Microsoft.Extensions.Logging` everywhere: inject `ILogger<T>` (Core services take it as an **optional** ctor parameter, `NullLogger` fallback, so tests can `new` them).
+- `AppServices/FileLoggerProvider` writes `FileSystem.AppDataDirectory/logs/app-yyyy-MM-dd.log` (Android: `/data/data/com.companyname.myaccountingapp/files/logs/`), keeps 7 days, appends + closes per line (crash-safe). Level: Information; `Microsoft.*` Warning (Debug builds also log EF SQL and to the debugger/logcat).
+- Logged: startup (version/device/migrations), unhandled + unobserved-task exceptions, navigation, order create/delete/confirm/cancel, business-rule errors shown to the user (`DialogService.ShowErrorAsync`), backup/restore, scans and camera permission.
+- Settings → Data → Share logs zips the folder into the cache dir and opens the share sheet. Never log credentials or full customer data dumps.
+
 ## Local-only considerations
 
 - The phone holds the only copy of the data. Settings → Backup shares a `VACUUM INTO` copy of the DB; Restore validates the picked file, replaces the DB and runs migrations.

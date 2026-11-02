@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using MyAccountingApp.AppServices;
 using MyAccountingApp.Helpers;
 using MyAccountingApp.Localization;
@@ -9,10 +10,12 @@ namespace MyAccountingApp.ViewModels;
 public partial class SettingsViewModel : BaseViewModel
 {
     private readonly BackupService _backup;
+    private readonly ILogger<SettingsViewModel> _log;
 
-    public SettingsViewModel(BackupService backup, DialogService dialogs) : base(dialogs)
+    public SettingsViewModel(BackupService backup, DialogService dialogs, ILogger<SettingsViewModel> log) : base(dialogs)
     {
         _backup = backup;
+        _log = log;
         Language = LanguageOptions.First(o => o.Value == LocalizationService.CurrentLanguage);
         Theme = ThemeOptions.FirstOrDefault(o => o.Value == ThemeService.CurrentTheme) ?? ThemeOptions[0];
         ConfirmExit = ExitSettings.Confirm;
@@ -60,8 +63,9 @@ public partial class SettingsViewModel : BaseViewModel
 
     partial void OnThemeChanged(Option<AppTheme> value)
     {
-        if (value.Value != ThemeService.CurrentTheme)
-            ThemeService.SetTheme(value.Value);
+        if (value.Value == ThemeService.CurrentTheme) return;
+        _log.LogInformation("Theme changed to {Theme}", value.Value);
+        ThemeService.SetTheme(value.Value);
     }
 
     partial void OnConfirmExitChanged(bool value) => ExitSettings.Confirm = value;
@@ -81,6 +85,7 @@ public partial class SettingsViewModel : BaseViewModel
     partial void OnLanguageChanged(Option<string> value)
     {
         if (value.Value == LocalizationService.CurrentLanguage) return;
+        _log.LogInformation("Language changed to {Language}", value.Value);
         LocalizationService.SetLanguage(value.Value);
         // Rebuild the UI so every page picks up the new strings and flow direction.
         MainThread.BeginInvokeOnMainThread(App.ReloadShell);
@@ -95,6 +100,7 @@ public partial class SettingsViewModel : BaseViewModel
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
+            _log.LogError(ex, "Backup failed");
             await Dialogs.AlertAsync(LocalizationService.Format("Settings_BackupFailed", ex.Message));
         }
     });
@@ -114,8 +120,25 @@ public partial class SettingsViewModel : BaseViewModel
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException
                                            or Microsoft.Data.Sqlite.SqliteException)
             {
+                _log.LogError(ex, "Restore failed");
                 await Dialogs.AlertAsync(LocalizationService.Format("Settings_RestoreFailed", ex.Message));
             }
         });
     }
+
+    /// <summary>Log files are in app-private storage, so they leave the phone through the share sheet.</summary>
+    [RelayCommand]
+    private Task ShareLogsAsync() => RunAsync(async () =>
+    {
+        try
+        {
+            var zip = FileLoggerProvider.CreateArchive();
+            await Share.Default.RequestAsync(new ShareFileRequest(LocalizationService.Get("Settings_ShareLogs"), new ShareFile(zip)));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            _log.LogError(ex, "Sharing logs failed");
+            await Dialogs.AlertAsync(LocalizationService.Format("Settings_ShareLogsFailed", ex.Message));
+        }
+    });
 }
