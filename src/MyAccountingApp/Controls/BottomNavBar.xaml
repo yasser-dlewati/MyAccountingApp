@@ -51,25 +51,18 @@
             </VerticalStackLayout.GestureRecognizers>
         </VerticalStackLayout>
 
-        <!-- Center: barcode scanner -->
-        <Border Grid.RowSpan="2" Grid.Column="2" WidthRequest="56" HeightRequest="56"
-                HorizontalOptions="Center" VerticalOptions="Start" StrokeThickness="4"
-                StrokeShape="Ellipse" BackgroundColor="{StaticResource Primary}"
-                Stroke="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                SemanticProperties.Description="{loc:Translate Scan_Button}">
-            <Border.Shadow>
+        <!-- Center: barcode scanner (icon only; long press shows "Scan") -->
+        <ImageButton Grid.RowSpan="2" Grid.Column="2" WidthRequest="56" HeightRequest="56" CornerRadius="28"
+                     HorizontalOptions="Center" VerticalOptions="Start" Padding="13" BorderWidth="4"
+                     BackgroundColor="{StaticResource Primary}" Source="ic_barcode.png"
+                     BorderColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                     ToolTipProperties.Text="{loc:Translate Scan_Button}"
+                     SemanticProperties.Description="{loc:Translate Scan_Button}"
+                     Clicked="OnScanClicked">
+            <ImageButton.Shadow>
                 <Shadow Brush="Black" Opacity="0.25" Radius="8" Offset="0,3" />
-            </Border.Shadow>
-            <Path Aspect="Uniform" WidthRequest="26" HeightRequest="26" Fill="White"
-                  HorizontalOptions="Center" VerticalOptions="Center"
-                  Data="M22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2zM6 7h1.5v10H6zM8.5 7h1v10h-1zM10.5 7h2v10h-2zM13.5 7h1v10h-1zM15.5 7h1v10h-1zM17.5 7h.5v10h-.5z" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnScanTapped" />
-            </Border.GestureRecognizers>
-        </Border>
-        <Label Grid.Row="1" Grid.Column="2" Text="{loc:Translate Scan_Button}" Style="{StaticResource TabLabel}"
-               VerticalOptions="End" Margin="0,0,0,4" InputTransparent="True"
-               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </ImageButton.Shadow>
+        </ImageButton>
 
         <VerticalStackLayout x:Name="ProductsTab" Grid.Row="1" Grid.Column="3" Style="{StaticResource Tab}"
                              SemanticProperties.Description="{loc:Translate Nav_Products}">

@@ -15,6 +15,8 @@ public partial class SettingsViewModel : BaseViewModel
         _backup = backup;
         Language = LanguageOptions.First(o => o.Value == LocalizationService.CurrentLanguage);
         Theme = ThemeOptions.FirstOrDefault(o => o.Value == ThemeService.CurrentTheme) ?? ThemeOptions[0];
+        ConfirmExit = ExitSettings.Confirm;
+        ShowInactiveProducts = ProductSettings.ShowInactive;
         UseCategories = CategorySettings.Enabled;
         RequireCustomer = !WalkInSettings.CustomerAllowed;
         RequireSupplier = !WalkInSettings.SupplierAllowed;
@@ -40,6 +42,12 @@ public partial class SettingsViewModel : BaseViewModel
     public partial Option<AppTheme> Theme { get; set; }
 
     [ObservableProperty]
+    public partial bool ConfirmExit { get; set; }
+
+    [ObservableProperty]
+    public partial bool ShowInactiveProducts { get; set; }
+
+    [ObservableProperty]
     public partial bool UseCategories { get; set; }
 
     [ObservableProperty]
@@ -55,6 +63,10 @@ public partial class SettingsViewModel : BaseViewModel
         if (value.Value != ThemeService.CurrentTheme)
             ThemeService.SetTheme(value.Value);
     }
+
+    partial void OnConfirmExitChanged(bool value) => ExitSettings.Confirm = value;
+
+    partial void OnShowInactiveProductsChanged(bool value) => ProductSettings.ShowInactive = value;
 
     partial void OnUseCategoriesChanged(bool value)
     {

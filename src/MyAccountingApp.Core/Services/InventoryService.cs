@@ -9,7 +9,7 @@ public record StockRow(int ProductId, string ProductName, string Barcode, decima
     public decimal CostValue => Quantity * LastCost;
 }
 
-public record SalesSummary(decimal Revenue, decimal Cost, int OrderCount)
+public record SalesSummary(decimal Revenue, decimal Cost, int OrderCount, decimal ItemsSold)
 {
     public decimal Profit => Revenue - Cost;
 }
@@ -53,7 +53,7 @@ public class InventoryService(IDbContextFactory<AppDbContext> dbFactory)
             .ToList();
     }
 
-    /// <summary>Revenue / cost / profit of sales minus sale returns between two UTC instants.</summary>
+    /// <summary>Revenue / cost / profit / items sold of sales minus sale returns between two UTC instants.</summary>
     public async Task<SalesSummary> GetSalesSummaryAsync(DateTime fromUtc, DateTime toUtc)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
@@ -72,7 +72,8 @@ public class InventoryService(IDbContextFactory<AppDbContext> dbFactory)
         return new SalesSummary(
             rows.Sum(r => -r.Quantity * r.UnitPrice),
             rows.Sum(r => -r.Quantity * r.UnitCost),
-            orderCount);
+            orderCount,
+            rows.Sum(r => -r.Quantity));
     }
 
     internal static Task<decimal> GetStockAsync(AppDbContext db, int productId) =>

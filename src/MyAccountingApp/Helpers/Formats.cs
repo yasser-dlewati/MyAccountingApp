@@ -1,4 +1,5 @@
 using System.Globalization;
+using MyAccountingApp.Localization;
 
 namespace MyAccountingApp.Helpers;
 
@@ -7,7 +8,8 @@ public static class Formats
 {
     private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
 
-    public static string Money(decimal value) => value.ToString("#,0.00", Inv);
+    /// <summary>Whole Syrian pounds with the localized currency symbol ("SYP" / "ل.س").</summary>
+    public static string Money(decimal value) => $"{value.ToString("#,0", Inv)} {LocalizationService.Get("Currency_Symbol")}";
 
     public static string Quantity(decimal value) => value.ToString("#,0.###", Inv);
 

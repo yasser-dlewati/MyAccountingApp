@@ -57,7 +57,7 @@ public partial class BottomNavBar : ContentView
 			await Shell.Current.GoToAsync("//" + route, animate: false);
 	}
 
-	private async void OnScanTapped(object? sender, TappedEventArgs e)
+	private async void OnScanClicked(object? sender, EventArgs e)
 	{
 		var services = Handler?.MauiContext?.Services ?? IPlatformApplication.Current!.Services;
 		await services.GetRequiredService<QuickScanService>().ScanAsync();

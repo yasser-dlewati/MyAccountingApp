@@ -16,8 +16,10 @@
             <Label Text="{loc:Translate Field_Barcode}" Style="{StaticResource FormLabel}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Entry Text="{Binding Barcode}" />
-                <Button Grid.Column="1" Text="{loc:Translate Scan_Button}" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding ScanBarcodeCommand}" VerticalOptions="Center" />
+                <ImageButton Grid.Column="1" Source="ic_barcode.png" Style="{StaticResource IconButton}"
+                             ToolTipProperties.Text="{loc:Translate Scan_Button}"
+                             SemanticProperties.Description="{loc:Translate Scan_Button}"
+                             Command="{Binding ScanBarcodeCommand}" />
             </Grid>
             <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
             <Entry Text="{Binding Price}" Keyboard="Numeric" />
@@ -34,8 +36,10 @@
             <VerticalStackLayout IsVisible="{Binding IsExisting}" Spacing="4">
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Text="{loc:Translate Product_Suppliers}" Style="{StaticResource SectionTitle}" />
-                    <Button Grid.Column="1" Text="{loc:Translate Common_Add}" Style="{StaticResource SecondaryButton}"
-                            Command="{Binding AddSupplierCommand}" />
+                    <ImageButton Grid.Column="1" Source="ic_plus.png" Style="{StaticResource IconButton}"
+                                 ToolTipProperties.Text="{loc:Translate Product_AddSupplier}"
+                                 SemanticProperties.Description="{loc:Translate Product_AddSupplier}"
+                                 Command="{Binding AddSupplierCommand}" />
                 </Grid>
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding SupplierCosts}">
                     <BindableLayout.EmptyView>

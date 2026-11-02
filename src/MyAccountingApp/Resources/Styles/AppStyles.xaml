@@ -50,6 +50,23 @@
         <Setter Property="TextColor" Value="White" />
     </Style>
 
+    <!-- Round icon-only button (barcode scan, add). Set ToolTipProperties.Text: Android shows it on long press. -->
+    <Style x:Key="IconButton" TargetType="ImageButton">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="WidthRequest" Value="44" />
+        <Setter Property="HeightRequest" Value="44" />
+        <Setter Property="CornerRadius" Value="22" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!-- Orders page tabs (Sales / Purchases) -->
+    <Style x:Key="TabButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
     <Style x:Key="FormLabel" TargetType="Label">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Margin" Value="0,6,0,0" />

@@ -17,8 +17,11 @@ public partial class DashboardViewModel(InventoryService inventory, DialogServic
     [ObservableProperty] public partial string TodayRevenue { get; set; } = Formats.Money(0);
     [ObservableProperty] public partial string TodayProfit { get; set; } = Formats.Money(0);
     [ObservableProperty] public partial string TodayOrders { get; set; } = "0";
+    [ObservableProperty] public partial string TodayItemsSold { get; set; } = "0";
     [ObservableProperty] public partial string MonthRevenue { get; set; } = Formats.Money(0);
     [ObservableProperty] public partial string MonthProfit { get; set; } = Formats.Money(0);
+    [ObservableProperty] public partial string MonthOrders { get; set; } = "0";
+    [ObservableProperty] public partial string MonthItemsSold { get; set; } = "0";
 
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
@@ -30,10 +33,13 @@ public partial class DashboardViewModel(InventoryService inventory, DialogServic
         TodayRevenue = Formats.Money(day.Revenue);
         TodayProfit = Formats.Money(day.Profit);
         TodayOrders = day.OrderCount.ToString();
+        TodayItemsSold = Formats.Quantity(day.ItemsSold);
 
         var month = await inventory.GetSalesSummaryAsync(monthStart.ToUniversalTime(), monthStart.AddMonths(1).ToUniversalTime());
         MonthRevenue = Formats.Money(month.Revenue);
         MonthProfit = Formats.Money(month.Profit);
+        MonthOrders = month.OrderCount.ToString();
+        MonthItemsSold = Formats.Quantity(month.ItemsSold);
 
         LowStock.Clear();
         foreach (var r in await inventory.GetStockReportAsync(LowStockThreshold))

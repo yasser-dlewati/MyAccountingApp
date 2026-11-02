@@ -15,6 +15,19 @@
             <Label Text="{loc:Translate Settings_Theme}" Style="{StaticResource SectionTitle}" />
             <Picker ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}" />
 
+            <Label Text="{loc:Translate Settings_General}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_ConfirmExit}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding ConfirmExit}" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_ConfirmExitHint}" Style="{StaticResource Caption}" />
+
+            <Label Text="{loc:Translate Settings_Products}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_ShowInactiveProducts}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding ShowInactiveProducts}" VerticalOptions="Center" />
+            </Grid>
+
             <Label Text="{loc:Translate Settings_Categories}" Style="{StaticResource SectionTitle}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Label Text="{loc:Translate Settings_UseCategories}" VerticalOptions="Center" />

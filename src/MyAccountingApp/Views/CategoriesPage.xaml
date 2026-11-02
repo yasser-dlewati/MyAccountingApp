@@ -9,7 +9,7 @@
              Title="{loc:Translate Nav_Categories}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{loc:Translate Common_Add}" Command="{Binding AddCommand}" />
+        <ToolbarItem Text="{loc:Translate Common_Add}" IconImageSource="ic_add_circle.png" Command="{Binding AddCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*" Padding="16,8">

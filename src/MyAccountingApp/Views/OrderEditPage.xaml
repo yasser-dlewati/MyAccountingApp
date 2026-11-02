@@ -20,8 +20,10 @@
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsDraft}" Margin="0,8,0,0">
                     <SearchBar Text="{Binding ProductSearchText}" Placeholder="{loc:Translate Order_AddProductHint}"
                                SearchCommand="{Binding SearchProductsCommand}" />
-                    <Button Grid.Column="1" Text="{loc:Translate Scan_Button}" Style="{StaticResource SecondaryButton}"
-                            Command="{Binding ScanProductCommand}" VerticalOptions="Center" />
+                    <ImageButton Grid.Column="1" Source="ic_barcode.png" Style="{StaticResource IconButton}"
+                                 ToolTipProperties.Text="{loc:Translate Scan_Button}"
+                                 SemanticProperties.Description="{loc:Translate Scan_Button}"
+                                 Command="{Binding ScanProductCommand}" />
                 </Grid>
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding ProductResults}">
                     <BindableLayout.ItemTemplate>

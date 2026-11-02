@@ -17,15 +17,10 @@ public partial class ProductsViewModel(
     [ObservableProperty]
     public partial string? SearchText { get; set; }
 
-    [ObservableProperty]
-    public partial bool ShowInactive { get; set; }
-
-    partial void OnShowInactiveChanged(bool value) => LoadCommand.Execute(null);
-
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
     {
-        var list = await products.SearchAsync(SearchText, includeInactive: ShowInactive);
+        var list = await products.SearchAsync(SearchText, includeInactive: ProductSettings.ShowInactive);
         var stock = (await inventory.GetStockReportAsync()).ToDictionary(r => r.ProductId, r => r.Quantity);
         var showCategory = CategorySettings.Enabled;
         Items.Clear();
@@ -37,21 +32,36 @@ public partial class ProductsViewModel(
     [RelayCommand]
     private Task AddAsync() => GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = 0 });
 
-    /// <summary>Scanned barcode → open that product (even if inactive), or offer to create it.</summary>
+    /// <summary>
+    /// Scanned barcode → show that product's details (even if inactive) with an Edit button,
+    /// or offer to create it.
+    /// </summary>
     [RelayCommand]
     private async Task ScanAsync()
     {
         var barcode = await scanner.ScanAsync();
         if (barcode is null) return;
 
-        var product = await products.GetByBarcodeAsync(barcode);
-        if (product is not null)
+        var found = await products.GetByBarcodeAsync(barcode);
+        if (found is null)
         {
-            await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = product.Id });
+            if (await Dialogs.ConfirmAsync(LocalizationService.Format("Scan_CreateProductPrompt", barcode)))
+                await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = 0, ["barcode"] = barcode });
             return;
         }
-        if (await Dialogs.ConfirmAsync(LocalizationService.Format("Scan_CreateProductPrompt", barcode)))
-            await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = 0, ["barcode"] = barcode });
+
+        var product = await products.GetAsync(found.Id) ?? found;
+        var details = LocalizationService.Format("Product_Details",
+            product.Barcode,
+            Formats.Money(product.Price),
+            Formats.Quantity(await inventory.GetStockAsync(product.Id)),
+            Formats.Money(await inventory.GetLastPurchaseCostAsync(product.Id)),
+            DisplayNames.CategoryOf(product),
+            product.Supplier?.Name ?? LocalizationService.Get("Product_NoSupplier"),
+            LocalizationService.Get(product.IsActive ? "Product_Active" : "Product_Inactive"));
+
+        if (await Dialogs.DetailsAsync(product.Name, details, LocalizationService.Get("Product_Edit")))
+            await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = product.Id });
     }
 
     [RelayCommand]

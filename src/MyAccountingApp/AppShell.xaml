@@ -8,7 +8,7 @@
     Title="{loc:Translate App_Title}"
     FlyoutBehavior="Flyout">
 
-    <FlyoutItem Title="{loc:Translate Nav_Dashboard}">
+    <FlyoutItem x:Name="DashboardItem" Title="{loc:Translate Nav_Dashboard}">
         <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" Route="dashboard" />
     </FlyoutItem>
     <FlyoutItem Title="{loc:Translate Nav_Orders}">

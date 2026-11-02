@@ -14,6 +14,10 @@ public class DialogService
         Page.DisplayAlertAsync(LocalizationService.Get("App_Title"), message,
             LocalizationService.Get("Common_Yes"), LocalizationService.Get("Common_No"));
 
+    /// <summary>Titled read-only message with an action button and Close; true when the action was chosen.</summary>
+    public Task<bool> DetailsAsync(string title, string message, string action) =>
+        Page.DisplayAlertAsync(title, message, action, LocalizationService.Get("Common_Close"));
+
     public Task<string?> PromptAsync(string title, string? initial = null, Keyboard? keyboard = null) =>
         Page.DisplayPromptAsync(title, null, LocalizationService.Get("Common_Ok"), LocalizationService.Get("Common_Cancel"),
             initialValue: initial ?? "", keyboard: keyboard ?? Keyboard.Default);

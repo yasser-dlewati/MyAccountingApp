@@ -137,4 +137,25 @@
   <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>يمكن إلغاء الفواتير المؤكدة فقط ({0}).</value></data>
   <data name="Error_InsufficientStock" xml:space="preserve"><value>المخزون غير كافٍ لـ: {0}</value></data>
   <data name="Error_NotFound" xml:space="preserve"><value>السجل غير موجود.</value></data>
+  <data name="Currency_Symbol" xml:space="preserve"><value>ل.س</value></data>
+  <data name="Dashboard_ItemsSold" xml:space="preserve"><value>القطع المباعة</value></data>
+  <data name="Orders_SalesTab" xml:space="preserve"><value>المبيعات</value></data>
+  <data name="Orders_PurchasesTab" xml:space="preserve"><value>المشتريات</value></data>
+  <data name="Settings_General" xml:space="preserve"><value>عام</value></data>
+  <data name="Settings_ConfirmExit" xml:space="preserve"><value>تأكيد قبل الخروج</value></data>
+  <data name="Settings_ConfirmExitHint" xml:space="preserve"><value>السؤال قبل أن يغلق زر الرجوع في الصفحة الرئيسية التطبيق.</value></data>
+  <data name="Settings_Products" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Settings_ShowInactiveProducts" xml:space="preserve"><value>إظهار المنتجات غير النشطة</value></data>
+  <data name="Exit_Prompt" xml:space="preserve"><value>الخروج من التطبيق؟</value></data>
+  <data name="Product_Details" xml:space="preserve"><value>الباركود: {0}
+السعر: {1}
+المتوفر: {2}
+آخر تكلفة: {3}
+التصنيف: {4}
+المورد الافتراضي: {5}
+الحالة: {6}</value></data>
+  <data name="Product_Edit" xml:space="preserve"><value>تعديل</value></data>
+  <data name="Product_Active" xml:space="preserve"><value>نشط</value></data>
+  <data name="Product_Inactive" xml:space="preserve"><value>غير نشط</value></data>
+  <data name="Common_Close" xml:space="preserve"><value>إغلاق</value></data>
 </root>

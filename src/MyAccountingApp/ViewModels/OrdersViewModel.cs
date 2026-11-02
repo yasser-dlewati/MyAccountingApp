@@ -17,35 +17,45 @@ public partial class OrdersViewModel : BaseViewModel
     public OrdersViewModel(OrderService orders, DialogService dialogs) : base(dialogs)
     {
         _orders = orders;
-        TypeOptions = [new(LocalizationService.Get("Common_All"), null), .. Enum.GetValues<OrderType>().Select(t => new Option<OrderType?>(EnumLabels.Of(t), t))];
         StatusOptions = [new(LocalizationService.Get("Common_All"), null), .. Enum.GetValues<OrderStatus>().Select(s => new Option<OrderStatus?>(EnumLabels.Of(s), s))];
-        TypeFilter = TypeOptions[0];
         StatusFilter = StatusOptions[0];
     }
 
     public ObservableCollection<OrderRow> Items { get; } = [];
-    public List<Option<OrderType?>> TypeOptions { get; }
     public List<Option<OrderStatus?>> StatusOptions { get; }
 
-    [ObservableProperty] public partial Option<OrderType?> TypeFilter { get; set; }
+    /// <summary>Selected tab: true = sales (+ sale returns), false = purchases (+ purchase returns).</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsPurchasesTab))]
+    public partial bool IsSalesTab { get; set; } = true;
+
+    public bool IsPurchasesTab => !IsSalesTab;
+
     [ObservableProperty] public partial Option<OrderStatus?> StatusFilter { get; set; }
     [ObservableProperty] public partial string? SearchText { get; set; }
 
-    partial void OnTypeFilterChanged(Option<OrderType?> value) => LoadCommand.Execute(null);
+    partial void OnIsSalesTabChanged(bool value) => LoadCommand.Execute(null);
+
+    [RelayCommand]
+    private void ShowSales() => IsSalesTab = true;
+
+    [RelayCommand]
+    private void ShowPurchases() => IsSalesTab = false;
     partial void OnStatusFilterChanged(Option<OrderStatus?> value) => LoadCommand.Execute(null);
 
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
     {
-        var list = await _orders.GetOrdersAsync(TypeFilter?.Value, StatusFilter?.Value, search: SearchText);
+        var list = await _orders.GetOrdersAsync(status: StatusFilter?.Value, search: SearchText, salesSide: IsSalesTab);
         Items.Clear();
         foreach (var o in list) Items.Add(new OrderRow(o));
     });
 
+    /// <summary>New order of the selected tab's side (the order itself or a return).</summary>
     [RelayCommand]
     private async Task AddAsync()
     {
-        var types = Enum.GetValues<OrderType>();
+        var types = Enum.GetValues<OrderType>().Where(t => OrderService.IsSalesSide(t) == IsSalesTab).ToArray();
         var choice = await Dialogs.ChooseAsync(LocalizationService.Get("Order_New"), types.Select(EnumLabels.Of).ToArray());
         if (choice is null) return;
         var type = types.First(t => EnumLabels.Of(t) == choice);

@@ -8,18 +8,12 @@
              x:DataType="vm:DashboardViewModel"
              Title="{loc:Translate Nav_Dashboard}">
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="*,Auto,Auto">
         <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy, Mode=OneWay}">
             <ScrollView>
                 <VerticalStackLayout Padding="16" Spacing="12">
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                        <Button Text="{loc:Translate Dashboard_NewSale}" Command="{Binding NewSaleCommand}" />
-                        <Button Grid.Column="1" Text="{loc:Translate Dashboard_NewPurchase}" Style="{StaticResource SecondaryButton}"
-                                Command="{Binding NewPurchaseCommand}" />
-                    </Grid>
-
                     <Label Text="{loc:Translate Dashboard_Today}" Style="{StaticResource SectionTitle}" />
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                         <Border Style="{StaticResource Card}">
                             <VerticalStackLayout>
                                 <Label Text="{loc:Translate Dashboard_Sales}" Style="{StaticResource Caption}" />
@@ -32,16 +26,22 @@
                                 <Label Text="{Binding TodayProfit}" Style="{StaticResource KpiValue}" />
                             </VerticalStackLayout>
                         </Border>
-                        <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <Border Grid.Row="1" Style="{StaticResource Card}">
                             <VerticalStackLayout>
                                 <Label Text="{loc:Translate Dashboard_Orders}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding TodayOrders}" Style="{StaticResource KpiValue}" />
                             </VerticalStackLayout>
                         </Border>
+                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_ItemsSold}" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding TodayItemsSold}" Style="{StaticResource KpiValue}" />
+                            </VerticalStackLayout>
+                        </Border>
                     </Grid>
 
                     <Label Text="{loc:Translate Dashboard_ThisMonth}" Style="{StaticResource SectionTitle}" />
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                         <Border Style="{StaticResource Card}">
                             <VerticalStackLayout>
                                 <Label Text="{loc:Translate Dashboard_Sales}" Style="{StaticResource Caption}" />
@@ -52,6 +52,18 @@
                             <VerticalStackLayout>
                                 <Label Text="{loc:Translate Dashboard_Profit}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding MonthProfit}" Style="{StaticResource KpiValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_Orders}" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding MonthOrders}" Style="{StaticResource KpiValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_ItemsSold}" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding MonthItemsSold}" Style="{StaticResource KpiValue}" />
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
@@ -82,6 +94,12 @@
             </ScrollView>
         </RefreshView>
 
-        <controls:BottomNavBar Grid.Row="1" Current="dashboard" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="8" Padding="16,8,16,0">
+            <Button Text="{loc:Translate Dashboard_NewSale}" Command="{Binding NewSaleCommand}" />
+            <Button Grid.Column="1" Text="{loc:Translate Dashboard_NewPurchase}" Style="{StaticResource SecondaryButton}"
+                    Command="{Binding NewPurchaseCommand}" />
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="2" Current="dashboard" />
     </Grid>
 </ContentPage>

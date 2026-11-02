@@ -26,12 +26,15 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
 
     public static bool IsSalesSide(OrderType type) => type is OrderType.Sale or OrderType.SaleReturn;
 
+    /// <param name="salesSide">true = sales + sale returns, false = purchases + purchase returns, null = all.</param>
     public async Task<List<Order>> GetOrdersAsync(OrderType? type = null, OrderStatus? status = null,
-        DateTime? fromUtc = null, DateTime? toUtc = null, string? search = null)
+        DateTime? fromUtc = null, DateTime? toUtc = null, string? search = null, bool? salesSide = null)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         var query = db.Orders.AsNoTracking().Include(o => o.Contact).AsQueryable();
         if (type is not null) query = query.Where(o => o.OrderType == type);
+        if (salesSide is not null)
+            query = query.Where(o => (o.OrderType == OrderType.Sale || o.OrderType == OrderType.SaleReturn) == salesSide);
         if (status is not null) query = query.Where(o => o.Status == status);
         if (fromUtc is not null) query = query.Where(o => o.CreatedAt >= fromUtc);
         if (toUtc is not null) query = query.Where(o => o.CreatedAt < toUtc);

@@ -216,5 +216,22 @@ public class OrderServiceTests : IDisposable
         Assert.Equal(3m, summary.Cost);
         Assert.Equal(4.5m, summary.Profit);
         Assert.Equal(1, summary.OrderCount);
+        Assert.Equal(3m, summary.ItemsSold);
+    }
+
+    [Fact]
+    public async Task Orders_list_filters_by_side()
+    {
+        var (supplier, customer, product) = await _t.SeedAsync();
+        await ConfirmedAsync(OrderType.Purchase, supplier.Id, product.Id, 10, 1m);
+        await ConfirmedAsync(OrderType.Sale, customer.Id, product.Id, 2, 2m);
+        await ConfirmedAsync(OrderType.SaleReturn, customer.Id, product.Id, 1, 2m);
+        await ConfirmedAsync(OrderType.PurchaseReturn, supplier.Id, product.Id, 1, 1m);
+
+        var sales = await _t.Orders.GetOrdersAsync(salesSide: true);
+        var purchases = await _t.Orders.GetOrdersAsync(salesSide: false);
+
+        Assert.Equal([OrderType.SaleReturn, OrderType.Sale], sales.Select(o => o.OrderType));
+        Assert.Equal([OrderType.PurchaseReturn, OrderType.Purchase], purchases.Select(o => o.OrderType));
     }
 }
