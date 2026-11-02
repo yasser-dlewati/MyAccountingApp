@@ -8,11 +8,16 @@
   <data name="App_Title" xml:space="preserve"><value>Wael Store</value></data>
   <data name="Nav_Dashboard" xml:space="preserve"><value>Dashboard</value></data>
   <data name="Nav_Orders" xml:space="preserve"><value>Orders</value></data>
-  <data name="Nav_Products" xml:space="preserve"><value>Products</value></data>
   <data name="Nav_Categories" xml:space="preserve"><value>Categories</value></data>
   <data name="Nav_Contacts" xml:space="preserve"><value>Contacts</value></data>
-  <data name="Nav_Stock" xml:space="preserve"><value>Stock</value></data>
   <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Nav_Inventory" xml:space="preserve"><value>Inventory</value></data>
+  <data name="Nav_More" xml:space="preserve"><value>More</value></data>
+  <data name="More_People" xml:space="preserve"><value>PEOPLE</value></data>
+  <data name="More_Catalog" xml:space="preserve"><value>CATALOG</value></data>
+  <data name="More_App" xml:space="preserve"><value>APP</value></data>
+  <data name="More_ContactsHint" xml:space="preserve"><value>Customers &amp; suppliers</value></data>
+  <data name="More_SettingsHint" xml:space="preserve"><value>Language, theme, backup</value></data>
   <data name="Common_Add" xml:space="preserve"><value>Add</value></data>
   <data name="Common_All" xml:space="preserve"><value>All</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>

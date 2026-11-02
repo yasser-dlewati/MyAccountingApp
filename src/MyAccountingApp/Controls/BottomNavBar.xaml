@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Bottom navigation for the main pages: 4 tabs + a raised barcode-scan button in the center.
+<!-- Bottom navigation for the main pages: Home, Invoices, [scan], Inventory, More + a raised barcode-scan button in the center.
      Row 0 is the space the scan button rises into (no background, so it shows the page behind). -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -34,7 +34,7 @@
         <VerticalStackLayout x:Name="DashboardTab" Grid.Row="1" Grid.Column="0" Style="{StaticResource Tab}"
                              SemanticProperties.Description="{loc:Translate Nav_Dashboard}">
             <Path Style="{StaticResource TabIcon}"
-                  Data="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                  Data="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             <Label Text="{loc:Translate Nav_Dashboard}" Style="{StaticResource TabLabel}" />
             <VerticalStackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="dashboard" />
@@ -64,23 +64,23 @@
             </ImageButton.Shadow>
         </ImageButton>
 
-        <VerticalStackLayout x:Name="ProductsTab" Grid.Row="1" Grid.Column="3" Style="{StaticResource Tab}"
-                             SemanticProperties.Description="{loc:Translate Nav_Products}">
+        <VerticalStackLayout x:Name="InventoryTab" Grid.Row="1" Grid.Column="3" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_Inventory}">
             <Path Style="{StaticResource TabIcon}"
-                  Data="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
-            <Label Text="{loc:Translate Nav_Products}" Style="{StaticResource TabLabel}" />
+                  Data="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4l16-.02V7z" />
+            <Label Text="{loc:Translate Nav_Inventory}" Style="{StaticResource TabLabel}" />
             <VerticalStackLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="products" />
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="inventory" />
             </VerticalStackLayout.GestureRecognizers>
         </VerticalStackLayout>
 
-        <VerticalStackLayout x:Name="StockTab" Grid.Row="1" Grid.Column="4" Style="{StaticResource Tab}"
-                             SemanticProperties.Description="{loc:Translate Nav_Stock}">
+        <VerticalStackLayout x:Name="MoreTab" Grid.Row="1" Grid.Column="4" Style="{StaticResource Tab}"
+                             SemanticProperties.Description="{loc:Translate Nav_More}">
             <Path Style="{StaticResource TabIcon}"
-                  Data="M20 2H4c-1 0-2 .9-2 2v3.01c0 .72.43 1.34 1 1.69V20c0 1.1 1.1 2 2 2h14c.9 0 2-.9 2-2V8.7c.57-.35 1-.97 1-1.69V4c0-1.1-1-2-2-2zm-5 12H9v-2h6v2zm5-7H4V4l16-.02V7z" />
-            <Label Text="{loc:Translate Nav_Stock}" Style="{StaticResource TabLabel}" />
+                  Data="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+            <Label Text="{loc:Translate Nav_More}" Style="{StaticResource TabLabel}" />
             <VerticalStackLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="stock" />
+                <TapGestureRecognizer Tapped="OnTabTapped" CommandParameter="more" />
             </VerticalStackLayout.GestureRecognizers>
         </VerticalStackLayout>
     </Grid>

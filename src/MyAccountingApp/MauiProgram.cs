@@ -48,8 +48,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<CategoriesPage>().AddTransient<CategoriesViewModel>();
 		builder.Services.AddTransient<ContactsPage>().AddTransient<ContactsViewModel>();
 		builder.Services.AddTransient<ContactEditPage>().AddTransient<ContactEditViewModel>();
-		builder.Services.AddTransient<StockPage>().AddTransient<StockViewModel>();
 		builder.Services.AddTransient<SettingsPage>().AddTransient<SettingsViewModel>();
+		builder.Services.AddTransient<MorePage>().AddTransient<MoreViewModel>();
 
 		// Log files: see FileLoggerProvider.Directory; shared from Settings → Share logs.
 		builder.Logging.AddProvider(new FileLoggerProvider());

@@ -17,16 +17,28 @@ public partial class ProductsViewModel(
     [ObservableProperty]
     public partial string? SearchText { get; set; }
 
+    /// <summary>Σ quantity × last cost of the listed products that are in stock.</summary>
+    [ObservableProperty]
+    public partial string TotalValue { get; set; } = Formats.Money(0);
+
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
     {
         var list = await products.SearchAsync(SearchText, includeInactive: ProductSettings.ShowInactive);
-        var stock = (await inventory.GetStockReportAsync()).ToDictionary(r => r.ProductId, r => r.Quantity);
+        var stock = (await inventory.GetStockReportAsync()).ToDictionary(r => r.ProductId);
         var showCategory = CategorySettings.Enabled;
         Items.Clear();
+        decimal total = 0;
         foreach (var p in list)
+        {
+            var s = stock.GetValueOrDefault(p.Id); // null for inactive products (not in the report)
+            var quantity = s?.Quantity ?? 0;
+            if (quantity > 0) total += s!.CostValue;
             Items.Add(new ProductRow(p.Id, p.Name, showCategory ? $"{p.Barcode} · {DisplayNames.CategoryOf(p)}" : p.Barcode,
-                Formats.Money(p.Price), Formats.Quantity(stock.GetValueOrDefault(p.Id)), p.IsActive ? 1 : 0.45));
+                Formats.Money(p.Price), Formats.Quantity(quantity), quantity <= 0,
+                Formats.Money(s?.LastCost ?? 0), Formats.Money(s?.CostValue ?? 0), p.IsActive ? 1 : 0.45));
+        }
+        TotalValue = Formats.Money(total);
     });
 
     [RelayCommand]
@@ -69,4 +81,5 @@ public partial class ProductsViewModel(
         GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = row.Id });
 }
 
-public record ProductRow(int Id, string Name, string Subtitle, string Price, string Stock, double Opacity);
+public record ProductRow(int Id, string Name, string Subtitle, string Price, string Stock, bool IsOutOfStock,
+    string LastCost, string Value, double Opacity);

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:app="clr-namespace:MyAccountingApp"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
+             x:Class="MyAccountingApp.Views.MorePage"
+             x:DataType="vm:MoreViewModel"
+             Title="{loc:Translate Nav_More}">
+
+    <ContentPage.Resources>
+        <Style x:Key="SectionCaption" TargetType="Label" BasedOn="{StaticResource Caption}">
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="Margin" Value="4,12,4,0" />
+            <Setter Property="TextTransform" Value="Uppercase" />
+        </Style>
+        <Style x:Key="Row" TargetType="Grid">
+            <Setter Property="ColumnDefinitions" Value="Auto,*,Auto" />
+            <Setter Property="ColumnSpacing" Value="14" />
+            <Setter Property="Padding" Value="4,10" />
+            <Setter Property="BackgroundColor" Value="Transparent" /> <!-- so taps on empty space count -->
+        </Style>
+        <Style x:Key="RowIcon" TargetType="Path">
+            <Setter Property="Aspect" Value="Uniform" />
+            <Setter Property="WidthRequest" Value="24" />
+            <Setter Property="HeightRequest" Value="24" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Style>
+        <Style x:Key="Chevron" TargetType="Path">
+            <Setter Property="Grid.Column" Value="2" />
+            <Setter Property="Aspect" Value="Uniform" />
+            <Setter Property="WidthRequest" Value="10" />
+            <Setter Property="HeightRequest" Value="16" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="ScaleX" Value="{x:Static loc:LocalizationService.IconScaleX}" />
+            <Setter Property="Data" Value="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" />
+            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray300}}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,8" Spacing="6">
+                <Label Text="{loc:Translate More_People}" Style="{StaticResource SectionCaption}" />
+                <Border Style="{StaticResource Card}" Padding="8,2">
+                    <Grid Style="{StaticResource Row}">
+                        <Path Style="{StaticResource RowIcon}"
+                              Data="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{loc:Translate Nav_Contacts}" Style="{StaticResource ItemTitle}" />
+                            <Label Text="{loc:Translate More_ContactsHint}" Style="{StaticResource Caption}" />
+                        </VerticalStackLayout>
+                        <Path Style="{StaticResource Chevron}" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="{x:Static app:Routes.Contacts}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout IsVisible="{Binding ShowCategories}" Spacing="6">
+                    <Label Text="{loc:Translate More_Catalog}" Style="{StaticResource SectionCaption}" />
+                    <Border Style="{StaticResource Card}" Padding="8,2">
+                        <Grid Style="{StaticResource Row}">
+                            <Path Style="{StaticResource RowIcon}"
+                                  Data="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+                            <Label Grid.Column="1" Text="{loc:Translate Nav_Categories}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
+                            <Path Style="{StaticResource Chevron}" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="{x:Static app:Routes.Categories}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <Label Text="{loc:Translate More_App}" Style="{StaticResource SectionCaption}" />
+                <Border Style="{StaticResource Card}" Padding="8,2">
+                    <VerticalStackLayout>
+                        <Grid Style="{StaticResource Row}">
+                            <Path Style="{StaticResource RowIcon}"
+                                  Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{loc:Translate Nav_Settings}" Style="{StaticResource ItemTitle}" />
+                                <Label Text="{loc:Translate More_SettingsHint}" Style="{StaticResource Caption}" />
+                            </VerticalStackLayout>
+                            <Path Style="{StaticResource Chevron}" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="{x:Static app:Routes.Settings}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+                        <Grid Style="{StaticResource Row}">
+                            <Path Style="{StaticResource RowIcon}"
+                                  Data="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{loc:Translate Settings_ShareLogs}" Style="{StaticResource ItemTitle}" />
+                                <Label Text="{loc:Translate Settings_ShareLogsHint}" Style="{StaticResource Caption}" />
+                            </VerticalStackLayout>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShareLogsCommand}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="{loc:Translate Settings_About}" Style="{StaticResource SectionCaption}" />
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Label Text="{loc:Translate App_Title}" Style="{StaticResource ItemTitle}" HorizontalOptions="Center" />
+                        <Label Text="{Binding AppVersion, StringFormat='v{0}'}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
+                        <Label Text="{loc:Translate About_CreatedBy}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,8,0,0" />
+                        <Image Source="yasdle.png" HeightRequest="96" WidthRequest="79" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:BottomNavBar Grid.Row="1" Current="more" />
+    </Grid>
+</ContentPage>

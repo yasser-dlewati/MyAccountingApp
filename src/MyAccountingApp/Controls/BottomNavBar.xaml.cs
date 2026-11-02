@@ -3,8 +3,8 @@ using MyAccountingApp.AppServices;
 namespace MyAccountingApp.Controls;
 
 /// <summary>
-/// Bottom tab bar shown on the main (Shell root) pages. Set <see cref="Current"/> to the page's Shell route
-/// to highlight its tab. The center button runs <see cref="QuickScanService"/>.
+/// Bottom tab bar shown on the main pages. Set <see cref="Current"/> to the page's tab to highlight it.
+/// The center button runs <see cref="QuickScanService"/>.
 /// </summary>
 public partial class BottomNavBar : ContentView
 {
@@ -12,7 +12,8 @@ public partial class BottomNavBar : ContentView
 		nameof(Current), typeof(string), typeof(BottomNavBar), null,
 		propertyChanged: (b, _, _) => ((BottomNavBar)b).UpdateSelection());
 
-	/// <summary>Shell route of the page hosting the bar ("dashboard", "orders", "products", "stock").</summary>
+	/// <summary>Shell route of the page hosting the bar ("dashboard", "orders", "inventory", "more"); the pages
+	/// pushed from More use "more" too.</summary>
 	public string? Current
 	{
 		get => (string?)GetValue(CurrentProperty);
@@ -25,17 +26,17 @@ public partial class BottomNavBar : ContentView
 		UpdateSelection();
 	}
 
-	private IEnumerable<(VerticalStackLayout Tab, string Route)> Tabs =>
+	private IEnumerable<(VerticalStackLayout Tab, string Name)> Tabs =>
 	[
-		(DashboardTab, "dashboard"), (OrdersTab, "orders"), (ProductsTab, "products"), (StockTab, "stock"),
+		(DashboardTab, "dashboard"), (OrdersTab, "orders"), (InventoryTab, "inventory"), (MoreTab, "more"),
 	];
 
 	private void UpdateSelection()
 	{
 		var resources = Application.Current!.Resources;
-		foreach (var (tab, route) in Tabs)
+		foreach (var (tab, name) in Tabs)
 		{
-			var selected = route == Current;
+			var selected = name == Current;
 			var light = (Color)resources[selected ? "Primary" : "Gray500"];
 			var dark = (Color)resources[selected ? "PrimaryDark" : "Gray300"];
 			foreach (var child in tab.Children)
@@ -53,8 +54,11 @@ public partial class BottomNavBar : ContentView
 
 	private async void OnTabTapped(object? sender, TappedEventArgs e)
 	{
-		if (e.Parameter is string route && route != Current)
-			await Shell.Current.GoToAsync("//" + route, animate: false);
+		if (e.Parameter is not string name) return;
+		if (name != Current)
+			await Shell.Current.GoToAsync("//" + name, animate: false);
+		else if (Shell.Current.Navigation.NavigationStack.Count > 1)
+			await Shell.Current.Navigation.PopToRootAsync(animated: false); // e.g. More while on Settings
 	}
 
 	private async void OnScanClicked(object? sender, EventArgs e)

@@ -2,11 +2,11 @@ using MyAccountingApp.ViewModels;
 
 namespace MyAccountingApp.Views;
 
-public partial class StockPage : ContentPage
+public partial class MorePage : ContentPage
 {
-	private readonly StockViewModel _viewModel;
+	private readonly MoreViewModel _viewModel;
 
-	public StockPage(StockViewModel viewModel)
+	public MorePage(MoreViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = _viewModel = viewModel;

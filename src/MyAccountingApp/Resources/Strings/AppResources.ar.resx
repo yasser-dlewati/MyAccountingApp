@@ -8,11 +8,16 @@
   <data name="App_Title" xml:space="preserve"><value>متجر وائل</value></data>
   <data name="Nav_Dashboard" xml:space="preserve"><value>الرئيسية</value></data>
   <data name="Nav_Orders" xml:space="preserve"><value>الفواتير</value></data>
-  <data name="Nav_Products" xml:space="preserve"><value>المنتجات</value></data>
   <data name="Nav_Categories" xml:space="preserve"><value>التصنيفات</value></data>
   <data name="Nav_Contacts" xml:space="preserve"><value>جهات الاتصال</value></data>
-  <data name="Nav_Stock" xml:space="preserve"><value>المخزون</value></data>
   <data name="Nav_Settings" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="Nav_Inventory" xml:space="preserve"><value>المخزون</value></data>
+  <data name="Nav_More" xml:space="preserve"><value>المزيد</value></data>
+  <data name="More_People" xml:space="preserve"><value>الأشخاص</value></data>
+  <data name="More_Catalog" xml:space="preserve"><value>الكتالوج</value></data>
+  <data name="More_App" xml:space="preserve"><value>التطبيق</value></data>
+  <data name="More_ContactsHint" xml:space="preserve"><value>الزبائن والموردون</value></data>
+  <data name="More_SettingsHint" xml:space="preserve"><value>اللغة، المظهر، النسخ الاحتياطي</value></data>
   <data name="Common_Add" xml:space="preserve"><value>إضافة</value></data>
   <data name="Common_All" xml:space="preserve"><value>الكل</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>إلغاء</value></data>

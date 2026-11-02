@@ -12,28 +12,25 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(Routes.ContactEdit, typeof(ContactEditPage));
 		Routing.RegisterRoute(Routes.ProductEdit, typeof(ProductEditPage));
 		Routing.RegisterRoute(Routes.OrderEdit, typeof(OrderEditPage));
+		Routing.RegisterRoute(Routes.Contacts, typeof(ContactsPage));
+		Routing.RegisterRoute(Routes.Categories, typeof(CategoriesPage));
+		Routing.RegisterRoute(Routes.Settings, typeof(SettingsPage));
 	}
 
 	public AppShell()
 	{
 		InitializeComponent();
 		FlowDirection = LocalizationService.FlowDirection;
-		CategoriesItem.FlyoutItemIsVisible = CategorySettings.Enabled;
 	}
 
 	private bool _exitPromptOpen;
 
 	/// <summary>
-	/// Back: a pushed page (order / product / contact edit) pops as usual; any other main page goes to the
+	/// Back: a pushed page (order / product / contact edit, the pages opened from More) pops as usual; any other main page goes to the
 	/// dashboard; on the dashboard the app closes, after asking when Settings → Confirm before exiting is on.
 	/// </summary>
 	protected override bool OnBackButtonPressed()
 	{
-		if (FlyoutIsPresented)
-		{
-			FlyoutIsPresented = false;
-			return true;
-		}
 		if (Navigation.ModalStack.Count > 0 || CurrentItem?.CurrentItem?.Stack.Count > 1)
 			return base.OnBackButtonPressed();
 
@@ -71,12 +68,5 @@ public partial class AppShell : Shell
 		base.OnNavigated(args);
 		Handler?.MauiContext?.Services.GetService<ILogger<AppShell>>()
 			?.LogInformation("Navigated to {Location} ({Source})", args.Current?.Location, args.Source);
-	}
-
-	/// <summary>Shows / hides the Categories page after the Settings switch changes.</summary>
-	public static void UpdateCategoriesVisibility()
-	{
-		if (Current is AppShell shell)
-			shell.CategoriesItem.FlyoutItemIsVisible = CategorySettings.Enabled;
 	}
 }

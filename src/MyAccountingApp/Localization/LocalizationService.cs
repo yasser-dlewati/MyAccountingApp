@@ -23,6 +23,9 @@ public static class LocalizationService
 
     public static FlowDirection FlowDirection => IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
+    /// <summary>ScaleX for direction-dependent icons (e.g. a "›" chevron): mirrored in Arabic.</summary>
+    public static double IconScaleX => IsRightToLeft ? -1 : 1;
+
     /// <summary>Applies the saved language, defaulting to the device language when it is Arabic.</summary>
     public static void Initialize()
     {

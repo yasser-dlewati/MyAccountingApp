@@ -59,8 +59,6 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     public partial bool RequireSupplier { get; set; }
 
-    public string AppVersion => AppInfo.Current.VersionString;
-
     partial void OnThemeChanged(Option<AppTheme> value)
     {
         if (value.Value == ThemeService.CurrentTheme) return;
@@ -72,11 +70,8 @@ public partial class SettingsViewModel : BaseViewModel
 
     partial void OnShowInactiveProductsChanged(bool value) => ProductSettings.ShowInactive = value;
 
-    partial void OnUseCategoriesChanged(bool value)
-    {
-        CategorySettings.Enabled = value;
-        AppShell.UpdateCategoriesVisibility();
-    }
+    // The More page shows / hides its Categories row when it next appears.
+    partial void OnUseCategoriesChanged(bool value) => CategorySettings.Enabled = value;
 
     partial void OnRequireCustomerChanged(bool value) => WalkInSettings.CustomerAllowed = !value;
 
@@ -125,20 +120,4 @@ public partial class SettingsViewModel : BaseViewModel
             }
         });
     }
-
-    /// <summary>Log files are in app-private storage, so they leave the phone through the share sheet.</summary>
-    [RelayCommand]
-    private Task ShareLogsAsync() => RunAsync(async () =>
-    {
-        try
-        {
-            var zip = FileLoggerProvider.CreateArchive();
-            await Share.Default.RequestAsync(new ShareFileRequest(LocalizationService.Get("Settings_ShareLogs"), new ShareFile(zip)));
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            _log.LogError(ex, "Sharing logs failed");
-            await Dialogs.AlertAsync(LocalizationService.Format("Settings_ShareLogsFailed", ex.Message));
-        }
-    });
 }

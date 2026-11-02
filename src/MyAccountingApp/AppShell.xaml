@@ -6,7 +6,9 @@
     xmlns:loc="clr-namespace:MyAccountingApp.Localization"
     xmlns:views="clr-namespace:MyAccountingApp.Views"
     Title="{loc:Translate App_Title}"
-    FlyoutBehavior="Flyout">
+    FlyoutBehavior="Disabled">
+
+    <!-- Bottom-nav root pages (Controls/BottomNavBar). Contacts / Categories / Settings are pushed from More. -->
 
     <FlyoutItem x:Name="DashboardItem" Title="{loc:Translate Nav_Dashboard}">
         <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" Route="dashboard" />
@@ -14,20 +16,11 @@
     <FlyoutItem Title="{loc:Translate Nav_Orders}">
         <ShellContent ContentTemplate="{DataTemplate views:OrdersPage}" Route="orders" />
     </FlyoutItem>
-    <FlyoutItem Title="{loc:Translate Nav_Products}">
-        <ShellContent ContentTemplate="{DataTemplate views:ProductsPage}" Route="products" />
+    <FlyoutItem Title="{loc:Translate Nav_Inventory}">
+        <ShellContent ContentTemplate="{DataTemplate views:ProductsPage}" Route="inventory" />
     </FlyoutItem>
-    <FlyoutItem x:Name="CategoriesItem" Title="{loc:Translate Nav_Categories}">
-        <ShellContent ContentTemplate="{DataTemplate views:CategoriesPage}" Route="categories" />
-    </FlyoutItem>
-    <FlyoutItem Title="{loc:Translate Nav_Contacts}">
-        <ShellContent ContentTemplate="{DataTemplate views:ContactsPage}" Route="contacts" />
-    </FlyoutItem>
-    <FlyoutItem Title="{loc:Translate Nav_Stock}">
-        <ShellContent ContentTemplate="{DataTemplate views:StockPage}" Route="stock" />
-    </FlyoutItem>
-    <FlyoutItem Title="{loc:Translate Nav_Settings}">
-        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="settings" />
+    <FlyoutItem Title="{loc:Translate Nav_More}">
+        <ShellContent ContentTemplate="{DataTemplate views:MorePage}" Route="more" />
     </FlyoutItem>
 
 </Shell>

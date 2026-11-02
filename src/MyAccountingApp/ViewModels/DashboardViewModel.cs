@@ -56,3 +56,5 @@ public partial class DashboardViewModel(InventoryService inventory, DialogServic
     private static Task NewOrderAsync(OrderType type) =>
         GoToAsync(Routes.OrderEdit, new Dictionary<string, object> { ["type"] = type });
 }
+
+public record StockLine(string Name, string Barcode, string Quantity, string LastCost, string Value, bool IsOutOfStock);
