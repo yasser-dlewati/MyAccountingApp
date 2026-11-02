@@ -167,6 +167,13 @@ public partial class OrderEditViewModel(
     private Task ConfirmAsync() => RunAsync(async () =>
     {
         await SaveDraftAsync();
+        // Drafts may be incomplete; check before asking the user to confirm.
+        if (Contact is null or { Id: 0 } && !WalkInSettings.IsAllowed(OrderType))
+            throw new BusinessRuleException(ErrorKeys.ContactRequired);
+        if (Lines.Count == 0)
+            throw new BusinessRuleException(ErrorKeys.OrderHasNoItems);
+        if (Lines.Any(l => l.QuantityValue <= 0))
+            throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
 
         var allowNegative = false;
         var shortages = await orders.GetShortagesAsync(_orderId);
@@ -187,7 +194,7 @@ public partial class OrderEditViewModel(
             return;
         }
 
-        await orders.ConfirmAsync(_orderId, allowNegative);
+        await orders.ConfirmAsync(_orderId, allowNegative, WalkInSettings.IsAllowed(OrderType));
         await LoadOrderAsync(_orderId);
     });
 
@@ -215,17 +222,16 @@ public partial class OrderEditViewModel(
 
     private async Task SaveDraftAsync()
     {
-        if (Lines.Any(l => l.QuantityValue <= 0))
+        if (Lines.Any(l => l.QuantityValue < 0))
             throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
         if (Lines.Any(l => l.UnitPriceValue < 0))
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
 
         int? contactId = Contact is { Id: not 0 } c ? c.Id : null;
-        var allowWalkIn = WalkInSettings.IsAllowed(OrderType);
         var input = Lines.Select(l => new OrderLineInput(l.ProductId, l.QuantityValue, l.UnitPriceValue)).ToList();
         if (_orderId == 0)
-            _orderId = (await orders.CreateDraftAsync(OrderType, contactId, input, allowWalkIn)).Id;
+            _orderId = (await orders.CreateDraftAsync(OrderType, contactId, input)).Id;
         else
-            await orders.UpdateDraftAsync(_orderId, contactId, input, allowWalkIn);
+            await orders.UpdateDraftAsync(_orderId, contactId, input);
     }
 }

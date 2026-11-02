@@ -24,12 +24,12 @@
 
             <Label Text="{loc:Translate Settings_WalkIn}" Style="{StaticResource SectionTitle}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                <Label Text="{loc:Translate Settings_AllowWalkInCustomer}" VerticalOptions="Center" />
-                <Switch Grid.Column="1" IsToggled="{Binding AllowWalkInCustomer}" VerticalOptions="Center" />
+                <Label Text="{loc:Translate Settings_RequireCustomer}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding RequireCustomer}" VerticalOptions="Center" />
             </Grid>
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                <Label Text="{loc:Translate Settings_AllowWalkInSupplier}" VerticalOptions="Center" />
-                <Switch Grid.Column="1" IsToggled="{Binding AllowWalkInSupplier}" VerticalOptions="Center" />
+                <Label Text="{loc:Translate Settings_RequireSupplier}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding RequireSupplier}" VerticalOptions="Center" />
             </Grid>
             <Label Text="{loc:Translate Settings_WalkInHint}" Style="{StaticResource Caption}" />
 

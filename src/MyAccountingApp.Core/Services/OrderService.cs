@@ -52,13 +52,15 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    /// <param name="allowWalkIn">False: a contact is required (walk-in turned off in settings).</param>
-    public async Task<Order> CreateDraftAsync(OrderType type, int? contactId, IReadOnlyList<OrderLineInput> lines,
-        bool allowWalkIn = true)
+    /// <summary>
+    /// Drafts may be incomplete (no contact, no items, zero quantities); <see cref="ConfirmAsync"/> checks those.
+    /// A contact that is set must still match the order side.
+    /// </summary>
+    public async Task<Order> CreateDraftAsync(OrderType type, int? contactId, IReadOnlyList<OrderLineInput> lines)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
-        await ValidateContactAsync(db, type, contactId, allowWalkIn);
-        ValidateLines(lines);
+        await ValidateContactAsync(db, type, contactId);
+        ValidateDraftLines(lines);
 
         var order = new Order
         {
@@ -75,16 +77,15 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
         return order;
     }
 
-    public async Task<Order> UpdateDraftAsync(int orderId, int? contactId, IReadOnlyList<OrderLineInput> lines,
-        bool allowWalkIn = true)
+    public async Task<Order> UpdateDraftAsync(int orderId, int? contactId, IReadOnlyList<OrderLineInput> lines)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         var order = await LoadAsync(db, orderId);
         if (order.Status != OrderStatus.Draft)
             throw new BusinessRuleException(ErrorKeys.OrderNotDraft, order.OrderNumber);
 
-        await ValidateContactAsync(db, order.OrderType, contactId, allowWalkIn);
-        ValidateLines(lines);
+        await ValidateContactAsync(db, order.OrderType, contactId);
+        ValidateDraftLines(lines);
 
         order.ContactId = contactId;
         db.OrderItems.RemoveRange(order.Items);
@@ -118,7 +119,8 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
     /// refreshes the supplier cost price — all in one transaction.
     /// Throws <see cref="ErrorKeys.InsufficientStock"/> unless <paramref name="allowNegativeStock"/>.
     /// </summary>
-    public async Task<Order> ConfirmAsync(int orderId, bool allowNegativeStock = false)
+    /// <param name="allowWalkIn">False: a contact is required (walk-in turned off in settings).</param>
+    public async Task<Order> ConfirmAsync(int orderId, bool allowNegativeStock = false, bool allowWalkIn = true)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         await using var tx = await db.Database.BeginTransactionAsync();
@@ -126,8 +128,12 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
         var order = await LoadAsync(db, orderId);
         if (order.Status != OrderStatus.Draft)
             throw new BusinessRuleException(ErrorKeys.OrderNotDraft, order.OrderNumber);
+        if (order.ContactId is null && !allowWalkIn)
+            throw new BusinessRuleException(ErrorKeys.ContactRequired);
         if (order.Items.Count == 0)
             throw new BusinessRuleException(ErrorKeys.OrderHasNoItems);
+        if (order.Items.Any(i => i.Quantity <= 0))
+            throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
 
         if (!allowNegativeStock)
         {
@@ -239,14 +245,10 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.SupplierId, supplierId));
     }
 
-    /// <summary>A null contact is the walk-in customer / supplier, allowed when <paramref name="allowWalkIn"/>.</summary>
-    private static async Task ValidateContactAsync(AppDbContext db, OrderType type, int? contactId, bool allowWalkIn)
+    /// <summary>A null contact is the walk-in customer / supplier (or not chosen yet on a draft).</summary>
+    private static async Task ValidateContactAsync(AppDbContext db, OrderType type, int? contactId)
     {
-        if (contactId is null)
-        {
-            if (!allowWalkIn) throw new BusinessRuleException(ErrorKeys.ContactRequired);
-            return;
-        }
+        if (contactId is null) return;
         var contact = await db.Contacts.AsNoTracking().FirstOrDefaultAsync(c => c.Id == contactId)
             ?? throw new BusinessRuleException(ErrorKeys.NotFound);
         if (IsSalesSide(type) && !contact.IsCustomer)
@@ -255,11 +257,9 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory)
             throw new BusinessRuleException(ErrorKeys.NotASupplier, contact.Name);
     }
 
-    private static void ValidateLines(IReadOnlyList<OrderLineInput> lines)
+    private static void ValidateDraftLines(IReadOnlyList<OrderLineInput> lines)
     {
-        if (lines.Count == 0)
-            throw new BusinessRuleException(ErrorKeys.OrderHasNoItems);
-        if (lines.Any(l => l.Quantity <= 0))
+        if (lines.Any(l => l.Quantity < 0))
             throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
         if (lines.Any(l => l.UnitPrice < 0))
             throw new BusinessRuleException(ErrorKeys.PriceNegative);

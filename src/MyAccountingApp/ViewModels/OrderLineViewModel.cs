@@ -18,7 +18,9 @@ public partial class OrderLineViewModel(int productId, string productName, decim
     public partial string UnitPrice { get; set; } = Formats.Input(unitPrice);
 
     public decimal QuantityValue => Formats.TryParseDecimal(Quantity, out var q) ? q : 0;
-    public decimal UnitPriceValue => Formats.TryParseDecimal(UnitPrice, out var p) ? p : -1;
+    // Blank = 0 (a draft may be saved unfinished); other unparseable text = -1 (rejected as negative).
+    public decimal UnitPriceValue => string.IsNullOrWhiteSpace(UnitPrice) ? 0
+        : Formats.TryParseDecimal(UnitPrice, out var p) ? p : -1;
 
     public string LineTotal => Formats.Money(QuantityValue * Math.Max(UnitPriceValue, 0));
 

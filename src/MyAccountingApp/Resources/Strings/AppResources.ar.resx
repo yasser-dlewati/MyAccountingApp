@@ -100,9 +100,9 @@
   <data name="Settings_UseCategories" xml:space="preserve"><value>تصنيف إلزامي لكل منتج</value></data>
   <data name="Settings_UseCategoriesHint" xml:space="preserve"><value>عند الإيقاف يُخفى حقل التصنيف وتوضع المنتجات الجديدة تحت «عام».</value></data>
   <data name="Settings_WalkIn" xml:space="preserve"><value>الطلبات النقدية</value></data>
-  <data name="Settings_AllowWalkInCustomer" xml:space="preserve"><value>السماح بالبيع بدون عميل</value></data>
-  <data name="Settings_AllowWalkInSupplier" xml:space="preserve"><value>السماح بالشراء بدون مورد</value></data>
-  <data name="Settings_WalkInHint" xml:space="preserve"><value>عند التفعيل يمكن استخدام «عميل نقدي» / «مورد نقدي» في الطلبات. عند الإيقاف يجب اختيار جهة اتصال.</value></data>
+  <data name="Settings_RequireCustomer" xml:space="preserve"><value>إلزام اختيار عميل في المبيعات</value></data>
+  <data name="Settings_RequireSupplier" xml:space="preserve"><value>إلزام اختيار مورد في المشتريات</value></data>
+  <data name="Settings_WalkInHint" xml:space="preserve"><value>عند الإيقاف يمكن استخدام «عميل نقدي» / «مورد نقدي» في الطلبات. عند التفعيل يجب اختيار جهة اتصال قبل التأكيد (يمكن حفظ المسودة بدونها).</value></data>
   <data name="Settings_Data" xml:space="preserve"><value>البيانات</value></data>
   <data name="Settings_DataHint" xml:space="preserve"><value>بياناتك محفوظة على هذا الجهاز فقط. احتفظ بنسخة احتياطية بانتظام.</value></data>
   <data name="Settings_Backup" xml:space="preserve"><value>نسخ احتياطي لقاعدة البيانات</value></data>

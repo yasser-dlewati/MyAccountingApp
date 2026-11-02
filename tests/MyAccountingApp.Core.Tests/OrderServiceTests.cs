@@ -60,21 +60,37 @@ public class OrderServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task Contact_is_required_when_walk_in_is_off()
+    public async Task Contact_is_required_on_confirm_when_walk_in_is_off()
     {
         var (_, customer, product) = await _t.SeedAsync();
         OrderLineInput[] lines = [new(product.Id, 1, 2m)];
 
-        var ex = await Assert.ThrowsAsync<BusinessRuleException>(() =>
-            _t.Orders.CreateDraftAsync(OrderType.Sale, null, lines, allowWalkIn: false));
-        Assert.Equal(ErrorKeys.ContactRequired, ex.ErrorKey);
-
+        // The draft itself may have no contact yet.
         var draft = await _t.Orders.CreateDraftAsync(OrderType.Sale, null, lines);
-        ex = await Assert.ThrowsAsync<BusinessRuleException>(() =>
-            _t.Orders.UpdateDraftAsync(draft.Id, null, lines, allowWalkIn: false));
+        var ex = await Assert.ThrowsAsync<BusinessRuleException>(() =>
+            _t.Orders.ConfirmAsync(draft.Id, allowNegativeStock: true, allowWalkIn: false));
         Assert.Equal(ErrorKeys.ContactRequired, ex.ErrorKey);
 
-        await _t.Orders.UpdateDraftAsync(draft.Id, customer.Id, lines, allowWalkIn: false);
+        await _t.Orders.UpdateDraftAsync(draft.Id, customer.Id, lines);
+        await _t.Orders.ConfirmAsync(draft.Id, allowNegativeStock: true, allowWalkIn: false);
+    }
+
+    [Fact]
+    public async Task Incomplete_draft_can_be_saved_but_not_confirmed()
+    {
+        var (supplier, _, product) = await _t.SeedAsync();
+
+        var draft = await _t.Orders.CreateDraftAsync(OrderType.Purchase, null, []);
+        var ex = await Assert.ThrowsAsync<BusinessRuleException>(() => _t.Orders.ConfirmAsync(draft.Id));
+        Assert.Equal(ErrorKeys.OrderHasNoItems, ex.ErrorKey);
+
+        await _t.Orders.UpdateDraftAsync(draft.Id, supplier.Id, [new(product.Id, 0, 0m)]);
+        ex = await Assert.ThrowsAsync<BusinessRuleException>(() => _t.Orders.ConfirmAsync(draft.Id));
+        Assert.Equal(ErrorKeys.QuantityNotPositive, ex.ErrorKey);
+
+        await _t.Orders.UpdateDraftAsync(draft.Id, supplier.Id, [new(product.Id, 3, 1m)]);
+        await _t.Orders.ConfirmAsync(draft.Id);
+        Assert.Equal(3, await _t.Inventory.GetStockAsync(product.Id));
     }
 
     [Fact]

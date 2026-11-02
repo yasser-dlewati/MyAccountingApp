@@ -100,9 +100,9 @@ Confirm anyway?</value></data>
   <data name="Settings_UseCategories" xml:space="preserve"><value>Require a category for each product</value></data>
   <data name="Settings_UseCategoriesHint" xml:space="preserve"><value>When off, the category field is hidden and new products go under “General”.</value></data>
   <data name="Settings_WalkIn" xml:space="preserve"><value>Walk-in orders</value></data>
-  <data name="Settings_AllowWalkInCustomer" xml:space="preserve"><value>Allow sales without a customer</value></data>
-  <data name="Settings_AllowWalkInSupplier" xml:space="preserve"><value>Allow purchases without a supplier</value></data>
-  <data name="Settings_WalkInHint" xml:space="preserve"><value>When on, orders can use “Walk-in customer” / “Walk-in supplier”. When off, a contact must be chosen.</value></data>
+  <data name="Settings_RequireCustomer" xml:space="preserve"><value>Require a customer on sales</value></data>
+  <data name="Settings_RequireSupplier" xml:space="preserve"><value>Require a supplier on purchases</value></data>
+  <data name="Settings_WalkInHint" xml:space="preserve"><value>When off, orders can use “Walk-in customer” / “Walk-in supplier”. When on, a contact must be chosen before confirming (drafts can be saved without one).</value></data>
   <data name="Settings_Data" xml:space="preserve"><value>Data</value></data>
   <data name="Settings_DataHint" xml:space="preserve"><value>Your data is stored only on this device. Back it up regularly.</value></data>
   <data name="Settings_Backup" xml:space="preserve"><value>Back up database</value></data>
