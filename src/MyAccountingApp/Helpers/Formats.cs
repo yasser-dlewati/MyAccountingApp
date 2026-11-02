@@ -11,6 +11,18 @@ public static class Formats
     /// <summary>Whole Syrian pounds with the localized currency symbol ("SYP" / "ل.س").</summary>
     public static string Money(decimal value) => $"{value.ToString("#,0", Inv)} {LocalizationService.Get("Currency_Symbol")}";
 
+    /// <summary>Short amount for chart labels: 950, 12.5K, 3.4M (no currency).</summary>
+    public static string Compact(decimal value) => Math.Abs(value) switch
+    {
+        >= 1_000_000_000 => (value / 1_000_000_000).ToString("0.#", Inv) + "B",
+        >= 1_000_000 => (value / 1_000_000).ToString("0.#", Inv) + "M",
+        >= 1_000 => (value / 1_000).ToString("0.#", Inv) + "K",
+        _ => value.ToString("0", Inv),
+    };
+
+    /// <summary>A ratio (0.425) as a whole percentage ("43%").</summary>
+    public static string Percent(decimal ratio) => (ratio * 100).ToString("0", Inv) + "%";
+
     public static string Quantity(decimal value) => value.ToString("#,0.###", Inv);
 
     /// <summary>Plain value for an editable Entry (no thousands separators).</summary>

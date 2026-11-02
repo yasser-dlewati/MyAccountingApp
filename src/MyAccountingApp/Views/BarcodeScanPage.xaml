@@ -6,19 +6,56 @@
              x:Class="MyAccountingApp.Views.BarcodeScanPage"
              BackgroundColor="Black">
 
-    <Grid RowDefinitions="*,Auto">
-        <zxing:CameraBarcodeReaderView x:Name="Reader" Grid.RowSpan="2" BarcodesDetected="OnBarcodesDetected" />
+    <ContentPage.Resources>
+        <Style x:Key="Chip" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="#99000000" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="MinimumHeightRequest" Value="40" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <zxing:CameraBarcodeReaderView x:Name="Reader" BarcodesDetected="OnBarcodesDetected" />
 
         <!-- Aiming frame (visual only) -->
         <Border WidthRequest="280" HeightRequest="160" StrokeThickness="2" Stroke="White" StrokeShape="RoundRectangle 12"
                 BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True" />
 
-        <VerticalStackLayout Grid.Row="1" Padding="16" Spacing="12" BackgroundColor="#99000000">
-            <Label Text="{loc:Translate Scan_Hint}" TextColor="White" HorizontalTextAlignment="Center" />
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                <Button Text="{loc:Translate Scan_Torch}" Style="{StaticResource SecondaryButton}" Clicked="OnTorchClicked" />
-                <Button Grid.Column="1" Text="{loc:Translate Common_Cancel}" Clicked="OnCancelClicked" />
-            </Grid>
+        <!-- Top bar, same corners in both languages: scanned-items counter (left) and the
+             "Scan again" toggle (right; multi-scan only) or Close (single scan). -->
+        <Grid FlowDirection="LeftToRight" ColumnDefinitions="Auto,*,Auto" Padding="16,24,16,0" VerticalOptions="Start">
+            <Border x:Name="CounterChip" Style="{StaticResource Chip}" IsVisible="False">
+                <Label x:Name="CounterLabel" TextColor="White" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+            </Border>
+
+            <Border x:Name="ContinuousChip" Grid.Column="2" Style="{StaticResource Chip}" Padding="14,0,6,0" IsVisible="False">
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="{loc:Translate Scan_Again}" TextColor="White" VerticalOptions="Center" />
+                    <Switch x:Name="ContinuousSwitch" VerticalOptions="Center" OnColor="{StaticResource Primary}"
+                            ThumbColor="White" Toggled="OnContinuousToggled" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <ImageButton x:Name="CloseButton" Grid.Column="2" Source="ic_close.png" WidthRequest="44" HeightRequest="44"
+                         CornerRadius="22" Padding="10" BackgroundColor="#99000000"
+                         SemanticProperties.Description="{loc:Translate Common_Close}"
+                         Clicked="OnCloseClicked" />
+        </Grid>
+
+        <!-- Bottom: last scan's result, flashlight floating in the center -->
+        <VerticalStackLayout VerticalOptions="End" Padding="16,0,16,32" Spacing="20">
+            <Border Style="{StaticResource Chip}" HorizontalOptions="Center">
+                <Label x:Name="HintLabel" Text="{loc:Translate Scan_Hint}" TextColor="White"
+                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+            </Border>
+            <ImageButton x:Name="TorchButton" Source="ic_flash.png" WidthRequest="60" HeightRequest="60" CornerRadius="30"
+                         Padding="16" BackgroundColor="#99000000" HorizontalOptions="Center"
+                         BorderColor="White" BorderWidth="1"
+                         ToolTipProperties.Text="{loc:Translate Scan_Torch}"
+                         SemanticProperties.Description="{loc:Translate Scan_Torch}"
+                         Clicked="OnTorchClicked" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Card with a title, a donut and its legend (swatch, name, share · amount). Empty data shows Common_Empty. -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:charts="clr-namespace:MyAccountingApp.Controls.Charts"
+             x:Class="MyAccountingApp.Controls.Charts.PieChartCard"
+             x:DataType="charts:PieChartCard">
+
+    <Border x:Name="Root" Style="{StaticResource Card}">
+        <VerticalStackLayout Spacing="8">
+            <Label Text="{Binding Title}" Style="{StaticResource ItemTitle}" />
+            <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" IsVisible="{Binding Data.IsEmpty}" />
+            <Grid ColumnDefinitions="120,*" ColumnSpacing="12" IsVisible="{Binding Data.HasData}">
+                <charts:DonutChart Slices="{Binding Data.Slices}" CenterText="{Binding Data.Total}" VerticalOptions="Center" />
+                <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center"
+                                     BindableLayout.ItemsSource="{Binding Data.Slices}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="charts:ChartSlice">
+                            <Grid ColumnDefinitions="10,*" RowDefinitions="Auto,Auto" ColumnSpacing="6">
+                                <BoxView Color="{Binding Color}" WidthRequest="10" HeightRequest="10" CornerRadius="2"
+                                         VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Label}" FontSize="13" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="1" Grid.Column="1" Style="{StaticResource Caption}" FontSize="12">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Percent}" FontFamily="OpenSansSemibold" />
+                                            <Span Text=" · " />
+                                            <Span Text="{Binding ValueText}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

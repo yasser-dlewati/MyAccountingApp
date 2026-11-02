@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Bottom navigation for the main pages: Home, Invoices, [scan], Inventory, More + a raised barcode-scan button in the center.
+     Center button: tap = scan products into a new sale; long press = the quick menu (New sale / New purchase /
+     Check product), which floats over the page until an option or anything outside it is tapped.
      Row 0 is the space the scan button rises into (no background, so it shows the page behind). -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -25,7 +27,26 @@
         </Style>
     </ContentView.Resources>
 
-    <Grid RowDefinitions="18,62" ColumnDefinitions="*,*,80,*,*">
+    <Grid x:Name="Bar" RowDefinitions="18,62" ColumnDefinitions="*,*,80,*,*">
+        <!-- Quick menu (long press on the scan button): just the buttons, no background. Moved by code-behind into
+             an overlay over the whole page, sitting above the scan button. -->
+        <VerticalStackLayout x:Name="QuickMenu" Spacing="10" WidthRequest="240" HorizontalOptions="Center"
+                             VerticalOptions="End" Margin="0,0,0,92">
+            <VerticalStackLayout.Resources>
+                <Style TargetType="Button" ApplyToDerivedTypes="True">
+                    <Setter Property="Shadow">
+                        <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,3" />
+                    </Setter>
+                </Style>
+            </VerticalStackLayout.Resources>
+            <Button Text="{loc:Translate Dashboard_NewSale}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                    Clicked="OnNewSaleClicked" />
+            <Button Text="{loc:Translate Dashboard_NewPurchase}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                    Clicked="OnNewPurchaseClicked" />
+            <Button Text="{loc:Translate QuickMenu_CheckProduct}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                    Clicked="OnCheckProductClicked" />
+        </VerticalStackLayout>
+
         <Border Grid.Row="1" Grid.ColumnSpan="5" StrokeThickness="0"
                 BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
         <BoxView Grid.Row="1" Grid.ColumnSpan="5" HeightRequest="1" VerticalOptions="Start"
@@ -51,13 +72,13 @@
             </VerticalStackLayout.GestureRecognizers>
         </VerticalStackLayout>
 
-        <!-- Center: barcode scanner (icon only; long press shows "Scan") -->
-        <ImageButton Grid.RowSpan="2" Grid.Column="2" WidthRequest="56" HeightRequest="56" CornerRadius="28"
+        <!-- Center: scan into a new sale (icon only); long press opens the quick menu -->
+        <ImageButton x:Name="ScanButton" Grid.RowSpan="2" Grid.Column="2" WidthRequest="56" HeightRequest="56" CornerRadius="28"
                      HorizontalOptions="Center" VerticalOptions="Start" Padding="13" BorderWidth="4"
                      BackgroundColor="{StaticResource Primary}" Source="ic_barcode.png"
                      BorderColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
-                     ToolTipProperties.Text="{loc:Translate Scan_Button}"
-                     SemanticProperties.Description="{loc:Translate Scan_Button}"
+                     SemanticProperties.Description="{loc:Translate QuickMenu_ScanSale}"
+                     SemanticProperties.Hint="{loc:Translate QuickMenu_LongPressHint}"
                      Clicked="OnScanClicked">
             <ImageButton.Shadow>
                 <Shadow Brush="Black" Opacity="0.25" Radius="8" Offset="0,3" />

@@ -53,9 +53,11 @@ public partial class OrderEditViewModel(
                 Title = LocalizationService.Format("Order_NewOfType", EnumLabels.Of(OrderType));
                 StatusLabel = EnumLabels.Of(OrderStatus.Draft);
                 await LoadContactsAsync(null);
-                // Started from the bottom bar's scan button: the scanned product is the first line.
-                if (query.TryGetValue("productId", out var productId) && await products.GetAsync((int)productId) is { } product)
-                    await AddLineAsync(product);
+                // Started from the bottom bar's scan button: the scanned products (a repeated id = quantity + 1).
+                if (query.TryGetValue("productIds", out var productIds))
+                    foreach (var productId in (List<int>)productIds)
+                        if (await products.GetAsync(productId) is { } product)
+                            await AddLineAsync(product);
             }
             OnPropertyChanged(nameof(ContactLabel));
         });
@@ -98,32 +100,43 @@ public partial class OrderEditViewModel(
         Total = Formats.Money(Lines.Sum(l => l.QuantityValue * Math.Max(l.UnitPriceValue, 0)));
 
     [RelayCommand]
-    private Task SearchProductsAsync() => RunAsync(() => FindProductAsync(scanned: false));
+    private Task SearchProductsAsync() => RunAsync(FindProductAsync);
 
+    /// <summary>Multi-scan: every scanned product is added (again = quantity + 1).</summary>
     [RelayCommand]
-    private async Task ScanProductAsync()
+    private Task ScanProductAsync() => IsDraft ? scanner.ScanManyAsync(AddScannedAsync) : Task.CompletedTask;
+
+    /// <summary>Adds one scanned barcode's product; returns the message the scanner shows for it.</summary>
+    private async Task<ScanOutcome> AddScannedAsync(string barcode)
     {
-        var barcode = await scanner.ScanAsync();
-        if (barcode is null) return;
-        ProductSearchText = barcode;
-        await RunAsync(() => FindProductAsync(scanned: true));
+        try
+        {
+            var product = await products.GetByBarcodeAsync(barcode);
+            if (product is not { IsActive: true })
+                return new(false, LocalizationService.Format("Scan_ProductNotFound", barcode));
+            await AddLineAsync(product);
+            var quantity = Lines.First(l => l.ProductId == product.Id).QuantityValue;
+            return new(true, LocalizationService.Format("Scan_Added", product.Name, Formats.Quantity(quantity)));
+        }
+        catch (BusinessRuleException ex)
+        {
+            return new(false, LocalizationService.Format(ex.ErrorKey, ex.Args));
+        }
     }
 
-    private async Task FindProductAsync(bool scanned)
+    private async Task FindProductAsync()
     {
         ProductResults.Clear();
         if (string.IsNullOrWhiteSpace(ProductSearchText)) return;
 
         var found = await products.SearchAsync(ProductSearchText);
-        // A scanned / typed barcode that matches exactly is added straight away (again = quantity + 1).
+        // A typed barcode that matches exactly is added straight away (again = quantity + 1).
         if (found.Count > 0 && found[0].Barcode == ProductSearchText.Trim())
         {
             await AddLineAsync(found[0]);
             return;
         }
         foreach (var p in found.Take(20)) ProductResults.Add(p);
-        if (scanned)
-            await Dialogs.AlertAsync(LocalizationService.Format("Scan_ProductNotFound", ProductSearchText.Trim()));
     }
 
     [RelayCommand]

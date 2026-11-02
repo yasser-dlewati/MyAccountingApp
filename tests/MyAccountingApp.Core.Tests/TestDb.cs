@@ -25,6 +25,7 @@ public sealed class TestDb : IDbContextFactory<AppDbContext>, IDisposable
         Products = new ProductService(this);
         Inventory = new InventoryService(this);
         Orders = new OrderService(this);
+        Reports = new ReportService(this);
     }
 
     public CategoryService Categories { get; }
@@ -32,6 +33,7 @@ public sealed class TestDb : IDbContextFactory<AppDbContext>, IDisposable
     public ProductService Products { get; }
     public InventoryService Inventory { get; }
     public OrderService Orders { get; }
+    public ReportService Reports { get; }
 
     public AppDbContext CreateDbContext() => new(_options);
 

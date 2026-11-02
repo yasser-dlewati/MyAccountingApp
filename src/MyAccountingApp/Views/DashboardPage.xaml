@@ -4,69 +4,153 @@
              xmlns:loc="clr-namespace:MyAccountingApp.Localization"
              xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
              xmlns:controls="clr-namespace:MyAccountingApp.Controls"
+             xmlns:charts="clr-namespace:MyAccountingApp.Controls.Charts"
              x:Class="MyAccountingApp.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Title="{loc:Translate Nav_Dashboard}">
 
-    <Grid RowDefinitions="*,Auto,Auto">
+    <ContentPage.Resources>
+        <Style x:Key="KpiCaption" TargetType="Label" BasedOn="{StaticResource Caption}">
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+        <Style x:Key="KpiSmall" TargetType="Label" BasedOn="{StaticResource KpiValue}">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="LineBreakMode" Value="TailTruncation" />
+        </Style>
+        <Style x:Key="PeriodTab" TargetType="Button" BasedOn="{StaticResource TabButton}">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HeightRequest" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto">
         <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy, Mode=OneWay}">
             <ScrollView>
                 <VerticalStackLayout Padding="16" Spacing="12">
-                    <Label Text="{loc:Translate Dashboard_Today}" Style="{StaticResource SectionTitle}" />
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+
+                    <!-- Period: Day / Week / Month / Year (all KPIs and charts below follow it) -->
+                    <Border Style="{StaticResource Card}" Padding="4">
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="4">
+                            <Button Text="{loc:Translate Period_Day}" Style="{StaticResource PeriodTab}"
+                                    Command="{Binding SelectPeriodCommand}" CommandParameter="Day">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsDay}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button Grid.Column="1" Text="{loc:Translate Period_Week}" Style="{StaticResource PeriodTab}"
+                                    Command="{Binding SelectPeriodCommand}" CommandParameter="Week">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsWeek}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button Grid.Column="2" Text="{loc:Translate Period_Month}" Style="{StaticResource PeriodTab}"
+                                    Command="{Binding SelectPeriodCommand}" CommandParameter="Month">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsMonth}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button Grid.Column="3" Text="{loc:Translate Period_Year}" Style="{StaticResource PeriodTab}"
+                                    Command="{Binding SelectPeriodCommand}" CommandParameter="Year">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsYear}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Label Text="{Binding RangeText}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
+
+                    <!-- KPIs -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                         <Border Style="{StaticResource Card}">
                             <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Sales}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding TodayRevenue}" Style="{StaticResource KpiValue}" />
+                                <Label Text="{loc:Translate Dashboard_Sales}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding Revenue}" Style="{StaticResource KpiSmall}" />
                             </VerticalStackLayout>
                         </Border>
                         <Border Grid.Column="1" Style="{StaticResource Card}">
                             <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Profit}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding TodayProfit}" Style="{StaticResource KpiValue}" />
+                                <Label Text="{loc:Translate Dashboard_Profit}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding Profit}" Style="{StaticResource KpiSmall}" />
                             </VerticalStackLayout>
                         </Border>
                         <Border Grid.Row="1" Style="{StaticResource Card}">
                             <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Orders}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding TodayOrders}" Style="{StaticResource KpiValue}" />
+                                <Label Text="{loc:Translate Dashboard_Purchases}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding Purchases}" Style="{StaticResource KpiSmall}" />
                             </VerticalStackLayout>
                         </Border>
                         <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
                             <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_ItemsSold}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding TodayItemsSold}" Style="{StaticResource KpiValue}" />
+                                <Label Text="{loc:Translate Dashboard_Margin}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding Margin}" Style="{StaticResource KpiSmall}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="2" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_SaleInvoices}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding SaleCount}" Style="{StaticResource KpiSmall}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_PurchaseInvoices}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding PurchaseCount}" Style="{StaticResource KpiSmall}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="3" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_ItemsSold}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding ItemsSold}" Style="{StaticResource KpiSmall}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource Card}">
+                            <VerticalStackLayout>
+                                <Label Text="{loc:Translate Dashboard_AverageSale}" Style="{StaticResource KpiCaption}" />
+                                <Label Text="{Binding AverageSale}" Style="{StaticResource KpiSmall}" />
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
 
-                    <Label Text="{loc:Translate Dashboard_ThisMonth}" Style="{StaticResource SectionTitle}" />
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
-                        <Border Style="{StaticResource Card}">
-                            <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Sales}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding MonthRevenue}" Style="{StaticResource KpiValue}" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Column="1" Style="{StaticResource Card}">
-                            <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Profit}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding MonthProfit}" Style="{StaticResource KpiValue}" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Row="1" Style="{StaticResource Card}">
-                            <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_Orders}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding MonthOrders}" Style="{StaticResource KpiValue}" />
-                            </VerticalStackLayout>
-                        </Border>
-                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
-                            <VerticalStackLayout>
-                                <Label Text="{loc:Translate Dashboard_ItemsSold}" Style="{StaticResource Caption}" />
-                                <Label Text="{Binding MonthItemsSold}" Style="{StaticResource KpiValue}" />
-                            </VerticalStackLayout>
-                        </Border>
-                    </Grid>
+                    <!-- Movement over time (tap a bar for its value) -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{loc:Translate Dashboard_SalesTrend}" Style="{StaticResource ItemTitle}" />
+                            <charts:TrendChart Points="{Binding SalesTrend}" Slot="0" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{loc:Translate Dashboard_PurchasesTrend}" Style="{StaticResource ItemTitle}" />
+                            <charts:TrendChart Points="{Binding PurchasesTrend}" Slot="1" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{loc:Translate Dashboard_ProfitTrend}" Style="{StaticResource ItemTitle}" />
+                            <charts:TrendChart Points="{Binding ProfitTrend}" Slot="2" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Breakdowns -->
+                    <charts:PieChartCard Title="{loc:Translate Dashboard_TopSold}" Data="{Binding TopSold}" />
+                    <charts:PieChartCard Title="{loc:Translate Dashboard_TopPurchased}" Data="{Binding TopPurchased}" />
+                    <charts:PieChartCard Title="{loc:Translate Dashboard_SalesByCategory}" Data="{Binding SalesByCategory}"
+                                         IsVisible="{Binding ShowCategories}" />
+                    <charts:PieChartCard Title="{loc:Translate Dashboard_SalesByCustomer}" Data="{Binding SalesByCustomer}" />
+                    <charts:PieChartCard Title="{loc:Translate Dashboard_PurchasesBySupplier}" Data="{Binding PurchasesBySupplier}" />
 
                     <Label Text="{loc:Translate Dashboard_LowStock}" Style="{StaticResource SectionTitle}" />
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding LowStock}">
@@ -94,12 +178,6 @@
             </ScrollView>
         </RefreshView>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="8" Padding="16,8,16,0">
-            <Button Text="{loc:Translate Dashboard_NewSale}" Command="{Binding NewSaleCommand}" />
-            <Button Grid.Column="1" Text="{loc:Translate Dashboard_NewPurchase}" Style="{StaticResource SecondaryButton}"
-                    Command="{Binding NewPurchaseCommand}" />
-        </Grid>
-
-        <controls:BottomNavBar Grid.Row="2" Current="dashboard" />
+        <controls:BottomNavBar Grid.Row="1" Current="dashboard" />
     </Grid>
 </ContentPage>

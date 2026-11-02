@@ -5,6 +5,9 @@ using ZXing.Net.Maui;
 
 namespace MyAccountingApp.AppServices;
 
+/// <summary>What multi-scan did with one barcode: whether an item was added (counted) and the message to show.</summary>
+public record ScanOutcome(bool Added, string Message);
+
 /// <summary>Camera barcode scanning: checks the camera permission, then shows <see cref="BarcodeScanPage"/> modally.</summary>
 public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScannerService> logger)
 {
@@ -14,13 +17,7 @@ public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScanner
     /// </summary>
     public async Task<string?> ScanAsync()
     {
-        if (!BarcodeScanning.IsSupported)
-        {
-            logger.LogWarning("Barcode scanning not supported on this device");
-            await dialogs.AlertAsync(LocalizationService.Get("Scan_NoCamera"));
-            return null;
-        }
-        if (!await EnsureCameraPermissionAsync())
+        if (!await CanScanAsync())
             return null;
 
         var page = new BarcodeScanPage();
@@ -31,6 +28,38 @@ public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScanner
         else
             logger.LogInformation("Scanned {Barcode}", barcode);
         return barcode;
+    }
+
+    /// <summary>
+    /// Multi-scan: every barcode goes to <paramref name="onScanned"/> and its message is shown. With the page's
+    /// "Scan again" toggle off the scanner closes after the first added item; on, it keeps scanning.
+    /// </summary>
+    public async Task ScanManyAsync(Func<string, Task<ScanOutcome>> onScanned)
+    {
+        if (!await CanScanAsync())
+            return;
+
+        var count = 0;
+        var page = new BarcodeScanPage(barcode =>
+        {
+            count++;
+            logger.LogInformation("Scanned {Barcode} (multi-scan #{Count})", barcode, count);
+            return onScanned(barcode);
+        });
+        await Shell.Current.Navigation.PushModalAsync(page);
+        await page.Result;
+        logger.LogInformation("Multi-scan closed after {Count} barcodes", count);
+    }
+
+    private async Task<bool> CanScanAsync()
+    {
+        if (!BarcodeScanning.IsSupported)
+        {
+            logger.LogWarning("Barcode scanning not supported on this device");
+            await dialogs.AlertAsync(LocalizationService.Get("Scan_NoCamera"));
+            return false;
+        }
+        return await EnsureCameraPermissionAsync();
     }
 
     private async Task<bool> EnsureCameraPermissionAsync()

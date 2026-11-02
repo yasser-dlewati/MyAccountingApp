@@ -4,12 +4,11 @@ using CommunityToolkit.Mvvm.Input;
 using MyAccountingApp.AppServices;
 using MyAccountingApp.Core.Services;
 using MyAccountingApp.Helpers;
-using MyAccountingApp.Localization;
 
 namespace MyAccountingApp.ViewModels;
 
 public partial class ProductsViewModel(
-    ProductService products, InventoryService inventory, BarcodeScannerService scanner, DialogService dialogs)
+    ProductService products, InventoryService inventory, QuickScanService quickScan, DialogService dialogs)
     : BaseViewModel(dialogs)
 {
     public ObservableCollection<ProductRow> Items { get; } = [];
@@ -44,37 +43,9 @@ public partial class ProductsViewModel(
     [RelayCommand]
     private Task AddAsync() => GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = 0 });
 
-    /// <summary>
-    /// Scanned barcode → show that product's details (even if inactive) with an Edit button,
-    /// or offer to create it.
-    /// </summary>
+    /// <summary>Scanned barcode → that product's details with an Edit button, or offer to create it.</summary>
     [RelayCommand]
-    private async Task ScanAsync()
-    {
-        var barcode = await scanner.ScanAsync();
-        if (barcode is null) return;
-
-        var found = await products.GetByBarcodeAsync(barcode);
-        if (found is null)
-        {
-            if (await Dialogs.ConfirmAsync(LocalizationService.Format("Scan_CreateProductPrompt", barcode)))
-                await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = 0, ["barcode"] = barcode });
-            return;
-        }
-
-        var product = await products.GetAsync(found.Id) ?? found;
-        var details = LocalizationService.Format("Product_Details",
-            product.Barcode,
-            Formats.Money(product.Price),
-            Formats.Quantity(await inventory.GetStockAsync(product.Id)),
-            Formats.Money(await inventory.GetLastPurchaseCostAsync(product.Id)),
-            DisplayNames.CategoryOf(product),
-            product.Supplier?.Name ?? LocalizationService.Get("Product_NoSupplier"),
-            LocalizationService.Get(product.IsActive ? "Product_Active" : "Product_Inactive"));
-
-        if (await Dialogs.DetailsAsync(product.Name, details, LocalizationService.Get("Product_Edit")))
-            await GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = product.Id });
-    }
+    private Task ScanAsync() => quickScan.CheckProductAsync();
 
     [RelayCommand]
     private Task OpenAsync(ProductRow row) =>

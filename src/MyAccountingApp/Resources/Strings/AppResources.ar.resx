@@ -87,8 +87,6 @@
   <data name="Stock_LastCost" xml:space="preserve"><value>آخر تكلفة</value></data>
   <data name="Dashboard_NewSale" xml:space="preserve"><value>بيع جديد</value></data>
   <data name="Dashboard_NewPurchase" xml:space="preserve"><value>شراء جديد</value></data>
-  <data name="Dashboard_Today" xml:space="preserve"><value>اليوم</value></data>
-  <data name="Dashboard_ThisMonth" xml:space="preserve"><value>هذا الشهر</value></data>
   <data name="Dashboard_Sales" xml:space="preserve"><value>المبيعات</value></data>
   <data name="Dashboard_Profit" xml:space="preserve"><value>الربح</value></data>
   <data name="Dashboard_Orders" xml:space="preserve"><value>الفواتير</value></data>
@@ -128,7 +126,6 @@
   <data name="Scan_PermissionRationale" xml:space="preserve"><value>نحتاج إلى الكاميرا لمسح الباركود. تُستخدم في هذه الشاشة فقط ولا يتم تسجيل أو إرسال أي شيء.</value></data>
   <data name="Scan_PermissionDenied" xml:space="preserve"><value>الوصول إلى الكاميرا متوقف لهذا التطبيق. هل تريد فتح إعدادات التطبيق للسماح به؟</value></data>
   <data name="Scan_ProductNotFound" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}.</value></data>
-  <data name="Scan_OpenProduct" xml:space="preserve"><value>فتح المنتج</value></data>
   <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}. هل تريد إنشاءه؟</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>الاسم مطلوب.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>رقم الهاتف مطلوب.</value></data>
@@ -166,4 +163,28 @@
   <data name="Product_Active" xml:space="preserve"><value>نشط</value></data>
   <data name="Product_Inactive" xml:space="preserve"><value>غير نشط</value></data>
   <data name="Common_Close" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="Period_Day" xml:space="preserve"><value>يوم</value></data>
+  <data name="Period_Week" xml:space="preserve"><value>أسبوع</value></data>
+  <data name="Period_Month" xml:space="preserve"><value>شهر</value></data>
+  <data name="Period_Year" xml:space="preserve"><value>سنة</value></data>
+  <data name="Dashboard_Purchases" xml:space="preserve"><value>المشتريات</value></data>
+  <data name="Dashboard_Margin" xml:space="preserve"><value>هامش الربح</value></data>
+  <data name="Dashboard_SaleInvoices" xml:space="preserve"><value>فواتير البيع</value></data>
+  <data name="Dashboard_PurchaseInvoices" xml:space="preserve"><value>فواتير الشراء</value></data>
+  <data name="Dashboard_AverageSale" xml:space="preserve"><value>متوسط الفاتورة</value></data>
+  <data name="Dashboard_SalesTrend" xml:space="preserve"><value>حركة المبيعات</value></data>
+  <data name="Dashboard_PurchasesTrend" xml:space="preserve"><value>حركة المشتريات</value></data>
+  <data name="Dashboard_ProfitTrend" xml:space="preserve"><value>حركة الربح</value></data>
+  <data name="Dashboard_TopSold" xml:space="preserve"><value>المنتجات الأكثر مبيعاً</value></data>
+  <data name="Dashboard_TopPurchased" xml:space="preserve"><value>المنتجات الأكثر شراءً</value></data>
+  <data name="Dashboard_SalesByCategory" xml:space="preserve"><value>المبيعات حسب التصنيف</value></data>
+  <data name="Dashboard_SalesByCustomer" xml:space="preserve"><value>المبيعات حسب العميل</value></data>
+  <data name="Dashboard_PurchasesBySupplier" xml:space="preserve"><value>المشتريات حسب المورد</value></data>
+  <data name="Dashboard_Other" xml:space="preserve"><value>أخرى</value></data>
+  <data name="Scan_Again" xml:space="preserve"><value>مسح مرة أخرى</value></data>
+  <data name="Scan_Count" xml:space="preserve"><value>العناصر: {0}</value></data>
+  <data name="Scan_Added" xml:space="preserve"><value>تمت إضافة {0} (الكمية {1})</value></data>
+  <data name="QuickMenu_ScanSale" xml:space="preserve"><value>مسح بيع جديد</value></data>
+  <data name="QuickMenu_LongPressHint" xml:space="preserve"><value>اضغط مطولاً لمزيد من الخيارات</value></data>
+  <data name="QuickMenu_CheckProduct" xml:space="preserve"><value>فحص منتج / المخزون</value></data>
 </root>
