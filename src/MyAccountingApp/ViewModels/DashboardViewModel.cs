@@ -38,7 +38,7 @@ public partial class DashboardViewModel(InventoryService inventory, DialogServic
         LowStock.Clear();
         foreach (var r in await inventory.GetStockReportAsync(LowStockThreshold))
             LowStock.Add(new StockLine(r.ProductName, r.Barcode, Formats.Quantity(r.Quantity),
-                Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0 ? Colors.IndianRed : null));
+                Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0));
     });
 
     [RelayCommand]

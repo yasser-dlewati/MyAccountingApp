@@ -66,8 +66,13 @@
                                 <Border Style="{StaticResource Card}" Margin="0,4">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label Text="{Binding Name}" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text="{Binding Quantity}" Style="{StaticResource Amount}"
-                                               TextColor="{Binding QuantityColor, TargetNullValue={AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}}" />
+                                        <Label Grid.Column="1" Text="{Binding Quantity}" Style="{StaticResource Amount}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsOutOfStock}" Value="True">
+                                                    <Setter Property="TextColor" Value="IndianRed" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

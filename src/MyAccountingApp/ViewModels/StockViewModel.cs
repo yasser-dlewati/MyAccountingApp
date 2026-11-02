@@ -27,9 +27,9 @@ public partial class StockViewModel(InventoryService inventory, DialogService di
         Items.Clear();
         foreach (var r in rows)
             Items.Add(new StockLine(r.ProductName, r.Barcode, Formats.Quantity(r.Quantity),
-                Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0 ? Colors.IndianRed : null));
+                Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0));
         TotalValue = Formats.Money(rows.Where(r => r.Quantity > 0).Sum(r => r.CostValue));
     });
 }
 
-public record StockLine(string Name, string Barcode, string Quantity, string LastCost, string Value, Color? QuantityColor);
+public record StockLine(string Name, string Barcode, string Quantity, string LastCost, string Value, bool IsOutOfStock);
