@@ -16,7 +16,7 @@
         <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
             <!-- Tabs: sales (+ returns) / purchases (+ returns) -->
             <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="4"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray900}}">
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
                     <Button Text="{loc:Translate Orders_SalesTab}" Style="{StaticResource TabButton}" Command="{Binding ShowSalesCommand}">
                         <Button.Triggers>

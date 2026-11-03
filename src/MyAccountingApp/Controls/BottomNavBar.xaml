@@ -2,11 +2,13 @@
 <!-- Bottom navigation for the main pages: Home, Invoices, [scan], Inventory, More + a raised barcode-scan button in the center.
      Center button: tap = scan products into a new sale; long press = the quick menu (New sale / New purchase /
      Check product), which floats over the page until an option or anything outside it is tapped.
-     Row 0 is the space the scan button rises into (no background, so it shows the page behind). -->
+     Row 0 is the space the scan button rises into (no background, so it shows the page behind); the negative top
+     margin pulls it over the page content, so the content reaches the bar's top line and only the button floats. -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:MyAccountingApp.Localization"
-             x:Class="MyAccountingApp.Controls.BottomNavBar">
+             x:Class="MyAccountingApp.Controls.BottomNavBar"
+             Margin="0,-18,0,0">
 
     <ContentView.Resources>
         <Style x:Key="TabIcon" TargetType="Path">
@@ -28,23 +30,27 @@
     </ContentView.Resources>
 
     <Grid x:Name="Bar" RowDefinitions="18,62" ColumnDefinitions="*,*,80,*,*">
-        <!-- Quick menu (long press on the scan button): just the buttons, no background. Moved by code-behind into
-             an overlay over the whole page, sitting above the scan button. -->
-        <VerticalStackLayout x:Name="QuickMenu" Spacing="10" WidthRequest="240" HorizontalOptions="Center"
-                             VerticalOptions="End" Margin="0,0,0,92">
-            <VerticalStackLayout.Resources>
-                <Style TargetType="Button" ApplyToDerivedTypes="True">
-                    <Setter Property="Shadow">
-                        <Shadow Brush="Black" Opacity="0.3" Radius="8" Offset="0,3" />
-                    </Setter>
-                </Style>
-            </VerticalStackLayout.Resources>
-            <Button Text="{loc:Translate Dashboard_NewSale}" BackgroundColor="{StaticResource Primary}" TextColor="White"
-                    Clicked="OnNewSaleClicked" />
-            <Button Text="{loc:Translate Dashboard_NewPurchase}" BackgroundColor="{StaticResource Primary}" TextColor="White"
-                    Clicked="OnNewPurchaseClicked" />
-            <Button Text="{loc:Translate QuickMenu_CheckProduct}" BackgroundColor="{StaticResource Primary}" TextColor="White"
-                    Clicked="OnCheckProductClicked" />
+        <!-- Quick menu (long press on the scan button): the buttons in a speech bubble whose pointer touches the scan
+             button. Moved by code-behind into an overlay over the whole page, sitting above the scan button. -->
+        <VerticalStackLayout x:Name="QuickMenu" WidthRequest="260" HorizontalOptions="Center"
+                             VerticalOptions="End" Margin="0,0,0,82">
+            <Border StrokeShape="RoundRectangle 16" StrokeThickness="0" Padding="12"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray600}}">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="12" Offset="0,4" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="8">
+                    <Button Text="{loc:Translate Dashboard_NewSale}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                            Clicked="OnNewSaleClicked" />
+                    <Button Text="{loc:Translate Dashboard_NewPurchase}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                            Clicked="OnNewPurchaseClicked" />
+                    <Button Text="{loc:Translate QuickMenu_CheckProduct}" BackgroundColor="{StaticResource Primary}" TextColor="White"
+                            Clicked="OnCheckProductClicked" />
+                </VerticalStackLayout>
+            </Border>
+            <!-- Pointer: overlaps the bubble by 1 so no seam shows -->
+            <Polygon Points="0,0 24,0 12,12" HorizontalOptions="Center" Margin="0,-1,0,0"
+                     Fill="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray600}}" />
         </VerticalStackLayout>
 
         <Border Grid.Row="1" Grid.ColumnSpan="5" StrokeThickness="0"

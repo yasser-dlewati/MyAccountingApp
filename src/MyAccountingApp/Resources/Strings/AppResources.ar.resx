@@ -76,8 +76,7 @@
   <data name="Order_Confirm" xml:space="preserve"><value>تأكيد</value></data>
   <data name="Order_DeleteDraft" xml:space="preserve"><value>حذف المسودة</value></data>
   <data name="Order_CancelOrder" xml:space="preserve"><value>إلغاء الفاتورة</value></data>
-  <data name="Order_ConfirmPrompt" xml:space="preserve"><value>تأكيد الفاتورة؟ سيتم تحديث المخزون ولن يمكن تعديلها بعد ذلك.</value></data>
-  <data name="Order_ShortageConfirm" xml:space="preserve"><value>المخزون غير كافٍ (المتوفر / المطلوب):
+  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>التكلفة أعلى من سعر البيع (التكلفة / سعر البيع):
 {0}
 
 التأكيد على أي حال؟</value></data>

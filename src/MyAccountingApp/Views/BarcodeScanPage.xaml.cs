@@ -148,6 +148,9 @@ public partial class BarcodeScanPage : ContentPage
         Reader.IsTorchOn = false;
         // Release the camera right away (otherwise it stays open until the handler is collected).
         Reader.Handler?.DisconnectHandler();
-        _result.TrySetResult(_scanned);
+        // Closed by CloseAsync: it completes the result once the pop has finished. Completing it here (the pop is
+        // still running) let callers navigate while the modal was on the stack, and Shell then popped their page too.
+        if (!_closing)
+            _result.TrySetResult(_scanned);
     }
 }

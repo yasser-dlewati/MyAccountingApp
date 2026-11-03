@@ -180,7 +180,7 @@ public partial class OrderEditViewModel(
     private Task ConfirmAsync() => RunAsync(async () =>
     {
         await SaveDraftAsync();
-        // Drafts may be incomplete; check before asking the user to confirm.
+        // Drafts may be incomplete; check before asking anything.
         if (Contact is null or { Id: 0 } && !WalkInSettings.IsAllowed(OrderType))
             throw new BusinessRuleException(ErrorKeys.ContactRequired);
         if (Lines.Count == 0)
@@ -188,29 +188,26 @@ public partial class OrderEditViewModel(
         if (Lines.Any(l => l.QuantityValue <= 0))
             throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
 
-        var allowNegative = false;
         var shortages = await orders.GetShortagesAsync(_orderId);
-        if (shortages.Count > 0)
+        // Settings → Inventory: selling below zero turned off.
+        if (shortages.Count > 0 && !StockSettings.AllowNegative)
+            throw new BusinessRuleException(ErrorKeys.InsufficientStock, "\n" + string.Join("\n", shortages.Select(s =>
+                $"{s.ProductName}: {Formats.Quantity(s.Available)} / {Formats.Quantity(s.Requested)}")));
+
+        // The only question asked: lines whose cost is above the selling price.
+        var belowCost = await orders.GetBelowCostLinesAsync(_orderId);
+        if (belowCost.Count > 0)
         {
-            var detail = string.Join("\n", shortages.Select(s =>
-                $"{s.ProductName}: {Formats.Quantity(s.Available)} / {Formats.Quantity(s.Requested)}"));
-            // Settings → Inventory: selling below zero turned off.
-            if (!StockSettings.AllowNegative)
-                throw new BusinessRuleException(ErrorKeys.InsufficientStock, "\n" + detail);
-            if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_ShortageConfirm", detail)))
+            var detail = string.Join("\n", belowCost.Select(l =>
+                $"{l.ProductName}: {Formats.Money(l.Cost)} / {Formats.Money(l.SellingPrice)}"));
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_BelowCostConfirm", detail)))
             {
                 await LoadOrderAsync(_orderId);
                 return;
             }
-            allowNegative = true;
-        }
-        else if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_ConfirmPrompt")))
-        {
-            await LoadOrderAsync(_orderId);
-            return;
         }
 
-        await orders.ConfirmAsync(_orderId, allowNegative, WalkInSettings.IsAllowed(OrderType));
+        await orders.ConfirmAsync(_orderId, allowNegativeStock: true, WalkInSettings.IsAllowed(OrderType));
         await LoadOrderAsync(_orderId);
     });
 
@@ -235,6 +232,23 @@ public partial class OrderEditViewModel(
             await GoBackAsync();
         });
     }
+
+    /// <summary>
+    /// Back (toolbar arrow or system back): a draft is kept as it is when it has something worth keeping
+    /// (an item or a real, non walk-in contact); otherwise it is dropped (deleted if it was already saved).
+    /// </summary>
+    [RelayCommand]
+    private Task BackAsync() => RunAsync(async () =>
+    {
+        if (IsDraft)
+        {
+            if (Lines.Count > 0 || Contact is { Id: not 0 })
+                await SaveDraftAsync();
+            else if (_orderId != 0)
+                await orders.DeleteDraftAsync(_orderId);
+        }
+        await GoBackAsync();
+    });
 
     private async Task SaveDraftAsync()
     {

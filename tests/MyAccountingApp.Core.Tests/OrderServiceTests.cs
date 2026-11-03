@@ -41,6 +41,29 @@ public class OrderServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task Below_cost_lines_compare_cost_with_selling_price()
+    {
+        var (supplier, customer, product) = await _t.SeedAsync(); // selling price 2
+
+        // Purchase: its price is the cost, compared with the product's selling price.
+        var dearPurchase = await _t.Orders.CreateDraftAsync(OrderType.Purchase, supplier.Id, [new OrderLineInput(product.Id, 1, 3m)]);
+        Assert.Equal(3m, Assert.Single(await _t.Orders.GetBelowCostLinesAsync(dearPurchase.Id)).Cost);
+        var cheapPurchase = await _t.Orders.CreateDraftAsync(OrderType.Purchase, supplier.Id, [new OrderLineInput(product.Id, 10, 1.5m)]);
+        Assert.Empty(await _t.Orders.GetBelowCostLinesAsync(cheapPurchase.Id));
+        await _t.Orders.ConfirmAsync(cheapPurchase.Id);
+
+        // Sale: its price is compared with the last purchase cost (1.5).
+        var loss = await _t.Orders.CreateDraftAsync(OrderType.Sale, customer.Id, [new OrderLineInput(product.Id, 1, 1m)]);
+        var line = Assert.Single(await _t.Orders.GetBelowCostLinesAsync(loss.Id));
+        Assert.Equal((1.5m, 1m), (line.Cost, line.SellingPrice));
+        var profit = await _t.Orders.CreateDraftAsync(OrderType.Sale, customer.Id, [new OrderLineInput(product.Id, 1, 2m)]);
+        Assert.Empty(await _t.Orders.GetBelowCostLinesAsync(profit.Id));
+
+        var saleReturn = await _t.Orders.CreateDraftAsync(OrderType.SaleReturn, customer.Id, [new OrderLineInput(product.Id, 1, 1m)]);
+        Assert.Empty(await _t.Orders.GetBelowCostLinesAsync(saleReturn.Id));
+    }
+
+    [Fact]
     public async Task Walk_in_orders_need_no_contact()
     {
         var (_, _, product) = await _t.SeedAsync();

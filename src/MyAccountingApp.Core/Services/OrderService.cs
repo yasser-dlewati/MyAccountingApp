@@ -11,6 +11,8 @@ public record OrderLineInput(int ProductId, decimal Quantity, decimal UnitPrice)
 
 public record ShortageInfo(int ProductId, string ProductName, decimal Available, decimal Requested);
 
+public record BelowCostInfo(int ProductId, string ProductName, decimal Cost, decimal SellingPrice);
+
 public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<OrderService>? logger = null)
 {
     private readonly ILogger _log = logger ?? NullLogger<OrderService>.Instance;
@@ -122,6 +124,31 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
         await using var db = await dbFactory.CreateDbContextAsync();
         var order = await LoadAsync(db, orderId);
         return await GetShortagesAsync(db, order);
+    }
+
+    /// <summary>
+    /// Lines whose cost is above the selling price: on a sale, line price below the last purchase cost; on a
+    /// purchase, line price (the cost) above the product's selling price. Empty for returns.
+    /// </summary>
+    public async Task<List<BelowCostInfo>> GetBelowCostLinesAsync(int orderId)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        var order = await LoadAsync(db, orderId);
+        if (order.OrderType is not (OrderType.Sale or OrderType.Purchase))
+            return [];
+
+        var result = new List<BelowCostInfo>();
+        foreach (var item in order.Items)
+        {
+            var product = await db.Products.AsNoTracking().Where(p => p.Id == item.ProductId)
+                .Select(p => new { p.Name, p.Price }).FirstAsync();
+            var (cost, selling) = order.OrderType == OrderType.Sale
+                ? (await InventoryService.GetLastPurchaseCostAsync(db, item.ProductId), item.UnitPrice)
+                : (item.UnitPrice, product.Price);
+            if (cost > selling)
+                result.Add(new BelowCostInfo(item.ProductId, product.Name, cost, selling));
+        }
+        return result;
     }
 
     /// <summary>

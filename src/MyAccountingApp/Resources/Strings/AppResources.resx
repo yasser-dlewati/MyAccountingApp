@@ -76,8 +76,7 @@
   <data name="Order_Confirm" xml:space="preserve"><value>Confirm</value></data>
   <data name="Order_DeleteDraft" xml:space="preserve"><value>Delete draft</value></data>
   <data name="Order_CancelOrder" xml:space="preserve"><value>Cancel order</value></data>
-  <data name="Order_ConfirmPrompt" xml:space="preserve"><value>Confirm this order? Stock will be updated and the order can no longer be edited.</value></data>
-  <data name="Order_ShortageConfirm" xml:space="preserve"><value>Not enough stock (available / requested):
+  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>Cost is above the selling price (cost / selling price):
 {0}
 
 Confirm anyway?</value></data>
