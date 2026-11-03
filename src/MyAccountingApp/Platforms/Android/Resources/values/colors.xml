@@ -5,4 +5,7 @@
     <color name="colorAccent">#1B5E20</color>
     <!-- Splash background, matches the page background (values-night has the dark one). -->
     <color name="app_splash_background">#FFFFFF</color>
+    <!-- Splash "Created by" text and version (values-night has the ones for the dark background). -->
+    <color name="splash_branding_text">#424242</color>
+    <color name="splash_version_text">#757575</color>
 </resources>

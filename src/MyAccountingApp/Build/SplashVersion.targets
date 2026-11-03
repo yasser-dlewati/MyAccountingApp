@@ -1,0 +1,79 @@
+<Project>
+  <!--
+    Android splash: generates Resources/drawable/splash_version.xml, a vector drawable that shows
+    "v$(ApplicationDisplayVersion)" (Android drawables can't draw text, so the digits are OpenSans-Regular glyph
+    outlines at font size 100). Used by Platforms/Android/Resources/drawable/splash_branding.xml under the
+    "Created by" text and the YASDLE logo. Color = @color/splash_version_text (values / values-night).
+  -->
+  <UsingTask TaskName="GenerateSplashVersionDrawable" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Version ParameterType="System.String" Required="true" />
+      <OutputFile ParameterType="System.String" Required="true" />
+      <HeightDp ParameterType="System.Double" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.Globalization" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+            // advance, path (baseline at y = 0, digits span y -72.5 .. 1)
+            var glyphs = new Dictionary<string, (float Advance, string Path)>
+            {
+                ["0"] = (57f, "M52.2 -35.8Q52.2 -17.3 46.4 -8.2Q40.5 1 28.5 1Q17 1 11 -8.4Q5 -17.7 5 -35.8Q5 -54.4 10.8 -63.5Q16.6 -72.5 28.5 -72.5Q40.1 -72.5 46.2 -63.1Q52.2 -53.7 52.2 -35.8ZM13.2 -35.8Q13.2 -20.2 16.8 -13.1Q20.5 -6 28.5 -6Q36.6 -6 40.3 -13.2Q43.9 -20.4 43.9 -35.8Q43.9 -51.2 40.3 -58.3Q36.6 -65.5 28.5 -65.5Q20.5 -65.5 16.8 -58.4Q13.2 -51.4 13.2 -35.8Z"),
+                ["1"] = (57f, "M34.9 0L27 0L27 -50.9Q27 -57.2 27.4 -62.9Q26.4 -61.9 25.1 -60.7Q23.8 -59.6 13.5 -51.2L9.2 -56.8L28.1 -71.4L34.9 -71.4L34.9 0Z"),
+                ["2"] = (57f, "M51.8 0L4.9 0L4.9 -7L23.7 -25.9Q32.3 -34.6 35 -38.3Q37.7 -42 39.1 -45.5Q40.5 -49 40.5 -53.1Q40.5 -58.8 37 -62.1Q33.5 -65.5 27.4 -65.5Q22.9 -65.5 19 -64Q15 -62.5 10.1 -58.7L5.8 -64.2Q15.7 -72.4 27.3 -72.4Q37.4 -72.4 43.1 -67.3Q48.8 -62.1 48.8 -53.4Q48.8 -46.6 45 -40Q41.2 -33.3 30.7 -23.2L15.1 -7.9L15.1 -7.5L51.8 -7.5L51.8 0Z"),
+                ["3"] = (57f, "M49.1 -54.6Q49.1 -47.8 45.3 -43.4Q41.5 -39.1 34.4 -37.6L34.4 -37.2Q43 -36.1 47.2 -31.7Q51.3 -27.3 51.3 -20.2Q51.3 -10 44.2 -4.5Q37.2 1 24.1 1Q18.5 1 13.7 0.1Q9 -0.7 4.6 -2.9L4.6 -10.6Q9.2 -8.3 14.5 -7.1Q19.7 -5.9 24.4 -5.9Q42.9 -5.9 42.9 -20.4Q42.9 -33.4 22.5 -33.4L15.5 -33.4L15.5 -40.4L22.6 -40.4Q31 -40.4 35.8 -44.1Q40.7 -47.8 40.7 -54.3Q40.7 -59.5 37.1 -62.5Q33.5 -65.5 27.4 -65.5Q22.7 -65.5 18.6 -64.2Q14.4 -62.9 9.1 -59.5L5 -65Q9.4 -68.5 15.1 -70.4Q20.8 -72.4 27.2 -72.4Q37.6 -72.4 43.4 -67.7Q49.1 -62.9 49.1 -54.6Z"),
+                ["4"] = (57f, "M55.2 -16.4L44.6 -16.4L44.6 0L36.8 0L36.8 -16.4L2.1 -16.4L2.1 -23.5L36 -71.8L44.6 -71.8L44.6 -23.8L55.2 -23.8L55.2 -16.4ZM36.8 -23.8L36.8 -47.5Q36.8 -54.5 37.3 -63.3L36.9 -63.3Q34.6 -58.6 32.5 -55.5L10.2 -23.8L36.8 -23.8Z"),
+                ["5"] = (57f, "M27.2 -43.6Q38.5 -43.6 44.9 -38Q51.4 -32.4 51.4 -22.7Q51.4 -11.6 44.4 -5.3Q37.3 1 24.9 1Q12.8 1 6.5 -2.9L6.5 -10.7Q9.9 -8.5 15 -7.3Q20.1 -6 25 -6Q33.6 -6 38.4 -10.1Q43.1 -14.1 43.1 -21.8Q43.1 -36.7 24.8 -36.7Q20.2 -36.7 12.4 -35.3L8.2 -38L10.9 -71.4L46.4 -71.4L46.4 -63.9L17.8 -63.9L16 -42.5Q21.6 -43.6 27.2 -43.6Z"),
+                ["6"] = (57f, "M5.7 -30.5Q5.7 -51.6 13.9 -62Q22.1 -72.4 38.1 -72.4Q43.6 -72.4 46.8 -71.5L46.8 -64.5Q43 -65.7 38.2 -65.7Q26.7 -65.7 20.7 -58.6Q14.6 -51.4 14 -36.1L14.6 -36.1Q20 -44.5 31.6 -44.5Q41.2 -44.5 46.8 -38.7Q52.3 -32.9 52.3 -22.9Q52.3 -11.8 46.2 -5.4Q40.1 1 29.8 1Q18.7 1 12.2 -7.3Q5.7 -15.7 5.7 -30.5ZM29.7 -5.9Q36.6 -5.9 40.5 -10.3Q44.3 -14.6 44.3 -22.9Q44.3 -30 40.7 -34Q37.2 -38.1 30.1 -38.1Q25.7 -38.1 22 -36.3Q18.4 -34.5 16.2 -31.3Q14 -28.1 14 -24.7Q14 -19.7 16 -15.3Q17.9 -11 21.5 -8.4Q25.1 -5.9 29.7 -5.9Z"),
+                ["7"] = (57f, "M13.9 0L43.5 -63.9L4.6 -63.9L4.6 -71.4L52.1 -71.4L52.1 -64.9L22.9 0L13.9 0Z"),
+                ["8"] = (57f, "M28.5 -72.4Q38.3 -72.4 44 -67.9Q49.7 -63.3 49.7 -55.3Q49.7 -50 46.4 -45.7Q43.2 -41.4 36 -37.8Q44.7 -33.6 48.3 -29.1Q52 -24.5 52 -18.5Q52 -9.6 45.8 -4.3Q39.6 1 28.8 1Q17.4 1 11.2 -4Q5.1 -9 5.1 -18.2Q5.1 -30.5 20 -37.3Q13.3 -41.1 10.4 -45.5Q7.4 -50 7.4 -55.4Q7.4 -63.2 13.2 -67.8Q18.9 -72.4 28.5 -72.4ZM13.1 -18Q13.1 -12.2 17.2 -8.9Q21.2 -5.6 28.6 -5.6Q35.9 -5.6 39.9 -9Q44 -12.5 44 -18.4Q44 -23.1 40.2 -26.8Q36.4 -30.5 26.9 -34Q19.6 -30.9 16.4 -27.1Q13.1 -23.3 13.1 -18ZM28.4 -65.8Q22.3 -65.8 18.8 -62.9Q15.4 -60 15.4 -55.1Q15.4 -50.6 18.3 -47.4Q21.1 -44.1 28.9 -40.9Q35.9 -43.8 38.8 -47.2Q41.7 -50.6 41.7 -55.1Q41.7 -60 38.2 -62.9Q34.6 -65.8 28.4 -65.8Z"),
+                ["9"] = (57f, "M51.8 -40.9Q51.8 1 19.4 1Q13.7 1 10.4 0L10.4 -7Q14.3 -5.7 19.3 -5.7Q31 -5.7 37 -13Q43 -20.2 43.5 -35.2L42.9 -35.2Q40.2 -31.2 35.8 -29Q31.3 -26.9 25.8 -26.9Q16.3 -26.9 10.7 -32.6Q5.2 -38.2 5.2 -48.4Q5.2 -59.5 11.4 -66Q17.6 -72.4 27.8 -72.4Q35.1 -72.4 40.5 -68.7Q45.9 -64.9 48.9 -57.8Q51.8 -50.6 51.8 -40.9ZM27.8 -65.5Q20.8 -65.5 17 -61Q13.2 -56.5 13.2 -48.5Q13.2 -41.5 16.7 -37.4Q20.2 -33.4 27.4 -33.4Q31.8 -33.4 35.6 -35.2Q39.3 -37 41.5 -40.1Q43.6 -43.3 43.6 -46.7Q43.6 -51.8 41.6 -56.2Q39.6 -60.5 36 -63Q32.4 -65.5 27.8 -65.5Z"),
+                ["."] = (27f, "M7.4 -5.2Q7.4 -8.4 8.9 -10.1Q10.4 -11.8 13.2 -11.8Q16 -11.8 17.6 -10.1Q19.2 -8.4 19.2 -5.2Q19.2 -2 17.6 -0.3Q16 1.4 13.2 1.4Q10.7 1.4 9.1 -0.1Q7.4 -1.7 7.4 -5.2Z"),
+                ["v"] = (50f, "M20.3 0L0 -53.5L8.7 -53.5L20.2 -21.8Q24.1 -10.6 24.8 -7.3L25.2 -7.3Q25.7 -9.9 28.6 -18Q31.4 -26.2 41.4 -53.5L50.1 -53.5L29.8 0L20.3 0Z"),
+            };
+            const float top = -74f, bottom = 2f;
+            var inv = CultureInfo.InvariantCulture;
+            var groups = new StringBuilder();
+            float x = 0;
+            foreach (var ch in "v" + Version)
+            {
+                if (!glyphs.TryGetValue(ch.ToString(), out var g))
+                {
+                    Log.LogWarning("splash_version: no glyph for '" + ch + "' in version '" + Version + "', skipped.");
+                    continue;
+                }
+                groups.Append(string.Format(inv,
+                    "    <group android:translateX=\"{0:0.##}\" android:translateY=\"{1:0.##}\">\n" +
+                    "        <path android:fillColor=\"@color/splash_version_text\" android:pathData=\"{2}\" />\n" +
+                    "    </group>\n", x, -top, g.Path));
+                x += g.Advance;
+            }
+            float viewportHeight = bottom - top;
+            var xml = string.Format(inv,
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<!-- Generated by Build/SplashVersion.targets from ApplicationDisplayVersion; do not edit. -->\n" +
+                "<vector xmlns:android=\"http://schemas.android.com/apk/res/android\"\n" +
+                "    android:width=\"{0:0.##}dp\" android:height=\"{1:0.##}dp\"\n" +
+                "    android:viewportWidth=\"{2:0.##}\" android:viewportHeight=\"{3:0.##}\">\n{4}</vector>\n",
+                HeightDp * x / viewportHeight, HeightDp, x, viewportHeight, groups);
+            Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
+            if (!File.Exists(OutputFile) || File.ReadAllText(OutputFile) != xml)
+                File.WriteAllText(OutputFile, xml);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="GenerateSplashVersion" BeforeTargets="PrepareForBuild"
+          Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PropertyGroup>
+      <_SplashVersionFile>$(IntermediateOutputPath)splashversion\splash_version.xml</_SplashVersionFile>
+    </PropertyGroup>
+    <GenerateSplashVersionDrawable Version="$(ApplicationDisplayVersion)" OutputFile="$(_SplashVersionFile)" HeightDp="9" />
+    <ItemGroup>
+      <AndroidResource Include="$(_SplashVersionFile)" Link="$(MonoAndroidResourcePrefix)\drawable\splash_version.xml" />
+      <FileWrites Include="$(_SplashVersionFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

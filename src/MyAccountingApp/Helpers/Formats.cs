@@ -30,6 +30,9 @@ public static class Formats
 
     public static string Date(DateTime utc) => utc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", Inv);
 
+    /// <summary>A local time, same format as <see cref="Date"/>.</summary>
+    public static string LocalDateTime(DateTime local) => local.ToString("yyyy-MM-dd HH:mm", Inv);
+
     public static bool TryParseDecimal(string? text, out decimal value)
     {
         value = 0;

@@ -48,7 +48,26 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
     /// <summary>Settings → Categories off: every product is "General", so the category chart is hidden.</summary>
     [ObservableProperty] public partial bool ShowCategories { get; set; }
 
+    /// <summary>Local [from, to) of the loaded report, passed on to the Invoices page.</summary>
+    private (DateTime From, DateTime To)? _range;
+
     partial void OnPeriodChanged(ReportPeriod value) => LoadCommand.Execute(null);
+
+    /// <summary>
+    /// Sales / Purchase invoices card ("Sales" / "Purchases") → Invoices page on that tab, showing confirmed orders created in the
+    /// dashboard's period (the cards count confirmed orders posted in it).
+    /// </summary>
+    [RelayCommand]
+    private Task OpenOrdersAsync(string side)
+    {
+        var query = new Dictionary<string, object> { ["salesSide"] = side == "Sales", ["status"] = OrderStatus.Confirmed };
+        if (_range is var (from, to))
+        {
+            query["fromLocal"] = from;
+            query["toLocal"] = to;
+        }
+        return GoToAsync("//orders", query);
+    }
 
     [RelayCommand]
     private void SelectPeriod(string period) => Period = Enum.Parse<ReportPeriod>(period);
@@ -58,6 +77,7 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
     {
         var report = await reports.GetDashboardAsync(Period);
         var sales = report.Sales;
+        _range = (report.FromLocal, report.ToLocal);
         var lastDay = report.ToLocal.AddDays(-1);
         RangeText = Period == ReportPeriod.Day ? Day(report.FromLocal) : $"{Day(report.FromLocal)} – {Day(lastDay)}";
 

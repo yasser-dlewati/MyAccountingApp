@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="app_splash_background">#1F1F1F</color>
+    <color name="splash_branding_text">#E0E0E0</color>
+    <color name="splash_version_text">#9E9E9E</color>
 </resources>

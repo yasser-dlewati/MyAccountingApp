@@ -141,6 +141,13 @@ Confirm anyway?</value></data>
   <data name="Dashboard_ItemsSold" xml:space="preserve"><value>Items sold</value></data>
   <data name="Orders_SalesTab" xml:space="preserve"><value>Sales</value></data>
   <data name="Orders_PurchasesTab" xml:space="preserve"><value>Purchases</value></data>
+  <data name="Orders_Filters" xml:space="preserve"><value>Filters</value></data>
+  <data name="Orders_NoFilters" xml:space="preserve"><value>No filters</value></data>
+  <data name="Orders_ClearFilters" xml:space="preserve"><value>Clear</value></data>
+  <data name="Orders_DateFilter" xml:space="preserve"><value>Date and time range</value></data>
+  <data name="Orders_From" xml:space="preserve"><value>From</value></data>
+  <data name="Orders_To" xml:space="preserve"><value>To</value></data>
+  <data name="Orders_DateRangeInvalid" xml:space="preserve"><value>“From” must be before “To”.</value></data>
   <data name="Settings_General" xml:space="preserve"><value>General</value></data>
   <data name="Settings_ConfirmExit" xml:space="preserve"><value>Confirm before exiting</value></data>
   <data name="Settings_ConfirmExitHint" xml:space="preserve"><value>Ask before the Back button on the dashboard closes the app.</value></data>
