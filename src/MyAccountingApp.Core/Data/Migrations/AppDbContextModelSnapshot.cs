@@ -141,6 +141,10 @@ namespace MyAccountingApp.Core.Data.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("created_at");
 
+                    b.Property<DateTime?>("EditedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("edited_at");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("TEXT")
                         .HasColumnName("modified_at");

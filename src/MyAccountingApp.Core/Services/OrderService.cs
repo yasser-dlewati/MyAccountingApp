@@ -134,19 +134,33 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         var order = await LoadAsync(db, orderId);
-        if (order.OrderType is not (OrderType.Sale or OrderType.Purchase))
+        return await GetBelowCostLinesAsync(db, order.OrderType,
+            order.Items.Select(i => new OrderLineInput(i.ProductId, i.Quantity, i.UnitPrice)).ToList());
+    }
+
+    /// <summary>Same check for lines that are not saved yet (editing a confirmed order).</summary>
+    public async Task<List<BelowCostInfo>> GetBelowCostLinesAsync(OrderType type, IReadOnlyList<OrderLineInput> lines)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        return await GetBelowCostLinesAsync(db, type, lines);
+    }
+
+    private static async Task<List<BelowCostInfo>> GetBelowCostLinesAsync(AppDbContext db, OrderType type,
+        IReadOnlyList<OrderLineInput> lines)
+    {
+        if (type is not (OrderType.Sale or OrderType.Purchase))
             return [];
 
         var result = new List<BelowCostInfo>();
-        foreach (var item in order.Items)
+        foreach (var line in lines)
         {
-            var product = await db.Products.AsNoTracking().Where(p => p.Id == item.ProductId)
+            var product = await db.Products.AsNoTracking().Where(p => p.Id == line.ProductId)
                 .Select(p => new { p.Name, p.Price }).FirstAsync();
-            var (cost, selling) = order.OrderType == OrderType.Sale
-                ? (await InventoryService.GetLastPurchaseCostAsync(db, item.ProductId), item.UnitPrice)
-                : (item.UnitPrice, product.Price);
+            var (cost, selling) = type == OrderType.Sale
+                ? (await InventoryService.GetLastPurchaseCostAsync(db, line.ProductId), line.UnitPrice)
+                : (line.UnitPrice, product.Price);
             if (cost > selling)
-                result.Add(new BelowCostInfo(item.ProductId, product.Name, cost, selling));
+                result.Add(new BelowCostInfo(line.ProductId, product.Name, cost, selling));
         }
         return result;
     }
@@ -180,23 +194,7 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
                     string.Join(", ", shortages.Select(s => s.ProductName)));
         }
 
-        var direction = StockDirection(order.OrderType);
-        foreach (var item in order.Items)
-        {
-            var unitCost = order.OrderType == OrderType.Purchase
-                ? item.UnitPrice
-                : await InventoryService.GetLastPurchaseCostAsync(db, item.ProductId);
-
-            db.Ledger.Add(new LedgerEntry
-            {
-                ProductId = item.ProductId,
-                DocumentType = order.OrderType,
-                DocumentId = order.Id,
-                Quantity = direction * item.Quantity,
-                UnitCost = unitCost,
-                UnitPrice = item.UnitPrice
-            });
-        }
+        await PostItemsAsync(db, order);
 
         if (order.OrderType == OrderType.Purchase)
             await UpdateSupplierCostsAsync(db, order);
@@ -208,6 +206,82 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
         await tx.CommitAsync();
         _log.LogInformation("Order {OrderNumber} confirmed (id {OrderId}, {Lines} lines, total {Total}, negative stock allowed: {AllowNegative})",
             order.OrderNumber, order.Id, order.Items.Count, order.TotalAmount, allowNegativeStock);
+        return order;
+    }
+
+    /// <summary>
+    /// Edits a confirmed order in one transaction: the stock it posted is reversed (per product and price, so the
+    /// order's net effect is undone), the new lines are posted and <see cref="Order.EditedAt"/> is stamped.
+    /// The correction rows keep the order's original posting time, so reports show the order as edited on its day.
+    /// Products already on the order keep the unit cost they were posted with; new ones take the last purchase cost.
+    /// </summary>
+    public async Task<Order> UpdateConfirmedAsync(int orderId, int? contactId, IReadOnlyList<OrderLineInput> lines,
+        bool allowNegativeStock = false, bool allowWalkIn = true)
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        await using var tx = await db.Database.BeginTransactionAsync();
+
+        var order = await LoadAsync(db, orderId);
+        if (order.Status != OrderStatus.Confirmed)
+            throw new BusinessRuleException(ErrorKeys.OrderNotConfirmed, order.OrderNumber);
+        if (contactId is null && !allowWalkIn)
+            throw new BusinessRuleException(ErrorKeys.ContactRequired);
+        await ValidateContactAsync(db, order.OrderType, contactId);
+        ValidateDraftLines(lines);
+        if (lines.Count == 0)
+            throw new BusinessRuleException(ErrorKeys.OrderHasNoItems);
+        if (lines.Any(l => l.Quantity <= 0))
+            throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
+
+        var posted = await db.Ledger.AsNoTracking()
+            .Where(l => l.DocumentType == order.OrderType && l.DocumentId == order.Id)
+            .OrderBy(l => l.Id)
+            .ToListAsync();
+        var postedAt = posted.Count > 0 ? posted[0].CreatedAt : DateTime.UtcNow;
+        var postedCosts = posted.GroupBy(l => l.ProductId).ToDictionary(g => g.Key, g => g.Last().UnitCost);
+
+        // Undo what is still in effect (grouped client-side: decimals are TEXT in SQLite).
+        foreach (var group in posted.GroupBy(l => (l.ProductId, l.UnitCost, l.UnitPrice)))
+        {
+            var net = group.Sum(l => l.Quantity);
+            if (net == 0) continue;
+            db.Ledger.Add(new LedgerEntry
+            {
+                ProductId = group.Key.ProductId,
+                DocumentType = order.OrderType,
+                DocumentId = order.Id,
+                Quantity = -net,
+                UnitCost = group.Key.UnitCost,
+                UnitPrice = group.Key.UnitPrice,
+                CreatedAt = postedAt
+            });
+        }
+
+        order.ContactId = contactId;
+        db.OrderItems.RemoveRange(order.Items);
+        order.Items = lines.Select(ToItem).ToList();
+        await db.SaveChangesAsync();
+
+        if (!allowNegativeStock)
+        {
+            var shortages = await GetShortagesAsync(db, order);
+            if (shortages.Count > 0)
+                throw new BusinessRuleException(ErrorKeys.InsufficientStock,
+                    string.Join(", ", shortages.Select(s => s.ProductName)));
+        }
+
+        await PostItemsAsync(db, order, postedAt,
+            order.OrderType == OrderType.Purchase ? null : postedCosts);
+        if (order.OrderType == OrderType.Purchase)
+            await UpdateSupplierCostsAsync(db, order);
+
+        order.TotalAmount = order.Items.Sum(i => i.LineTotal);
+        order.EditedAt = DateTime.UtcNow;
+
+        await db.SaveChangesAsync();
+        await tx.CommitAsync();
+        _log.LogInformation("Confirmed order {OrderNumber} edited (id {OrderId}, {Lines} lines, total {Total})",
+            order.OrderNumber, order.Id, order.Items.Count, order.TotalAmount);
         return order;
     }
 
@@ -244,6 +318,34 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
         _log.LogInformation("Order {OrderNumber} cancelled (id {OrderId}, {Rows} reversing ledger rows)",
             order.OrderNumber, order.Id, posted.Count);
         return order;
+    }
+
+    /// <summary>One signed ledger row per item. Unit cost: purchase = its price, otherwise the last purchase cost.</summary>
+    /// <param name="createdAt">Posting time; null = now.</param>
+    /// <param name="knownCosts">Unit costs to keep per product (editing a posted order).</param>
+    private static async Task PostItemsAsync(AppDbContext db, Order order, DateTime? createdAt = null,
+        IReadOnlyDictionary<int, decimal>? knownCosts = null)
+    {
+        var direction = StockDirection(order.OrderType);
+        foreach (var item in order.Items)
+        {
+            var unitCost = order.OrderType == OrderType.Purchase
+                ? item.UnitPrice
+                : knownCosts is not null && knownCosts.TryGetValue(item.ProductId, out var known)
+                    ? known
+                    : await InventoryService.GetLastPurchaseCostAsync(db, item.ProductId);
+
+            db.Ledger.Add(new LedgerEntry
+            {
+                ProductId = item.ProductId,
+                DocumentType = order.OrderType,
+                DocumentId = order.Id,
+                Quantity = direction * item.Quantity,
+                UnitCost = unitCost,
+                UnitPrice = item.UnitPrice,
+                CreatedAt = createdAt ?? default
+            });
+        }
     }
 
     private static async Task<Order> LoadAsync(AppDbContext db, int orderId) =>

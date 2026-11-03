@@ -14,8 +14,6 @@ namespace MyAccountingApp.ViewModels;
 public partial class DashboardViewModel(ReportService reports, InventoryService inventory, DialogService dialogs)
     : BaseViewModel(dialogs)
 {
-    public const decimal LowStockThreshold = 5;
-
     public ObservableCollection<StockLine> LowStock { get; } = [];
 
     [ObservableProperty]
@@ -85,7 +83,7 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
         ShowCategories = CategorySettings.Enabled;
 
         LowStock.Clear();
-        foreach (var r in await inventory.GetStockReportAsync(LowStockThreshold))
+        foreach (var r in await inventory.GetStockReportAsync(StockSettings.LowStockThreshold))
             LowStock.Add(new StockLine(r.ProductName, r.Barcode, Formats.Quantity(r.Quantity),
                 Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0));
     });

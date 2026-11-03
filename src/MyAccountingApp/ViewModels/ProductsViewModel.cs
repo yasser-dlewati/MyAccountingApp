@@ -26,6 +26,7 @@ public partial class ProductsViewModel(
         var list = await products.SearchAsync(SearchText, includeInactive: ProductSettings.ShowInactive);
         var stock = (await inventory.GetStockReportAsync()).ToDictionary(r => r.ProductId);
         var showCategory = CategorySettings.Enabled;
+        var lowStock = StockSettings.LowStockThreshold;
         Items.Clear();
         decimal total = 0;
         foreach (var p in list)
@@ -34,7 +35,7 @@ public partial class ProductsViewModel(
             var quantity = s?.Quantity ?? 0;
             if (quantity > 0) total += s!.CostValue;
             Items.Add(new ProductRow(p.Id, p.Name, showCategory ? $"{p.Barcode} · {DisplayNames.CategoryOf(p)}" : p.Barcode,
-                Formats.Money(p.Price), Formats.Quantity(quantity), quantity <= 0,
+                Formats.Money(p.Price), Formats.Quantity(quantity), quantity <= 0, quantity <= lowStock,
                 Formats.Money(s?.LastCost ?? 0), Formats.Money(s?.CostValue ?? 0), p.IsActive ? 1 : 0.45));
         }
         TotalValue = Formats.Money(total);
@@ -52,5 +53,5 @@ public partial class ProductsViewModel(
         GoToAsync(Routes.ProductEdit, new Dictionary<string, object> { ["id"] = row.Id });
 }
 
-public record ProductRow(int Id, string Name, string Subtitle, string Price, string Stock, bool IsOutOfStock,
+public record ProductRow(int Id, string Name, string Subtitle, string Price, string Stock, bool IsOutOfStock, bool IsLowStock,
     string LastCost, string Value, double Opacity);

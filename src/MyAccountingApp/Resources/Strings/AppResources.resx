@@ -72,16 +72,12 @@
   <data name="Order_AddProductHint" xml:space="preserve"><value>Add product: name or barcode</value></data>
   <data name="Order_Items" xml:space="preserve"><value>Items</value></data>
   <data name="Order_Total" xml:space="preserve"><value>Total</value></data>
-  <data name="Order_SaveDraft" xml:space="preserve"><value>Save draft</value></data>
   <data name="Order_Confirm" xml:space="preserve"><value>Confirm</value></data>
-  <data name="Order_DeleteDraft" xml:space="preserve"><value>Delete draft</value></data>
-  <data name="Order_CancelOrder" xml:space="preserve"><value>Cancel order</value></data>
   <data name="Order_BelowCostConfirm" xml:space="preserve"><value>Cost is above the selling price (cost / selling price):
 {0}
 
 Confirm anyway?</value></data>
-  <data name="Order_CancelPrompt" xml:space="preserve"><value>Cancel this order? Its stock movements will be reversed.</value></data>
-  <data name="Order_DeletePrompt" xml:space="preserve"><value>Delete this draft?</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>Revoke this invoice? Its stock movements will be reversed.</value></data>
   <data name="Stock_TotalValue" xml:space="preserve"><value>Stock value (at cost)</value></data>
   <data name="Stock_LastCost" xml:space="preserve"><value>Last cost</value></data>
   <data name="Dashboard_NewSale" xml:space="preserve"><value>New sale</value></data>
@@ -138,7 +134,7 @@ Confirm anyway?</value></data>
   <data name="Error_OrderHasNoItems" xml:space="preserve"><value>Add at least one item.</value></data>
   <data name="Error_QuantityNotPositive" xml:space="preserve"><value>Quantities must be greater than zero.</value></data>
   <data name="Error_OrderNotDraft" xml:space="preserve"><value>Order {0} is not a draft and can't be changed.</value></data>
-  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>Only confirmed orders can be cancelled ({0}).</value></data>
+  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>Only confirmed orders can be revoked or edited ({0}).</value></data>
   <data name="Error_InsufficientStock" xml:space="preserve"><value>Not enough stock for: {0}</value></data>
   <data name="Error_NotFound" xml:space="preserve"><value>The record was not found.</value></data>
   <data name="Currency_Symbol" xml:space="preserve"><value>SYP</value></data>
@@ -197,4 +193,25 @@ Status: {6}</value></data>
 {0}</value></data>
   <data name="About_OpenWebsite" xml:space="preserve"><value>Open website</value></data>
   <data name="About_TapToContact" xml:space="preserve"><value>Tap the logo to contact the developer</value></data>
+  <data name="Common_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Order_Revoke" xml:space="preserve"><value>Revoke invoice</value></data>
+  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>Revoke this invoice? The draft will be deleted.</value></data>
+  <data name="Order_DiscardChanges" xml:space="preserve"><value>Discard changes</value></data>
+  <data name="Order_SaveChanges" xml:space="preserve"><value>Save changes</value></data>
+  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>Save the changes to this invoice?</value></data>
+  <data name="Order_EditedOn" xml:space="preserve"><value>Modified on {0}</value></data>
+  <data name="Order_Edited" xml:space="preserve"><value>Modified</value></data>
+  <data name="OrderType_OpeningStock" xml:space="preserve"><value>Opening stock</value></data>
+  <data name="Field_OpeningQuantity" xml:space="preserve"><value>Opening stock</value></data>
+  <data name="Field_OpeningCost" xml:space="preserve"><value>Unit cost</value></data>
+  <data name="Product_OpeningStockHint" xml:space="preserve"><value>Quantity already on hand when the product is added (first period). Its unit cost counts as the last cost until the first purchase.</value></data>
+  <data name="Error_OpeningQuantityNegative" xml:space="preserve"><value>Opening stock must be zero or more.</value></data>
+  <data name="Settings_LowStockThreshold" xml:space="preserve"><value>Low stock at or below</value></data>
+  <data name="Settings_LowStockThresholdHint" xml:space="preserve"><value>Products with this quantity or less are listed under Low stock on the dashboard and highlighted on the Inventory page.</value></data>
+  <data name="Settings_ScanBeep" xml:space="preserve"><value>Beep when scanning</value></data>
+  <data name="Settings_ScanBeepHint" xml:space="preserve"><value>"While in stock" stops beeping once the scanned quantity reaches the stock on hand (purchases always beep). Every read still vibrates.</value></data>
+  <data name="ScanBeep_Off" xml:space="preserve"><value>Off</value></data>
+  <data name="ScanBeep_EveryRead" xml:space="preserve"><value>Every barcode read</value></data>
+  <data name="ScanBeep_ProductFound" xml:space="preserve"><value>Known products (even if out of stock)</value></data>
+  <data name="ScanBeep_InStock" xml:space="preserve"><value>Known products while in stock</value></data>
 </root>

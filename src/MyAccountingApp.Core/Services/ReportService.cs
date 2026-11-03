@@ -65,7 +65,7 @@ public class ReportService(IDbContextFactory<AppDbContext> dbFactory)
 
         // Aggregated client-side: decimals are TEXT in SQLite.
         var rows = await db.Ledger.AsNoTracking()
-            .Where(l => l.CreatedAt >= fromUtc && l.CreatedAt < toUtc)
+            .Where(l => l.CreatedAt >= fromUtc && l.CreatedAt < toUtc && l.DocumentType != OrderType.OpeningStock)
             .Select(l => new
             {
                 l.ProductId, l.DocumentId, l.DocumentType, l.Quantity, l.UnitCost, l.UnitPrice, l.CreatedAt,

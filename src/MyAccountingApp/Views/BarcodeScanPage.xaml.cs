@@ -22,6 +22,7 @@ public partial class BarcodeScanPage : ContentPage
 
     private readonly TaskCompletionSource<string?> _result = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly Func<string, Task<ScanOutcome>>? _onScanned;
+    private readonly Func<string, Task<ScanOutcome>>? _lookup;
     private string? _scanned;
     private bool _closing;
     private bool _handling;
@@ -34,12 +35,14 @@ public partial class BarcodeScanPage : ContentPage
     public Task<string?> Result => _result.Task;
 
     /// <param name="onScanned">Multi-scan mode: handles one barcode and says whether it was added + what to show.</param>
-    public BarcodeScanPage(Func<string, Task<ScanOutcome>>? onScanned = null)
+    /// <param name="lookup">Single mode: says whether a barcode is a known product with stock (for the beep setting).</param>
+    public BarcodeScanPage(Func<string, Task<ScanOutcome>>? onScanned = null, Func<string, Task<ScanOutcome>>? lookup = null)
     {
         InitializeComponent();
         // Modal pages sit outside the Shell, so they don't inherit its FlowDirection.
         FlowDirection = LocalizationService.FlowDirection;
         _onScanned = onScanned;
+        _lookup = lookup;
 
         if (onScanned is not null)
         {
@@ -79,8 +82,10 @@ public partial class BarcodeScanPage : ContentPage
         if (_handling || _closing || stillInView || now < _resumeAt) return;
 
         _handling = true;
-        Vibrate();
+        Haptic();
         var outcome = await _onScanned!(barcode);
+        if (ScanBeep.ShouldBeep(outcome.Found, outcome.InStock))
+            ScanBeep.Play();
         HintLabel.Text = outcome.Message;
         if (outcome.Added)
         {
@@ -130,16 +135,23 @@ public partial class BarcodeScanPage : ContentPage
         Reader.IsDetecting = false;
 
         if (barcode is not null && _onScanned is null)
-            Vibrate();
+        {
+            Haptic();
+            var outcome = ScanBeep.NeedsLookup && _lookup is not null ? await _lookup(barcode) : new ScanOutcome(false, "");
+            if (ScanBeep.ShouldBeep(outcome.Found, outcome.InStock))
+                ScanBeep.Play();
+        }
         await Navigation.PopModalAsync();
         _result.TrySetResult(_scanned);
     }
 
-    private static void Vibrate()
+    /// <summary>Every read vibrates; the beep follows Settings → Scanner → Beep when scanning.</summary>
+    private static void Haptic()
     {
         try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); }
         catch (FeatureNotSupportedException) { }
     }
+
 
     protected override void OnDisappearing()
     {

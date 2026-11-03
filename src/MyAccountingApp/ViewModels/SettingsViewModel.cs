@@ -21,7 +21,9 @@ public partial class SettingsViewModel : BaseViewModel
         ConfirmExit = ExitSettings.Confirm;
         ShowInactiveProducts = ProductSettings.ShowInactive;
         AllowNegativeStock = StockSettings.AllowNegative;
+        LowStockThreshold = Formats.Input(StockSettings.LowStockThreshold);
         AllowMultiScan = ScanSettings.MultiScanAllowed;
+        BeepMode = BeepOptions.FirstOrDefault(o => o.Value == ScanSettings.BeepMode) ?? BeepOptions[1];
         UseCategories = CategorySettings.Enabled;
         RequireCustomer = !WalkInSettings.CustomerAllowed;
         RequireSupplier = !WalkInSettings.SupplierAllowed;
@@ -55,8 +57,20 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty]
     public partial bool AllowNegativeStock { get; set; }
 
+    /// <summary>Text (parsed with Formats.TryParseDecimal); a blank or invalid value is not saved.</summary>
+    [ObservableProperty]
+    public partial string LowStockThreshold { get; set; } = "";
+
     [ObservableProperty]
     public partial bool AllowMultiScan { get; set; }
+
+    public List<Option<ScanBeepMode>> BeepOptions { get; } =
+        EnumLabels.Options<ScanBeepMode>(m => LocalizationService.Get($"ScanBeep_{m}"));
+
+    [ObservableProperty]
+    public partial Option<ScanBeepMode> BeepMode { get; set; }
+
+    partial void OnBeepModeChanged(Option<ScanBeepMode> value) => ScanSettings.BeepMode = value.Value;
 
     [ObservableProperty]
     public partial bool UseCategories { get; set; }
@@ -79,6 +93,12 @@ public partial class SettingsViewModel : BaseViewModel
     partial void OnShowInactiveProductsChanged(bool value) => ProductSettings.ShowInactive = value;
 
     partial void OnAllowNegativeStockChanged(bool value) => StockSettings.AllowNegative = value;
+
+    partial void OnLowStockThresholdChanged(string value)
+    {
+        if (Formats.TryParseDecimal(value, out var threshold) && threshold >= 0)
+            StockSettings.LowStockThreshold = threshold;
+    }
 
     partial void OnAllowMultiScanChanged(bool value) => ScanSettings.MultiScanAllowed = value;
 

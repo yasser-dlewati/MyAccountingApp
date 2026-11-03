@@ -17,12 +17,19 @@ public partial class OrdersViewModel : BaseViewModel
     public OrdersViewModel(OrderService orders, DialogService dialogs) : base(dialogs)
     {
         _orders = orders;
-        StatusOptions = [new(LocalizationService.Get("Common_All"), null), .. Enum.GetValues<OrderStatus>().Select(s => new Option<OrderStatus?>(EnumLabels.Of(s), s))];
-        StatusFilter = StatusOptions[0];
+        StatusChips =
+        [
+            new(LocalizationService.Get("Common_All"), null) { IsSelected = true },
+            .. Enum.GetValues<OrderStatus>().Select(s => new FilterChip(EnumLabels.Of(s), s, OrderRow.ColorOf(s)))
+        ];
     }
 
     public ObservableCollection<OrderRow> Items { get; } = [];
-    public List<Option<OrderStatus?>> StatusOptions { get; }
+
+    /// <summary>Status filter pills (All / Draft / Confirmed / Cancelled) with the count of each in the current tab + search.</summary>
+    public List<FilterChip> StatusChips { get; }
+
+    private OrderStatus? StatusFilter => (OrderStatus?)StatusChips.First(c => c.IsSelected).Value;
 
     /// <summary>Selected tab: true = sales (+ sale returns), false = purchases (+ purchase returns).</summary>
     [ObservableProperty]
@@ -31,7 +38,6 @@ public partial class OrdersViewModel : BaseViewModel
 
     public bool IsPurchasesTab => !IsSalesTab;
 
-    [ObservableProperty] public partial Option<OrderStatus?> StatusFilter { get; set; }
     [ObservableProperty] public partial string? SearchText { get; set; }
 
     partial void OnIsSalesTabChanged(bool value) => LoadCommand.Execute(null);
@@ -41,21 +47,33 @@ public partial class OrdersViewModel : BaseViewModel
 
     [RelayCommand]
     private void ShowPurchases() => IsSalesTab = false;
-    partial void OnStatusFilterChanged(Option<OrderStatus?> value) => LoadCommand.Execute(null);
 
+    [RelayCommand]
+    private void SelectStatus(FilterChip chip)
+    {
+        if (chip.IsSelected) return;
+        FilterChip.Select(StatusChips, chip);
+        LoadCommand.Execute(null);
+    }
+
+    /// <summary>Loads every status of the tab + search (to count them) and lists the selected one.</summary>
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
     {
-        var list = await _orders.GetOrdersAsync(status: StatusFilter?.Value, search: SearchText, salesSide: IsSalesTab);
+        var list = await _orders.GetOrdersAsync(search: SearchText, salesSide: IsSalesTab);
+        foreach (var chip in StatusChips)
+            chip.Count = Formats.Quantity(chip.Value is OrderStatus s ? list.Count(o => o.Status == s) : list.Count);
+
+        var status = StatusFilter;
         Items.Clear();
-        foreach (var o in list) Items.Add(new OrderRow(o));
+        foreach (var o in list.Where(o => status is null || o.Status == status)) Items.Add(new OrderRow(o));
     });
 
     /// <summary>New order of the selected tab's side (the order itself or a return).</summary>
     [RelayCommand]
     private async Task AddAsync()
     {
-        var types = Enum.GetValues<OrderType>().Where(t => OrderService.IsSalesSide(t) == IsSalesTab).ToArray();
+        var types = Enum.GetValues<OrderType>().Where(t => t != OrderType.OpeningStock && OrderService.IsSalesSide(t) == IsSalesTab).ToArray();
         var choice = await Dialogs.ChooseAsync(LocalizationService.Get("Order_New"), types.Select(EnumLabels.Of).ToArray());
         if (choice is null) return;
         var type = types.First(t => EnumLabels.Of(t) == choice);
@@ -70,9 +88,12 @@ public partial class OrdersViewModel : BaseViewModel
 public record OrderRow(Order Order)
 {
     public string Title => $"{Order.OrderNumber} · {DisplayNames.ContactOf(Order)}";
-    public string Subtitle => $"{EnumLabels.Of(Order.OrderType)} · {EnumLabels.Of(Order.Status)} · {Formats.Date(Order.CreatedAt)}";
+    public string Subtitle => $"{EnumLabels.Of(Order.OrderType)} · {EnumLabels.Of(Order.Status)} · {Formats.Date(Order.CreatedAt)}"
+        + (Order.EditedAt is null ? "" : $" · {LocalizationService.Get("Order_Edited")}");
     public string Total => Formats.Money(Order.TotalAmount);
-    public Color StatusColor => Order.Status switch
+    public Color StatusColor => ColorOf(Order.Status);
+
+    public static Color ColorOf(OrderStatus status) => status switch
     {
         OrderStatus.Confirmed => Colors.SeaGreen,
         OrderStatus.Cancelled => Colors.IndianRed,

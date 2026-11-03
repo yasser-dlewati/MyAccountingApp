@@ -14,10 +14,10 @@
                 <Label Text="{Binding StatusLabel}" Style="{StaticResource Caption}" />
 
                 <Label Text="{Binding ContactLabel}" Style="{StaticResource FormLabel}" />
-                <Picker ItemsSource="{Binding Contacts}" SelectedItem="{Binding Contact}" IsEnabled="{Binding IsDraft}" />
+                <Picker ItemsSource="{Binding Contacts}" SelectedItem="{Binding Contact}" IsEnabled="{Binding IsEditable}" />
 
                 <!-- Add product: type a name or scan/type a barcode -->
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsDraft}" Margin="0,8,0,0">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsEditable}" Margin="0,8,0,0">
                     <SearchBar Text="{Binding ProductSearchText}" Placeholder="{loc:Translate Order_AddProductHint}"
                                SearchCommand="{Binding SearchProductsCommand}" />
                     <ImageButton Grid.Column="1" Source="ic_barcode.png" Style="{StaticResource IconButton}"
@@ -51,15 +51,15 @@
                                 <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
                                     <Label Grid.ColumnSpan="2" Text="{Binding ProductName}" Style="{StaticResource ItemTitle}" />
                                     <Button Grid.Column="2" Text="✕" Style="{StaticResource SecondaryButton}" Padding="12,0"
-                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsEditable, x:DataType=vm:OrderEditViewModel}"
                                             CommandParameter="{Binding .}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=RemoveLineCommand, x:DataType=vm:OrderEditViewModel}" />
                                     <Label Grid.Row="1" Text="{loc:Translate Field_Quantity}" Style="{StaticResource FormLabel}" />
                                     <Label Grid.Row="1" Grid.Column="1" Text="{loc:Translate Field_UnitPrice}" Style="{StaticResource FormLabel}" />
                                     <Entry Grid.Row="2" Text="{Binding Quantity}" Keyboard="Numeric"
-                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}" />
+                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsEditable, x:DataType=vm:OrderEditViewModel}" />
                                     <Entry Grid.Row="2" Grid.Column="1" Text="{Binding UnitPrice}" Keyboard="Numeric"
-                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsDraft, x:DataType=vm:OrderEditViewModel}" />
+                                           IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type vm:OrderEditViewModel}}, Path=IsEditable, x:DataType=vm:OrderEditViewModel}" />
                                     <Label Grid.Row="2" Grid.Column="2" Text="{Binding LineTotal}" Style="{StaticResource Amount}" />
                                 </Grid>
                             </Border>
@@ -76,14 +76,27 @@
                     <Label Text="{loc:Translate Order_Total}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
                     <Label Grid.Column="1" Text="{Binding Total}" Style="{StaticResource KpiValue}" />
                 </Grid>
+                <!-- Draft: Revoke invoice (discard it) + Confirm -->
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsDraft}">
-                    <Button Text="{loc:Translate Order_SaveDraft}" Style="{StaticResource SecondaryButton}" Command="{Binding SaveCommand}" />
+                    <Button Text="{loc:Translate Order_Revoke}" Style="{StaticResource DangerButton}" Command="{Binding RevokeCommand}" />
                     <Button Grid.Column="1" Text="{loc:Translate Order_Confirm}" Command="{Binding ConfirmCommand}" />
                 </Grid>
-                <Button Text="{loc:Translate Order_DeleteDraft}" Style="{StaticResource DangerButton}"
-                        Command="{Binding DeleteCommand}" IsVisible="{Binding CanDelete}" />
-                <Button Text="{loc:Translate Order_CancelOrder}" Style="{StaticResource DangerButton}"
-                        Command="{Binding CancelOrderCommand}" IsVisible="{Binding IsConfirmed}" />
+                <!-- Confirmed: Revoke invoice (cancel it) + Edit (sales only; otherwise Revoke takes the full width) -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding ShowPostedActions}">
+                    <Button Text="{loc:Translate Order_Revoke}" Style="{StaticResource DangerButton}" Command="{Binding RevokeCommand}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding CanEdit}" Value="False">
+                                <Setter Property="Grid.ColumnSpan" Value="2" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Grid.Column="1" Text="{loc:Translate Common_Edit}" Command="{Binding EditCommand}" IsVisible="{Binding CanEdit}" />
+                </Grid>
+                <!-- Editing a confirmed order -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsEditing}">
+                    <Button Text="{loc:Translate Order_DiscardChanges}" Style="{StaticResource SecondaryButton}" Command="{Binding DiscardEditCommand}" />
+                    <Button Grid.Column="1" Text="{loc:Translate Order_SaveChanges}" Command="{Binding SaveEditCommand}" />
+                </Grid>
             </VerticalStackLayout>
         </Border>
     </Grid>

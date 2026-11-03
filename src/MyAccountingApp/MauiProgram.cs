@@ -16,6 +16,9 @@ public static class MauiProgram
 	{
 		LocalizationService.Initialize();
 
+		// Rounded, outlined text inputs app-wide (Android handler mapping).
+		Controls.RoundedInputs.Register();
+
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()

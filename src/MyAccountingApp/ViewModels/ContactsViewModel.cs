@@ -18,20 +18,26 @@ public partial class ContactsViewModel : BaseViewModel
     public ContactsViewModel(ContactService contacts, DialogService dialogs) : base(dialogs)
     {
         _contacts = contacts;
-        RoleFilter = RoleOptions[0];
+        _inactiveChip = new FilterChip(LocalizationService.Get("Common_ShowInactive"), null, Colors.Gray);
+        _roleChips =
+        [
+            new(LocalizationService.Get("Common_All"), null) { IsSelected = true },
+            new(LocalizationService.Get("ContactType_Customer"), ContactType.Customer),
+            new(LocalizationService.Get("ContactType_Supplier"), ContactType.Supplier)
+        ];
+        Chips = [.. _roleChips, _inactiveChip];
     }
+
+    private readonly List<FilterChip> _roleChips;
+    // Last pill: an on/off toggle, separate from the single-choice role pills.
+    private readonly FilterChip _inactiveChip;
 
     public ObservableCollection<ContactRow> Items { get; } = [];
 
-    public List<Option<ContactType?>> RoleOptions { get; } =
-    [
-        new(LocalizationService.Get("Common_All"), null),
-        new(LocalizationService.Get("ContactType_Customer"), ContactType.Customer),
-        new(LocalizationService.Get("ContactType_Supplier"), ContactType.Supplier)
-    ];
+    /// <summary>Role pills (All / Customers / Suppliers, with counts) followed by the Show inactive toggle.</summary>
+    public List<FilterChip> Chips { get; }
 
-    [ObservableProperty]
-    public partial Option<ContactType?> RoleFilter { get; set; }
+    private ContactType? RoleFilter => (ContactType?)_roleChips.First(c => c.IsSelected).Value;
 
     [ObservableProperty]
     public partial string? SearchText { get; set; }
@@ -39,15 +45,42 @@ public partial class ContactsViewModel : BaseViewModel
     [ObservableProperty]
     public partial bool ShowInactive { get; set; }
 
-    partial void OnRoleFilterChanged(Option<ContactType?> value) => LoadCommand.Execute(null);
-    partial void OnShowInactiveChanged(bool value) => LoadCommand.Execute(null);
+    partial void OnShowInactiveChanged(bool value)
+    {
+        _inactiveChip.IsSelected = value;
+        LoadCommand.Execute(null);
+    }
 
+    [RelayCommand]
+    private void SelectChip(FilterChip chip)
+    {
+        if (ReferenceEquals(chip, _inactiveChip))
+        {
+            ShowInactive = !ShowInactive;
+            return;
+        }
+        if (chip.IsSelected) return;
+        FilterChip.Select(_roleChips, chip);
+        LoadCommand.Execute(null);
+    }
+
+    /// <summary>Loads every role (to count them; "Both" counts on each side) and lists the selected one.</summary>
     [RelayCommand]
     private Task LoadAsync() => RunAsync(async () =>
     {
-        var list = await _contacts.SearchAsync(SearchText, RoleFilter?.Value, ShowInactive);
+        var list = await _contacts.SearchAsync(SearchText, includeInactive: ShowInactive);
+        bool Matches(Contact c, ContactType? role) => role switch
+        {
+            ContactType.Customer => c.IsCustomer,
+            ContactType.Supplier => c.IsSupplier,
+            _ => true
+        };
+        foreach (var chip in _roleChips)
+            chip.Count = Formats.Quantity(list.Count(c => Matches(c, (ContactType?)chip.Value)));
+
+        var role = RoleFilter;
         Items.Clear();
-        foreach (var c in list) Items.Add(new ContactRow(c));
+        foreach (var c in list.Where(c => Matches(c, role))) Items.Add(new ContactRow(c));
     });
 
     [RelayCommand]

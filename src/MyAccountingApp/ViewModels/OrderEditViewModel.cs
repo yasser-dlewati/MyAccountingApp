@@ -17,6 +17,8 @@ public partial class OrderEditViewModel(
     : BaseViewModel(dialogs), IQueryAttributable
 {
     private int _orderId;
+    // Confirmed order: the quantity per product it already took from stock (given back when it is edited).
+    private Dictionary<int, decimal> _postedQuantities = [];
 
     public ObservableCollection<Contact> Contacts { get; } = [];
     public ObservableCollection<OrderLineViewModel> Lines { get; } = [];
@@ -30,12 +32,22 @@ public partial class OrderEditViewModel(
     [ObservableProperty] public partial string Total { get; set; } = Formats.Money(0);
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsDraft), nameof(IsConfirmed), nameof(CanDelete))]
+    [NotifyPropertyChangedFor(nameof(IsDraft), nameof(IsConfirmed), nameof(IsEditable), nameof(ShowPostedActions), nameof(CanEdit))]
     public partial OrderStatus Status { get; set; } = OrderStatus.Draft;
+
+    /// <summary>A confirmed order opened for editing (Edit button); saved with <see cref="OrderService.UpdateConfirmedAsync"/>.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEditable), nameof(ShowPostedActions), nameof(CanEdit))]
+    public partial bool IsEditing { get; set; }
 
     public bool IsDraft => Status == OrderStatus.Draft;
     public bool IsConfirmed => Status == OrderStatus.Confirmed;
-    public bool CanDelete => IsDraft && _orderId != 0;
+    /// <summary>Lines, contact and product search can be changed.</summary>
+    public bool IsEditable => IsDraft || IsEditing;
+    /// <summary>Confirmed and not being edited: Revoke invoice (+ Edit on sales).</summary>
+    public bool ShowPostedActions => IsConfirmed && !IsEditing;
+    /// <summary>Confirmed sales (and sale returns) can be edited.</summary>
+    public bool CanEdit => ShowPostedActions && OrderService.IsSalesSide(OrderType);
 
     public string ContactLabel => LocalizationService.Get(OrderService.IsSalesSide(OrderType) ? "Order_Customer" : "Order_Supplier");
 
@@ -69,11 +81,16 @@ public partial class OrderEditViewModel(
         _orderId = order.Id;
         OrderType = order.OrderType;
         Status = order.Status;
+        OnPropertyChanged(nameof(CanEdit));
         Title = $"{EnumLabels.Of(order.OrderType)} {order.OrderNumber}";
         StatusLabel = $"{EnumLabels.Of(order.Status)} · {Formats.Date(order.CreatedAt)}";
-        OnPropertyChanged(nameof(CanDelete));
+        if (order.EditedAt is { } editedAt)
+            StatusLabel += " · " + LocalizationService.Format("Order_EditedOn", Formats.Date(editedAt));
         await LoadContactsAsync(order.Contact);
 
+        _postedQuantities = order.Status == OrderStatus.Confirmed
+            ? order.Items.GroupBy(i => i.ProductId).ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity))
+            : [];
         Lines.Clear();
         foreach (var item in order.Items)
             Lines.Add(new OrderLineViewModel(item.ProductId, item.Product!.Name, item.Quantity, item.UnitPrice, UpdateTotal));
@@ -104,7 +121,7 @@ public partial class OrderEditViewModel(
 
     /// <summary>Multi-scan: every scanned product is added (again = quantity + 1).</summary>
     [RelayCommand]
-    private Task ScanProductAsync() => IsDraft ? scanner.ScanManyAsync(AddScannedAsync) : Task.CompletedTask;
+    private Task ScanProductAsync() => IsEditable ? scanner.ScanManyAsync(AddScannedAsync) : Task.CompletedTask;
 
     /// <summary>Adds one scanned barcode's product; returns the message the scanner shows for it.</summary>
     private async Task<ScanOutcome> AddScannedAsync(string barcode)
@@ -113,15 +130,24 @@ public partial class OrderEditViewModel(
         {
             var product = await products.GetByBarcodeAsync(barcode);
             if (product is not { IsActive: true })
-                return new(false, LocalizationService.Format("Scan_ProductNotFound", barcode));
+                return new(false, LocalizationService.Format("Scan_ProductNotFound", barcode), Found: product is not null);
             await AddLineAsync(product);
-            var quantity = Lines.First(l => l.ProductId == product.Id).QuantityValue;
-            return new(true, LocalizationService.Format("Scan_Added", product.Name, Formats.Quantity(quantity)));
+            var quantity = Lines.Where(l => l.ProductId == product.Id).Sum(l => l.QuantityValue);
+            return new(true, LocalizationService.Format("Scan_Added", product.Name, Formats.Quantity(quantity)),
+                Found: true, InStock: await CoversAsync(product.Id, quantity));
         }
         catch (BusinessRuleException ex)
         {
             return new(false, LocalizationService.Format(ex.ErrorKey, ex.Args));
         }
+    }
+
+    /// <summary>Stock-in orders always; stock-out: stock on hand (+ what this posted order already took) ≥ quantity.</summary>
+    private async Task<bool> CoversAsync(int productId, decimal quantity)
+    {
+        if (OrderService.StockDirection(OrderType) > 0) return true;
+        var available = await inventory.GetStockAsync(productId) + _postedQuantities.GetValueOrDefault(productId);
+        return available >= quantity;
     }
 
     private async Task FindProductAsync()
@@ -170,13 +196,6 @@ public partial class OrderEditViewModel(
     }
 
     [RelayCommand]
-    private Task SaveAsync() => RunAsync(async () =>
-    {
-        await SaveDraftAsync();
-        await LoadOrderAsync(_orderId);
-    });
-
-    [RelayCommand]
     private Task ConfirmAsync() => RunAsync(async () =>
     {
         await SaveDraftAsync();
@@ -211,9 +230,25 @@ public partial class OrderEditViewModel(
         await LoadOrderAsync(_orderId);
     });
 
+    /// <summary>
+    /// Revoke invoice: a draft is discarded (deleted if it was saved) and the page closes; a confirmed order is
+    /// cancelled (its stock movements are reversed).
+    /// </summary>
     [RelayCommand]
-    private async Task CancelOrderAsync()
+    private async Task RevokeAsync()
     {
+        if (IsDraft)
+        {
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_RevokeDraftPrompt"))) return;
+            await RunAsync(async () =>
+            {
+                if (_orderId != 0)
+                    await orders.DeleteDraftAsync(_orderId);
+                await GoBackAsync();
+            });
+            return;
+        }
+
         if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_CancelPrompt"))) return;
         await RunAsync(async () =>
         {
@@ -222,15 +257,50 @@ public partial class OrderEditViewModel(
         });
     }
 
+    /// <summary>Opens a confirmed order for editing (lines, prices, contact).</summary>
     [RelayCommand]
-    private async Task DeleteAsync()
+    private void Edit()
     {
-        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_DeletePrompt"))) return;
-        await RunAsync(async () =>
+        if (CanEdit) IsEditing = true;
+    }
+
+    [RelayCommand]
+    private Task SaveEditAsync() => RunAsync(async () => await SaveEditCoreAsync());
+
+    [RelayCommand]
+    private Task DiscardEditAsync() => RunAsync(async () =>
+    {
+        IsEditing = false;
+        ProductResults.Clear();
+        await LoadOrderAsync(_orderId);
+    });
+
+    /// <summary>Same checks as confirming; true when the changes were saved (false = refused or not confirmed).</summary>
+    private async Task<bool> SaveEditCoreAsync()
+    {
+        var input = ValidatedLines();
+        if (Contact is null or { Id: 0 } && !WalkInSettings.IsAllowed(OrderType))
+            throw new BusinessRuleException(ErrorKeys.ContactRequired);
+        if (input.Count == 0)
+            throw new BusinessRuleException(ErrorKeys.OrderHasNoItems);
+        if (input.Any(l => l.Quantity <= 0))
+            throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
+
+        var belowCost = await orders.GetBelowCostLinesAsync(OrderType, input);
+        if (belowCost.Count > 0)
         {
-            await orders.DeleteDraftAsync(_orderId);
-            await GoBackAsync();
-        });
+            var detail = string.Join("\n", belowCost.Select(l =>
+                $"{l.ProductName}: {Formats.Money(l.Cost)} / {Formats.Money(l.SellingPrice)}"));
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_BelowCostConfirm", detail)))
+                return false;
+        }
+
+        int? contactId = Contact is { Id: not 0 } c ? c.Id : null;
+        await orders.UpdateConfirmedAsync(_orderId, contactId, input,
+            allowNegativeStock: StockSettings.AllowNegative, allowWalkIn: WalkInSettings.IsAllowed(OrderType));
+        IsEditing = false;
+        await LoadOrderAsync(_orderId);
+        return true;
     }
 
     /// <summary>
@@ -240,6 +310,11 @@ public partial class OrderEditViewModel(
     [RelayCommand]
     private Task BackAsync() => RunAsync(async () =>
     {
+        // Editing a confirmed order: ask whether to keep the changes (No = discard them).
+        if (IsEditing && await Dialogs.ConfirmAsync(LocalizationService.Get("Order_SaveEditPrompt"))
+                      && !await SaveEditCoreAsync())
+            return;
+
         if (IsDraft)
         {
             if (Lines.Count > 0 || Contact is { Id: not 0 })
@@ -250,15 +325,19 @@ public partial class OrderEditViewModel(
         await GoBackAsync();
     });
 
-    private async Task SaveDraftAsync()
+    private List<OrderLineInput> ValidatedLines()
     {
         if (Lines.Any(l => l.QuantityValue < 0))
             throw new BusinessRuleException(ErrorKeys.QuantityNotPositive);
         if (Lines.Any(l => l.UnitPriceValue < 0))
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
+        return Lines.Select(l => new OrderLineInput(l.ProductId, l.QuantityValue, l.UnitPriceValue)).ToList();
+    }
 
+    private async Task SaveDraftAsync()
+    {
+        var input = ValidatedLines();
         int? contactId = Contact is { Id: not 0 } c ? c.Id : null;
-        var input = Lines.Select(l => new OrderLineInput(l.ProductId, l.QuantityValue, l.UnitPriceValue)).ToList();
         if (_orderId == 0)
             _orderId = (await orders.CreateDraftAsync(OrderType, contactId, input)).Id;
         else

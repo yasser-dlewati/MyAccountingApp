@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyAccountingApp.Core.Data;
 using MyAccountingApp.Core.Entities;
+using MyAccountingApp.Core.Enums;
 
 namespace MyAccountingApp.Core.Services;
 
@@ -46,7 +47,12 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
     /// <param name="categoryRequired">
     /// Categories turned on in settings: the product must have one. Off: a null category means "General".
     /// </param>
-    public async Task<Product> SaveAsync(Product product, bool categoryRequired = true)
+    /// <param name="openingQuantity">
+    /// New products only: stock on hand when the product is added, posted as one <see cref="OrderType.OpeningStock"/>
+    /// ledger row at <paramref name="openingCost"/> per unit. Ignored when the product already exists.
+    /// </param>
+    public async Task<Product> SaveAsync(Product product, bool categoryRequired = true,
+        decimal openingQuantity = 0, decimal openingCost = 0)
     {
         product.Name = product.Name.Trim();
         product.Barcode = product.Barcode.Trim();
@@ -58,6 +64,11 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
         if (categoryRequired && product.CategoryId is null)
             throw new BusinessRuleException(ErrorKeys.CategoryRequired);
+        var isNew = product.Id == 0;
+        if (isNew && openingQuantity < 0)
+            throw new BusinessRuleException(ErrorKeys.OpeningQuantityNegative);
+        if (isNew && openingCost < 0)
+            throw new BusinessRuleException(ErrorKeys.PriceNegative);
 
         await using var db = await dbFactory.CreateDbContextAsync();
         if (await db.Products.AnyAsync(p => p.Barcode == product.Barcode && p.Id != product.Id))
@@ -72,9 +83,25 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
             Id = product.Id, Name = product.Name, CategoryId = product.CategoryId, SupplierId = product.SupplierId,
             Barcode = product.Barcode, Price = product.Price, IsActive = product.IsActive, CreatedAt = product.CreatedAt
         };
-        if (entity.Id == 0) db.Products.Add(entity);
+        await using var tx = await db.Database.BeginTransactionAsync();
+        if (isNew) db.Products.Add(entity);
         else db.Products.Update(entity);
         await db.SaveChangesAsync();
+
+        if (isNew && openingQuantity > 0)
+        {
+            db.Ledger.Add(new LedgerEntry
+            {
+                ProductId = entity.Id,
+                DocumentType = OrderType.OpeningStock,
+                DocumentId = entity.Id,
+                Quantity = openingQuantity,
+                UnitCost = openingCost,
+                UnitPrice = openingCost
+            });
+            await db.SaveChangesAsync();
+        }
+        await tx.CommitAsync();
 
         product.Id = entity.Id;
         product.CreatedAt = entity.CreatedAt;

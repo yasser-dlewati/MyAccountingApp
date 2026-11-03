@@ -26,6 +26,7 @@ public static class ErrorKeys
     public const string QuantityNotPositive = "Error_QuantityNotPositive";
     public const string OrderNotDraft = "Error_OrderNotDraft";
     public const string OrderNotConfirmed = "Error_OrderNotConfirmed";
+    public const string OpeningQuantityNegative = "Error_OpeningQuantityNegative";
     public const string InsufficientStock = "Error_InsufficientStock";
     public const string NotFound = "Error_NotFound";
 }

@@ -26,10 +26,12 @@ public class QuickScanService(
             {
                 var product = await products.GetByBarcodeAsync(barcode);
                 if (product is not { IsActive: true })
-                    return new ScanOutcome(false, LocalizationService.Format("Scan_ProductNotFound", barcode));
+                    return new ScanOutcome(false, LocalizationService.Format("Scan_ProductNotFound", barcode),
+                        Found: product is not null);
                 scanned.Add(product.Id);
-                return new ScanOutcome(true, LocalizationService.Format("Scan_Added", product.Name,
-                    scanned.Count(id => id == product.Id)));
+                var quantity = scanned.Count(id => id == product.Id);
+                return new ScanOutcome(true, LocalizationService.Format("Scan_Added", product.Name, quantity),
+                    Found: true, InStock: await inventory.GetStockAsync(product.Id) >= quantity);
             });
 
             if (scanned.Count > 0)

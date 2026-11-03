@@ -34,6 +34,12 @@
                 <Switch Grid.Column="1" IsToggled="{Binding AllowNegativeStock}" VerticalOptions="Center" />
             </Grid>
             <Label Text="{loc:Translate Settings_AllowNegativeStockHint}" Style="{StaticResource Caption}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,4,0,0">
+                <Label Text="{loc:Translate Settings_LowStockThreshold}" VerticalOptions="Center" />
+                <Entry Grid.Column="1" Text="{Binding LowStockThreshold}" Keyboard="Numeric" WidthRequest="96"
+                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_LowStockThresholdHint}" Style="{StaticResource Caption}" />
 
             <Label Text="{loc:Translate Settings_Scanner}" Style="{StaticResource SectionTitle}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
@@ -41,6 +47,9 @@
                 <Switch Grid.Column="1" IsToggled="{Binding AllowMultiScan}" VerticalOptions="Center" />
             </Grid>
             <Label Text="{loc:Translate Settings_AllowMultiScanHint}" Style="{StaticResource Caption}" />
+            <Label Text="{loc:Translate Settings_ScanBeep}" Margin="0,8,0,0" />
+            <Picker ItemsSource="{Binding BeepOptions}" SelectedItem="{Binding BeepMode}" />
+            <Label Text="{loc:Translate Settings_ScanBeepHint}" Style="{StaticResource Caption}" />
 
             <Label Text="{loc:Translate Settings_Categories}" Style="{StaticResource SectionTitle}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">

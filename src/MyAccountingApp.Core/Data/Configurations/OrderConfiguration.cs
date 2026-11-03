@@ -17,6 +17,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         b.Property(x => x.TotalAmount).HasColumnName("total_amount");
         b.Property(x => x.CreatedAt).HasColumnName("created_at");
         b.Property(x => x.ModifiedAt).HasColumnName("modified_at");
+        b.Property(x => x.EditedAt).HasColumnName("edited_at");
 
         b.HasIndex(x => x.OrderNumber).IsUnique();
         b.HasIndex(x => new { x.OrderType, x.Status });

@@ -47,6 +47,10 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                     <Label.Triggers>
+                                        <!-- Low (Settings → Inventory threshold) = amber; out of stock = red, which wins. -->
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsLowStock}" Value="True">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#E65100, Dark=#FFB74D}" />
+                                        </DataTrigger>
                                         <DataTrigger TargetType="Label" Binding="{Binding IsOutOfStock}" Value="True">
                                             <Setter Property="TextColor" Value="IndianRed" />
                                         </DataTrigger>

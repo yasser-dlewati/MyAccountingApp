@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Horizontal, scrollable row of filter pills. Tapping one runs Command with the chip; the VM selects it. -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
+             xmlns:h="clr-namespace:MyAccountingApp.Helpers"
+             x:Class="MyAccountingApp.Controls.FilterChipBar"
+             x:Name="Root"
+             x:DataType="controls:FilterChipBar">
+
+    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+        <HorizontalStackLayout Spacing="8" Padding="0,4" BindableLayout.ItemsSource="{Binding ItemsSource, Source={x:Reference Root}}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="h:FilterChip">
+                    <Border Style="{StaticResource FilterChip}">
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                                <Setter Property="Shadow">
+                                    <Shadow Brush="{StaticResource Primary}" Opacity="0.35" Radius="6" Offset="0,2" />
+                                </Setter>
+                            </DataTrigger>
+                        </Border.Triggers>
+
+                        <HorizontalStackLayout Spacing="6">
+                            <!-- Status color; a white ring keeps it visible on the selected (green) chip -->
+                            <Border WidthRequest="10" HeightRequest="10" StrokeShape="Ellipse" StrokeThickness="0"
+                                    BackgroundColor="{Binding Dot}" IsVisible="{Binding HasDot}" VerticalOptions="Center">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="Stroke" Value="{StaticResource White}" />
+                                        <Setter Property="StrokeThickness" Value="1.5" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                            </Border>
+
+                            <Label Text="{Binding Label}" Style="{StaticResource FilterChipLabel}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource White}" />
+                                        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Border Style="{StaticResource FilterChipCount}" IsVisible="{Binding HasCount}">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#33FFFFFF" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="{Binding Count}" FontSize="11" FontFamily="OpenSansSemibold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray100}}"
+                                       VerticalOptions="Center" HorizontalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="TextColor" Value="{StaticResource White}" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+                        </HorizontalStackLayout>
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer CommandParameter="{Binding .}"
+                                Command="{Binding Command, Source={RelativeSource AncestorType={x:Type controls:FilterChipBar}}, x:DataType=controls:FilterChipBar}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
+    </ScrollView>
+</ContentView>

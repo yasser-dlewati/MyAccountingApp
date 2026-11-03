@@ -1,15 +1,21 @@
 using Microsoft.Extensions.Logging;
+using MyAccountingApp.Core.Services;
 using MyAccountingApp.Localization;
 using MyAccountingApp.Views;
 using ZXing.Net.Maui;
 
 namespace MyAccountingApp.AppServices;
 
-/// <summary>What multi-scan did with one barcode: whether an item was added (counted) and the message to show.</summary>
-public record ScanOutcome(bool Added, string Message);
+/// <summary>
+/// What a scan did with one barcode: whether an item was added (counted) and the message to show, plus what the beep
+/// setting needs: <paramref name="Found"/> = a known product, <paramref name="InStock"/> = its stock covers the
+/// quantity scanned so far (always true when the order adds stock).
+/// </summary>
+public record ScanOutcome(bool Added, string Message, bool Found = false, bool InStock = false);
 
 /// <summary>Camera barcode scanning: checks the camera permission, then shows <see cref="BarcodeScanPage"/> modally.</summary>
-public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScannerService> logger)
+public class BarcodeScannerService(
+    DialogService dialogs, ProductService products, InventoryService inventory, ILogger<BarcodeScannerService> logger)
 {
     /// <summary>
     /// Returns the scanned barcode, or null when the user cancelled or scanning isn't possible
@@ -20,7 +26,7 @@ public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScanner
         if (!await CanScanAsync())
             return null;
 
-        var page = new BarcodeScanPage();
+        var page = new BarcodeScanPage(lookup: LookupAsync);
         await Shell.Current.Navigation.PushModalAsync(page);
         var barcode = await page.Result;
         if (barcode is null)
@@ -51,8 +57,27 @@ public class BarcodeScannerService(DialogService dialogs, ILogger<BarcodeScanner
         logger.LogInformation("Multi-scan closed after {Count} barcodes", count);
     }
 
+    /// <summary>Single scan, for the beep setting: is it a known product, and does it have stock?</summary>
+    private async Task<ScanOutcome> LookupAsync(string barcode)
+    {
+        try
+        {
+            if (await products.GetByBarcodeAsync(barcode) is not { } product)
+                return new(false, "");
+            return new(false, "", Found: true, InStock: await inventory.GetStockAsync(product.Id) > 0);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogWarning(ex, "Barcode lookup for the scan beep failed");
+            return new(false, "");
+        }
+    }
+
     private async Task<bool> CanScanAsync()
     {
+        // Loaded before the camera opens so the first barcode already beeps.
+        ScanBeep.Prepare(logger);
+
         if (!BarcodeScanning.IsSupported)
         {
             logger.LogWarning("Barcode scanning not supported on this device");

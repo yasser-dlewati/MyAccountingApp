@@ -43,12 +43,16 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty] public partial Option<int?>? DefaultSupplier { get; set; }
     [ObservableProperty] public partial bool IsActive { get; set; } = true;
     [ObservableProperty] public partial string? StockInfo { get; set; }
+    /// <summary>New products only: opening stock quantity and unit cost (blank = 0).</summary>
+    [ObservableProperty] public partial string OpeningQuantity { get; set; } = "";
+    [ObservableProperty] public partial string OpeningCost { get; set; } = "";
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsExisting))]
+    [NotifyPropertyChangedFor(nameof(IsExisting), nameof(IsNew))]
     public partial int ProductId { get; set; }
 
     public bool IsExisting => ProductId != 0;
+    public bool IsNew => !IsExisting;
 
     public bool UseCategories { get; } = CategorySettings.Enabled;
 
@@ -122,7 +126,16 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
             _product.CategoryId = Category?.Id;
         _product.SupplierId = DefaultSupplier?.Value;
         _product.IsActive = IsActive;
-        await _products.SaveAsync(_product, categoryRequired: UseCategories);
+
+        decimal openingQuantity = 0, openingCost = 0;
+        if (IsNew)
+        {
+            if (!string.IsNullOrWhiteSpace(OpeningQuantity) && !Formats.TryParseDecimal(OpeningQuantity, out openingQuantity))
+                throw new BusinessRuleException(ErrorKeys.OpeningQuantityNegative);
+            if (!string.IsNullOrWhiteSpace(OpeningCost) && !Formats.TryParseDecimal(OpeningCost, out openingCost))
+                throw new BusinessRuleException(ErrorKeys.PriceNegative);
+        }
+        await _products.SaveAsync(_product, categoryRequired: UseCategories, openingQuantity, openingCost);
         await GoBackAsync();
     });
 

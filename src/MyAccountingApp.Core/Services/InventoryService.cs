@@ -84,12 +84,13 @@ public class InventoryService(IDbContextFactory<AppDbContext> dbFactory)
 
     /// <summary>
     /// Unit cost of the latest stock-in line of each product's confirmed purchases
-    /// (cancelled purchases are skipped).
+    /// (cancelled purchases are skipped) or, before any purchase, of its opening stock.
     /// </summary>
     private static IQueryable<ProductCost> LastPurchaseCosts(AppDbContext db)
     {
-        var purchaseLines = db.Ledger.Where(l => l.DocumentType == OrderType.Purchase
-            && db.Orders.Any(o => o.Id == l.DocumentId && o.Status == OrderStatus.Confirmed));
+        var purchaseLines = db.Ledger.Where(l => l.DocumentType == OrderType.OpeningStock
+            || (l.DocumentType == OrderType.Purchase
+                && db.Orders.Any(o => o.Id == l.DocumentId && o.Status == OrderStatus.Confirmed)));
 
         return purchaseLines
             .Where(l => l.Id == purchaseLines.Where(x => x.ProductId == l.ProductId).Max(x => x.Id))

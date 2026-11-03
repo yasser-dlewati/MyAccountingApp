@@ -14,6 +14,8 @@ public class Order : IHasCreatedAt
     public DateTime CreatedAt { get; set; }
     /// <summary>Stamped (UTC) by AppDbContext.SaveChanges on every update.</summary>
     public DateTime? ModifiedAt { get; set; }
+    /// <summary>When a confirmed order was last edited (UTC); null = never edited after confirming.</summary>
+    public DateTime? EditedAt { get; set; }
 
     public Contact? Contact { get; set; }
     public List<OrderItem> Items { get; set; } = [];

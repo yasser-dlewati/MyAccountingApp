@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:MyAccountingApp.Localization"
              xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
              x:Class="MyAccountingApp.Views.ContactsPage"
              x:DataType="vm:ContactsViewModel"
              Title="{loc:Translate Nav_Contacts}">
@@ -14,11 +15,7 @@
     <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
         <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Common_Search}"
                    SearchCommand="{Binding LoadCommand}" />
-        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-            <Picker ItemsSource="{Binding RoleOptions}" SelectedItem="{Binding RoleFilter}" />
-            <Switch Grid.Column="1" IsToggled="{Binding ShowInactive}" VerticalOptions="Center" />
-            <Label Grid.Column="2" Text="{loc:Translate Common_ShowInactive}" VerticalOptions="Center" />
-        </Grid>
+        <controls:FilterChipBar Grid.Row="1" ItemsSource="{Binding Chips}" Command="{Binding SelectChipCommand}" />
 
         <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
             <CollectionView.EmptyView>

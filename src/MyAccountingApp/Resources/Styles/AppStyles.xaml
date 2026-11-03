@@ -72,4 +72,29 @@
         <Setter Property="Margin" Value="0,6,0,0" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
     </Style>
+
+    <!-- Filter pills (Controls/FilterChipBar); the selected state is set by triggers in the control -->
+    <Style x:Key="FilterChip" TargetType="Border">
+        <Setter Property="StrokeShape" Value="RoundRectangle 18" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
+        <Setter Property="Padding" Value="14,7" />
+        <Setter Property="MinimumHeightRequest" Value="36" />
+    </Style>
+
+    <Style x:Key="FilterChipLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray100}}" />
+    </Style>
+
+    <Style x:Key="FilterChipCount" TargetType="Border">
+        <Setter Property="StrokeShape" Value="RoundRectangle 9" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="6,1" />
+        <Setter Property="MinimumWidthRequest" Value="20" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray600}}" />
+    </Style>
 </ResourceDictionary>

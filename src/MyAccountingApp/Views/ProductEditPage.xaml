@@ -27,6 +27,14 @@
             <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" IsVisible="{Binding UseCategories}" />
             <Label Text="{loc:Translate Field_DefaultSupplier}" Style="{StaticResource FormLabel}" />
             <Picker ItemsSource="{Binding Suppliers}" SelectedItem="{Binding DefaultSupplier}" />
+            <!-- New products only: stock on hand when the product is added (opening stock). -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" IsVisible="{Binding IsNew}">
+                <Label Text="{loc:Translate Field_OpeningQuantity}" Style="{StaticResource FormLabel}" />
+                <Label Grid.Column="1" Text="{loc:Translate Field_OpeningCost}" Style="{StaticResource FormLabel}" />
+                <Entry Grid.Row="1" Text="{Binding OpeningQuantity}" Keyboard="Numeric" Placeholder="0" />
+                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding OpeningCost}" Keyboard="Numeric" Placeholder="0" />
+            </Grid>
+            <Label Text="{loc:Translate Product_OpeningStockHint}" Style="{StaticResource Caption}" IsVisible="{Binding IsNew}" />
             <HorizontalStackLayout Spacing="8" Margin="0,8">
                 <Switch IsToggled="{Binding IsActive}" />
                 <Label Text="{loc:Translate Field_Active}" VerticalOptions="Center" />

@@ -72,16 +72,12 @@
   <data name="Order_AddProductHint" xml:space="preserve"><value>إضافة منتج: الاسم أو الباركود</value></data>
   <data name="Order_Items" xml:space="preserve"><value>الأصناف</value></data>
   <data name="Order_Total" xml:space="preserve"><value>الإجمالي</value></data>
-  <data name="Order_SaveDraft" xml:space="preserve"><value>حفظ كمسودة</value></data>
   <data name="Order_Confirm" xml:space="preserve"><value>تأكيد</value></data>
-  <data name="Order_DeleteDraft" xml:space="preserve"><value>حذف المسودة</value></data>
-  <data name="Order_CancelOrder" xml:space="preserve"><value>إلغاء الفاتورة</value></data>
   <data name="Order_BelowCostConfirm" xml:space="preserve"><value>التكلفة أعلى من سعر البيع (التكلفة / سعر البيع):
 {0}
 
 التأكيد على أي حال؟</value></data>
-  <data name="Order_CancelPrompt" xml:space="preserve"><value>إلغاء الفاتورة؟ سيتم عكس حركات المخزون الخاصة بها.</value></data>
-  <data name="Order_DeletePrompt" xml:space="preserve"><value>حذف هذه المسودة؟</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>إلغاء هذه الفاتورة؟ سيتم عكس حركات المخزون الخاصة بها.</value></data>
   <data name="Stock_TotalValue" xml:space="preserve"><value>قيمة المخزون (بالتكلفة)</value></data>
   <data name="Stock_LastCost" xml:space="preserve"><value>آخر تكلفة</value></data>
   <data name="Dashboard_NewSale" xml:space="preserve"><value>بيع جديد</value></data>
@@ -138,7 +134,7 @@
   <data name="Error_OrderHasNoItems" xml:space="preserve"><value>أضف صنفًا واحدًا على الأقل.</value></data>
   <data name="Error_QuantityNotPositive" xml:space="preserve"><value>يجب أن تكون الكميات أكبر من صفر.</value></data>
   <data name="Error_OrderNotDraft" xml:space="preserve"><value>الفاتورة {0} ليست مسودة ولا يمكن تعديلها.</value></data>
-  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>يمكن إلغاء الفواتير المؤكدة فقط ({0}).</value></data>
+  <data name="Error_OrderNotConfirmed" xml:space="preserve"><value>يمكن إلغاء أو تعديل الفواتير المؤكدة فقط ({0}).</value></data>
   <data name="Error_InsufficientStock" xml:space="preserve"><value>المخزون غير كافٍ لـ: {0}</value></data>
   <data name="Error_NotFound" xml:space="preserve"><value>السجل غير موجود.</value></data>
   <data name="Currency_Symbol" xml:space="preserve"><value>ل.س</value></data>
@@ -197,4 +193,25 @@
 {0}</value></data>
   <data name="About_OpenWebsite" xml:space="preserve"><value>فتح الموقع</value></data>
   <data name="About_TapToContact" xml:space="preserve"><value>اضغط على الشعار للتواصل مع المطوّر</value></data>
+  <data name="Common_Edit" xml:space="preserve"><value>تعديل</value></data>
+  <data name="Order_Revoke" xml:space="preserve"><value>إلغاء الفاتورة</value></data>
+  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>إلغاء هذه الفاتورة؟ سيتم حذف المسودة.</value></data>
+  <data name="Order_DiscardChanges" xml:space="preserve"><value>تجاهل التعديلات</value></data>
+  <data name="Order_SaveChanges" xml:space="preserve"><value>حفظ التعديلات</value></data>
+  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>حفظ التعديلات على هذه الفاتورة؟</value></data>
+  <data name="Order_EditedOn" xml:space="preserve"><value>عُدّلت في {0}</value></data>
+  <data name="Order_Edited" xml:space="preserve"><value>معدّلة</value></data>
+  <data name="OrderType_OpeningStock" xml:space="preserve"><value>رصيد أول المدة</value></data>
+  <data name="Field_OpeningQuantity" xml:space="preserve"><value>الكمية الافتتاحية</value></data>
+  <data name="Field_OpeningCost" xml:space="preserve"><value>تكلفة الوحدة</value></data>
+  <data name="Product_OpeningStockHint" xml:space="preserve"><value>الكمية الموجودة عند إضافة المنتج (أول المدة). تُعتبر تكلفة الوحدة آخر تكلفة حتى أول عملية شراء.</value></data>
+  <data name="Error_OpeningQuantityNegative" xml:space="preserve"><value>يجب أن تكون الكمية الافتتاحية صفراً أو أكثر.</value></data>
+  <data name="Settings_LowStockThreshold" xml:space="preserve"><value>مخزون منخفض عند أو أقل من</value></data>
+  <data name="Settings_LowStockThresholdHint" xml:space="preserve"><value>المنتجات التي كميتها تساوي هذا الرقم أو أقل تظهر في قائمة المخزون المنخفض في الرئيسية وتُميَّز في صفحة المخزون.</value></data>
+  <data name="Settings_ScanBeep" xml:space="preserve"><value>صوت التنبيه عند المسح</value></data>
+  <data name="Settings_ScanBeepHint" xml:space="preserve"><value>خيار "طالما يوجد مخزون" يتوقف عن التنبيه عندما تصل الكمية الممسوحة إلى المخزون المتوفر (المشتريات تنبّه دائماً). يهتز الجهاز عند كل قراءة.</value></data>
+  <data name="ScanBeep_Off" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="ScanBeep_EveryRead" xml:space="preserve"><value>عند كل قراءة باركود</value></data>
+  <data name="ScanBeep_ProductFound" xml:space="preserve"><value>المنتجات المعروفة (حتى لو نفد المخزون)</value></data>
+  <data name="ScanBeep_InStock" xml:space="preserve"><value>المنتجات المعروفة طالما يوجد مخزون</value></data>
 </root>
