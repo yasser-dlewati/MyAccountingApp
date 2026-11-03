@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -411,12 +412,13 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
     private static OrderItem ToItem(OrderLineInput line) =>
         new() { ProductId = line.ProductId, Quantity = line.Quantity, UnitPrice = line.UnitPrice };
 
+    /// <summary>Per-type prefix + local date + daily sequence: <c>S-261104001</c> = the first sale of 2026-11-04.</summary>
     private static async Task<string> NextOrderNumberAsync(AppDbContext db, OrderType type)
     {
-        var prefix = PrefixFor(type) + "-";
-        var last = await db.Orders.Where(o => o.OrderType == type)
-            .OrderByDescending(o => o.Id).Select(o => o.OrderNumber).FirstOrDefaultAsync();
-        var next = last is not null && int.TryParse(last.AsSpan(prefix.Length), out var n) ? n + 1 : 1;
-        return $"{prefix}{next:D6}";
+        var prefix = $"{PrefixFor(type)}-{DateTime.Now.ToString("yyMMdd", CultureInfo.InvariantCulture)}";
+        var today = await db.Orders.Where(o => o.OrderNumber.StartsWith(prefix))
+            .Select(o => o.OrderNumber).ToListAsync();
+        var last = today.Select(n => int.TryParse(n.AsSpan(prefix.Length), out var x) ? x : 0).DefaultIfEmpty(0).Max();
+        return $"{prefix}{last + 1:D3}";
     }
 }

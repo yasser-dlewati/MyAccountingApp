@@ -17,6 +17,9 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
     private bool _applyingQuery;
     private bool _openedWithQuery;
 
+    /// <summary>The date range is untouched: no date bound; From shows the oldest order's date, To today.</summary>
+    private bool _allDates = true;
+
     public OrdersViewModel(OrderService orders, DialogService dialogs) : base(dialogs)
     {
         _orders = orders;
@@ -47,23 +50,18 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
     /// <summary>The filter panel (search, status, date range) is open; collapsed it shows <see cref="FilterSummary"/>.</summary>
     [ObservableProperty] public partial bool FiltersExpanded { get; set; }
 
-    /// <summary>Only orders created between From and To (local date + time, both inclusive to the minute).</summary>
-    [ObservableProperty] public partial bool UseDateRange { get; set; }
+    /// <summary>Only orders created from the start of From to the end of To (local dates, both inclusive).
+    /// Until the user picks a date they span every order (<see cref="_allDates"/>).</summary>
     [ObservableProperty] public partial DateTime? FromDate { get; set; }
-    [ObservableProperty] public partial TimeSpan? FromTime { get; set; }
     [ObservableProperty] public partial DateTime? ToDate { get; set; }
-    [ObservableProperty] public partial TimeSpan? ToTime { get; set; }
 
     [ObservableProperty] public partial string FilterSummary { get; set; } = "";
     [ObservableProperty] public partial bool HasActiveFilters { get; set; }
     [ObservableProperty] public partial bool IsDateRangeInvalid { get; set; }
 
     partial void OnIsSalesTabChanged(bool value) => Reload();
-    partial void OnUseDateRangeChanged(bool value) => Reload();
-    partial void OnFromDateChanged(DateTime? value) => ReloadIfDated();
-    partial void OnFromTimeChanged(TimeSpan? value) => ReloadIfDated();
-    partial void OnToDateChanged(DateTime? value) => ReloadIfDated();
-    partial void OnToTimeChanged(TimeSpan? value) => ReloadIfDated();
+    partial void OnFromDateChanged(DateTime? value) => OnDatePicked();
+    partial void OnToDateChanged(DateTime? value) => OnDatePicked();
 
     // Clearing the search box (its ✕) doesn't fire SearchCommand.
     partial void OnSearchTextChanged(string? value)
@@ -71,9 +69,11 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         if (string.IsNullOrEmpty(value)) Reload();
     }
 
-    private void ReloadIfDated()
+    private void OnDatePicked()
     {
-        if (UseDateRange) Reload();
+        if (_applyingQuery) return;
+        _allDates = false;
+        Reload();
     }
 
     private void Reload()
@@ -99,13 +99,11 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
             if (query.TryGetValue("fromLocal", out var f) && f is DateTime from
                 && query.TryGetValue("toLocal", out var t) && t is DateTime to)
             {
-                var last = to.AddMinutes(-1); // the To fields are inclusive
-                (FromDate, FromTime, ToDate, ToTime) = (from.Date, from.TimeOfDay, last.Date, TimeOfMinute(last));
-                UseDateRange = true;
+                (FromDate, ToDate) = (from.Date, to.AddTicks(-1).Date); // To is inclusive
+                _allDates = false;
             }
             else
             {
-                UseDateRange = false;
                 ResetDateRange();
             }
         }
@@ -119,7 +117,7 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
     /// <summary>
     /// Called by the page on every arrival. Back from an opened order (<paramref name="returning"/>) keeps the filters;
     /// the dashboard's invoice cards set them (<see cref="ApplyQueryAttributes"/>, which Shell runs first); any other
-    /// arrival (Invoices tab) turns the date filter off.
+    /// arrival (Invoices tab) resets the date range to every order.
     /// </summary>
     public void OnNavigatedTo(bool returning)
     {
@@ -129,11 +127,10 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
             _openedWithQuery = false;
             return;
         }
-        if (!UseDateRange) return;
+        if (_allDates) return;
         _applyingQuery = true;
         try
         {
-            UseDateRange = false;
             ResetDateRange();
         }
         finally
@@ -168,7 +165,6 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         {
             SearchText = null;
             FilterChip.Select(StatusChips, StatusChips[0]);
-            UseDateRange = false;
             ResetDateRange();
         }
         finally
@@ -202,11 +198,13 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         UpdateSummary();
         var (from, to) = DateRange();
         IsDateRangeInvalid = from is not null && to is not null && from >= to;
+        var showAll = _allDates;
 
         var list = IsDateRangeInvalid
             ? []
             : await _orders.GetOrdersAsync(search: SearchText, salesSide: IsSalesTab,
                 fromUtc: from?.ToUniversalTime(), toUtc: to?.ToUniversalTime());
+        if (showAll && _allDates) ShowAllDates(list);
         foreach (var chip in StatusChips)
             chip.Count = Formats.Quantity(chip.Value is OrderStatus s ? list.Count(o => o.Status == s) : list.Count);
 
@@ -215,16 +213,16 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         foreach (var o in list.Where(o => status is null || o.Status == status)) Items.Add(new OrderRow(o));
     }
 
-    /// <summary>Local [from, to) of the date filter (To is inclusive to the minute in the UI), nulls when it is off.</summary>
+    /// <summary>Local [from, to) of the date filter (whole days), nulls while it spans every order.</summary>
     private (DateTime? From, DateTime? To) DateRange()
     {
-        if (!UseDateRange) return (null, null);
-        var from = (FromDate ?? DateTime.Today).Date + (FromTime ?? TimeSpan.Zero);
-        var to = (ToDate ?? DateTime.Today).Date + (ToTime ?? new TimeSpan(23, 59, 0));
-        return (DateTime.SpecifyKind(from, DateTimeKind.Local), DateTime.SpecifyKind(to.AddMinutes(1), DateTimeKind.Local));
+        if (_allDates) return (null, null);
+        var from = (FromDate ?? DateTime.Today).Date;
+        var to = (ToDate ?? DateTime.Today).Date.AddDays(1);
+        return (DateTime.SpecifyKind(from, DateTimeKind.Local), DateTime.SpecifyKind(to, DateTimeKind.Local));
     }
 
-    /// <summary>One line for the collapsed filter header, e.g. "“ali” · Confirmed · 2026-11-01 00:00 – 2026-11-03 23:59".</summary>
+    /// <summary>One line for the collapsed filter header, e.g. "“ali” · Confirmed · 2026-11-01 – 2026-11-03".</summary>
     private void UpdateSummary()
     {
         var parts = new List<string>();
@@ -232,19 +230,33 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         if (StatusFilter is OrderStatus status) parts.Add(EnumLabels.Of(status));
         var (from, to) = DateRange();
         if (from is DateTime f && to is DateTime t)
-            parts.Add($"{Formats.LocalDateTime(f)} – {Formats.LocalDateTime(t.AddMinutes(-1))}");
+            parts.Add(f == t.AddDays(-1) ? Formats.LocalDate(f) : $"{Formats.LocalDate(f)} – {Formats.LocalDate(t.AddDays(-1))}");
         HasActiveFilters = parts.Count > 0;
         FilterSummary = HasActiveFilters ? string.Join(" · ", parts) : LocalizationService.Get("Orders_NoFilters");
     }
 
-    /// <summary>Date range defaults: today 00:00 – 23:59.</summary>
+    /// <summary>Back to every order: From / To show today until the load fills in the oldest order's date.</summary>
     private void ResetDateRange()
     {
-        (FromDate, FromTime) = (DateTime.Today, TimeSpan.Zero);
-        (ToDate, ToTime) = (DateTime.Today, new TimeSpan(23, 59, 0));
+        _allDates = true;
+        (FromDate, ToDate) = (DateTime.Today, DateTime.Today);
     }
 
-    private static TimeSpan TimeOfMinute(DateTime t) => new(t.Hour, t.Minute, 0);
+    /// <summary>Unfiltered range: From = the oldest listed order's day, To = today (or that day, if later).</summary>
+    private void ShowAllDates(List<Order> list)
+    {
+        var first = list.Count == 0 ? DateTime.Today : list.Min(o => o.CreatedAt).ToLocalTime().Date;
+        var last = list.Count == 0 ? DateTime.Today : list.Max(o => o.CreatedAt).ToLocalTime().Date;
+        _applyingQuery = true;
+        try
+        {
+            (FromDate, ToDate) = (first < DateTime.Today ? first : DateTime.Today, last > DateTime.Today ? last : DateTime.Today);
+        }
+        finally
+        {
+            _applyingQuery = false;
+        }
+    }
 
     /// <summary>New order of the selected tab's side (the order itself or a return).</summary>
     [RelayCommand]

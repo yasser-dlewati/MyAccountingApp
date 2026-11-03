@@ -200,9 +200,10 @@ public class OrderServiceTests : IDisposable
         var second = await _t.Orders.CreateDraftAsync(OrderType.Sale, customer.Id, [new OrderLineInput(product.Id, 1, 2m)]);
         var purchase = await _t.Orders.CreateDraftAsync(OrderType.Purchase, supplier.Id, [new OrderLineInput(product.Id, 1, 1m)]);
 
-        Assert.Equal("S-000001", first.OrderNumber);
-        Assert.Equal("S-000002", second.OrderNumber);
-        Assert.Equal("P-000001", purchase.OrderNumber);
+        var day = DateTime.Now.ToString("yyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+        Assert.Equal($"S-{day}001", first.OrderNumber);
+        Assert.Equal($"S-{day}002", second.OrderNumber);
+        Assert.Equal($"P-{day}001", purchase.OrderNumber);
 
         await _t.Orders.UpdateDraftAsync(first.Id, customer.Id,
             [new OrderLineInput(product.Id, 2, 2m), new OrderLineInput(product.Id, 1, 3m)]);

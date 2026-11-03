@@ -16,7 +16,7 @@
         <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
             <!-- Tabs: sales (+ returns) / purchases (+ returns) -->
             <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="4"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray900}}">
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray600}}">
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
                     <Button Text="{loc:Translate Orders_SalesTab}" Style="{StaticResource TabButton}" Command="{Binding ShowSalesCommand}">
                         <Button.Triggers>
@@ -36,7 +36,7 @@
                     </Button>
                 </Grid>
             </Border>
-            <!-- Filters: collapsible card (search, status chips, date + time range); collapsed it shows a summary -->
+            <!-- Filters: collapsible card (search, status chips, date range); collapsed it shows a summary -->
             <Border Grid.Row="1" Style="{StaticResource Card}" Padding="12,6" Margin="0,4,0,0">
                 <VerticalStackLayout Spacing="6">
                     <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" BackgroundColor="Transparent">
@@ -47,9 +47,11 @@
                             <Label Text="{loc:Translate Orders_Filters}" FontFamily="OpenSansSemibold" FontSize="14" />
                             <Label Text="{Binding FilterSummary}" Style="{StaticResource Caption}" LineBreakMode="TailTruncation" />
                         </VerticalStackLayout>
-                        <Button Grid.Column="2" Text="{loc:Translate Orders_ClearFilters}" Style="{StaticResource SecondaryButton}"
-                                Command="{Binding ClearFiltersCommand}" IsVisible="{Binding HasActiveFilters}"
-                                Padding="12,0" HeightRequest="34" MinimumHeightRequest="34" FontSize="13" VerticalOptions="Center" />
+                        <ImageButton Grid.Column="2" Source="ic_reset.png" Style="{StaticResource IconButton}"
+                                     Command="{Binding ClearFiltersCommand}" IsVisible="{Binding HasActiveFilters}"
+                                     WidthRequest="34" HeightRequest="34" CornerRadius="17" Padding="7"
+                                     ToolTipProperties.Text="{loc:Translate Orders_ClearFilters}"
+                                     SemanticProperties.Description="{loc:Translate Orders_ClearFilters}" />
                         <Path Grid.Column="3" Data="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" Aspect="Uniform"
                               WidthRequest="14" HeightRequest="10" VerticalOptions="Center"
                               Fill="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray300}}">
@@ -69,18 +71,12 @@
                                    SearchCommand="{Binding LoadCommand}" />
                         <controls:FilterChipBar ItemsSource="{Binding StatusChips}" Command="{Binding SelectStatusCommand}" />
 
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{loc:Translate Orders_DateFilter}" VerticalOptions="Center" />
-                            <Switch Grid.Column="1" IsToggled="{Binding UseDateRange}" VerticalOptions="Center" />
-                        </Grid>
-                        <Grid IsVisible="{Binding UseDateRange}" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto"
-                              ColumnSpacing="8" RowSpacing="6">
-                            <Label Text="{loc:Translate Orders_From}" Style="{StaticResource FormLabel}" Margin="0" VerticalOptions="Center" />
+                        <Label Text="{loc:Translate Orders_DateFilter}" Style="{StaticResource FormLabel}" Margin="0,4,0,0" />
+                        <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8">
+                            <Label Text="{loc:Translate Orders_From}" VerticalOptions="Center" />
                             <DatePicker Grid.Column="1" Date="{Binding FromDate}" Format="yyyy-MM-dd" />
-                            <TimePicker Grid.Column="2" Time="{Binding FromTime}" Format="HH:mm" WidthRequest="90" />
-                            <Label Grid.Row="1" Text="{loc:Translate Orders_To}" Style="{StaticResource FormLabel}" Margin="0" VerticalOptions="Center" />
-                            <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding ToDate}" Format="yyyy-MM-dd" />
-                            <TimePicker Grid.Row="1" Grid.Column="2" Time="{Binding ToTime}" Format="HH:mm" WidthRequest="90" />
+                            <Label Grid.Column="2" Text="{loc:Translate Orders_To}" VerticalOptions="Center" />
+                            <DatePicker Grid.Column="3" Date="{Binding ToDate}" Format="yyyy-MM-dd" />
                         </Grid>
                         <Label Text="{loc:Translate Orders_DateRangeInvalid}" IsVisible="{Binding IsDateRangeInvalid}"
                                TextColor="IndianRed" FontSize="13" />

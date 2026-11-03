@@ -114,7 +114,7 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
         points.Select((p, i) => new ChartPoint(AxisLabel(p.Start, i, points.Count), (double)value(p),
             $"{BucketName(p.Start)} · {Formats.Money(value(p))}")).ToList();
 
-    /// <summary>A few readable x labels: every 6 hours, every day of a week, weekly back from today, every 2 months.</summary>
+    /// <summary>A few readable x labels: every 6 hours, every day of the week, every 7th day of the month, every 2nd month.</summary>
     private string AxisLabel(DateTime start, int index, int count)
     {
         var inv = CultureInfo.InvariantCulture;
@@ -122,8 +122,8 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
         {
             ReportPeriod.Day => index % 6 == 0 ? start.ToString("HH:mm", inv) : "",
             ReportPeriod.Week => start.ToString("MM-dd", inv),
-            ReportPeriod.Month => (count - 1 - index) % 7 == 0 ? start.ToString("MM-dd", inv) : "",
-            _ => (count - 1 - index) % 2 == 0 ? start.ToString("yy-MM", inv) : "",
+            ReportPeriod.Month => index % 7 == 0 ? start.ToString("MM-dd", inv) : "",
+            _ => index % 2 == 0 ? start.ToString("yy-MM", inv) : "",
         };
     }
 

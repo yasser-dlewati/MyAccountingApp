@@ -141,10 +141,10 @@
   <data name="Dashboard_ItemsSold" xml:space="preserve"><value>القطع المباعة</value></data>
   <data name="Orders_SalesTab" xml:space="preserve"><value>المبيعات</value></data>
   <data name="Orders_PurchasesTab" xml:space="preserve"><value>المشتريات</value></data>
-  <data name="Orders_Filters" xml:space="preserve"><value>التصفية</value></data>
-  <data name="Orders_NoFilters" xml:space="preserve"><value>بدون تصفية</value></data>
+  <data name="Orders_Filters" xml:space="preserve"><value>الفلاتر</value></data>
+  <data name="Orders_NoFilters" xml:space="preserve"><value>لا فلاتر مطبقة</value></data>
   <data name="Orders_ClearFilters" xml:space="preserve"><value>مسح</value></data>
-  <data name="Orders_DateFilter" xml:space="preserve"><value>نطاق التاريخ والوقت</value></data>
+  <data name="Orders_DateFilter" xml:space="preserve"><value>حدد التاريخ</value></data>
   <data name="Orders_From" xml:space="preserve"><value>من</value></data>
   <data name="Orders_To" xml:space="preserve"><value>إلى</value></data>
   <data name="Orders_DateRangeInvalid" xml:space="preserve"><value>يجب أن يكون «من» قبل «إلى».</value></data>

@@ -33,6 +33,9 @@ public static class Formats
     /// <summary>A local time, same format as <see cref="Date"/>.</summary>
     public static string LocalDateTime(DateTime local) => local.ToString("yyyy-MM-dd HH:mm", Inv);
 
+    /// <summary>A local date, e.g. 2026-11-04.</summary>
+    public static string LocalDate(DateTime local) => local.ToString("yyyy-MM-dd", Inv);
+
     public static bool TryParseDecimal(string? text, out decimal value)
     {
         value = 0;

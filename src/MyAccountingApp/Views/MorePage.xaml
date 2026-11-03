@@ -88,7 +88,23 @@
                                 <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="{x:Static app:Routes.Settings}" />
                             </Grid.GestureRecognizers>
                         </Grid>
-                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="{loc:Translate Settings_About}" Style="{StaticResource SectionCaption}" />
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{loc:Translate App_Title}" Style="{StaticResource ItemTitle}" HorizontalOptions="Center" />
+                        <Label Text="{Binding AppVersion, StringFormat='v{0}'}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
+                        <Label Text="{loc:Translate About_CreatedBy}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,8,0,0" />
+                        <Image Source="yasdle.png" HeightRequest="96" WidthRequest="79" HorizontalOptions="Center"
+                               SemanticProperties.Description="{loc:Translate About_ContactDeveloper}">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ContactDeveloperCommand}" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Label Text="{loc:Translate About_TapToContact}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
+                        <BoxView HeightRequest="1" Margin="0,8,0,0" Color="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
                         <Grid Style="{StaticResource Row}">
                             <Path Style="{StaticResource RowIcon}"
                                   Data="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
@@ -100,22 +116,6 @@
                                 <TapGestureRecognizer Command="{Binding ShareLogsCommand}" />
                             </Grid.GestureRecognizers>
                         </Grid>
-                    </VerticalStackLayout>
-                </Border>
-
-                <Label Text="{loc:Translate Settings_About}" Style="{StaticResource SectionCaption}" />
-                <Border Style="{StaticResource Card}">
-                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                        <Label Text="{loc:Translate App_Title}" Style="{StaticResource ItemTitle}" HorizontalOptions="Center" />
-                        <Label Text="{Binding AppVersion, StringFormat='v{0}'}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
-                        <Label Text="{loc:Translate About_CreatedBy}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,8,0,0" />
-                        <Image Source="yasdle.png" HeightRequest="96" WidthRequest="79" HorizontalOptions="Center"
-                               SemanticProperties.Description="{loc:Translate About_ContactDeveloper}">
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding ContactDeveloperCommand}" />
-                            </Image.GestureRecognizers>
-                        </Image>
-                        <Label Text="{loc:Translate About_TapToContact}" Style="{StaticResource Caption}" HorizontalOptions="Center" />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>

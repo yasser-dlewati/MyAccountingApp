@@ -27,17 +27,27 @@ public record DashboardReport(
 /// </summary>
 public class ReportService(IDbContextFactory<AppDbContext> dbFactory)
 {
-    /// <summary>[from, to) in local time for a period ending on <paramref name="today"/>.</summary>
+    /// <summary>
+    /// [from, to) in local time of the calendar period holding <paramref name="today"/>: Day = today, Week = Saturday to Friday,
+    /// Month = from the 1st, Year = from 1 January. The range runs to the end of the period (later buckets are just empty).
+    /// </summary>
     public static (DateTime From, DateTime To) RangeOf(ReportPeriod period, DateTime today)
     {
-        var end = today.Date.AddDays(1);
-        return period switch
+        var day = today.Date;
+        switch (period)
         {
-            ReportPeriod.Day => (today.Date, end),
-            ReportPeriod.Week => (end.AddDays(-7), end),
-            ReportPeriod.Month => (end.AddDays(-30), end),
-            _ => (new DateTime(today.Year, today.Month, 1).AddMonths(-11), new DateTime(today.Year, today.Month, 1).AddMonths(1)),
-        };
+            case ReportPeriod.Day:
+                return (day, day.AddDays(1));
+            case ReportPeriod.Week:
+                var saturday = day.AddDays(-(((int)day.DayOfWeek - (int)DayOfWeek.Saturday + 7) % 7));
+                return (saturday, saturday.AddDays(7));
+            case ReportPeriod.Month:
+                var first = new DateTime(day.Year, day.Month, 1);
+                return (first, first.AddMonths(1));
+            default:
+                var jan = new DateTime(day.Year, 1, 1);
+                return (jan, jan.AddYears(1));
+        }
     }
 
     /// <summary>Start of the bucket holding <paramref name="local"/>.</summary>

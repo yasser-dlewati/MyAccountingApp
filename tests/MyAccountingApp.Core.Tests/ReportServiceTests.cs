@@ -20,10 +20,11 @@ public class ReportServiceTests : IDisposable
     [Theory]
     [InlineData(ReportPeriod.Day, 24)]
     [InlineData(ReportPeriod.Week, 7)]
-    [InlineData(ReportPeriod.Month, 30)]
+    [InlineData(ReportPeriod.Month, 0)] // days in this month
     [InlineData(ReportPeriod.Year, 12)]
     public async Task Trend_has_one_bucket_per_hour_day_or_month(ReportPeriod period, int buckets)
     {
+        if (buckets == 0) buckets = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
         var report = await _t.Reports.GetDashboardAsync(period);
         Assert.Equal(buckets, report.Trend.Count);
         Assert.Equal(report.FromLocal, report.Trend[0].Start);
@@ -82,12 +83,24 @@ public class ReportServiceTests : IDisposable
         Assert.Equal(["Drinks", null], report.SalesByCategory.Select(c => c.Name));
     }
 
-    [Fact]
-    public void Year_range_covers_twelve_whole_months()
+    [Theory]
+    [InlineData(ReportPeriod.Day, "2026-11-04", "2026-11-05")]
+    [InlineData(ReportPeriod.Week, "2026-10-31", "2026-11-07")]   // Wednesday → from Saturday
+    [InlineData(ReportPeriod.Month, "2026-11-01", "2026-12-01")]
+    [InlineData(ReportPeriod.Year, "2026-01-01", "2027-01-01")]
+    public void Ranges_are_the_current_calendar_period(ReportPeriod period, string from, string to)
     {
-        var (from, to) = ReportService.RangeOf(ReportPeriod.Year, new DateTime(2026, 11, 2, 15, 0, 0));
-        Assert.Equal(new DateTime(2025, 12, 1), from);
-        Assert.Equal(new DateTime(2026, 12, 1), to);
-        Assert.Equal(new DateTime(2026, 11, 1), ReportService.BucketOf(ReportPeriod.Year, new DateTime(2026, 11, 30, 23, 0, 0)));
+        var range = ReportService.RangeOf(period, new DateTime(2026, 11, 4, 15, 0, 0));
+        Assert.Equal((DateTime.Parse(from), DateTime.Parse(to)), range);
     }
+
+    [Theory]
+    [InlineData("2026-10-31", "2026-10-31")] // Saturday starts its own week
+    [InlineData("2026-11-06", "2026-10-31")] // Friday is its last day
+    public void Week_starts_on_saturday(string today, string saturday) =>
+        Assert.Equal(DateTime.Parse(saturday), ReportService.RangeOf(ReportPeriod.Week, DateTime.Parse(today)).From);
+
+    [Fact]
+    public void Year_buckets_are_months() =>
+        Assert.Equal(new DateTime(2026, 11, 1), ReportService.BucketOf(ReportPeriod.Year, new DateTime(2026, 11, 30, 23, 0, 0)));
 }
