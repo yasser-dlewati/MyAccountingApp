@@ -31,7 +31,7 @@
 		<ApplicationTitle>متجر وائل</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.myaccountingapp</ApplicationId>
+		<ApplicationId>com.yasdle.waelstore</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>

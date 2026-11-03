@@ -20,6 +20,8 @@ public partial class SettingsViewModel : BaseViewModel
         Theme = ThemeOptions.FirstOrDefault(o => o.Value == ThemeService.CurrentTheme) ?? ThemeOptions[0];
         ConfirmExit = ExitSettings.Confirm;
         ShowInactiveProducts = ProductSettings.ShowInactive;
+        AllowNegativeStock = StockSettings.AllowNegative;
+        AllowMultiScan = ScanSettings.MultiScanAllowed;
         UseCategories = CategorySettings.Enabled;
         RequireCustomer = !WalkInSettings.CustomerAllowed;
         RequireSupplier = !WalkInSettings.SupplierAllowed;
@@ -51,6 +53,12 @@ public partial class SettingsViewModel : BaseViewModel
     public partial bool ShowInactiveProducts { get; set; }
 
     [ObservableProperty]
+    public partial bool AllowNegativeStock { get; set; }
+
+    [ObservableProperty]
+    public partial bool AllowMultiScan { get; set; }
+
+    [ObservableProperty]
     public partial bool UseCategories { get; set; }
 
     [ObservableProperty]
@@ -69,6 +77,10 @@ public partial class SettingsViewModel : BaseViewModel
     partial void OnConfirmExitChanged(bool value) => ExitSettings.Confirm = value;
 
     partial void OnShowInactiveProductsChanged(bool value) => ProductSettings.ShowInactive = value;
+
+    partial void OnAllowNegativeStockChanged(bool value) => StockSettings.AllowNegative = value;
+
+    partial void OnAllowMultiScanChanged(bool value) => ScanSettings.MultiScanAllowed = value;
 
     // The More page shows / hides its Categories row when it next appears.
     partial void OnUseCategoriesChanged(bool value) => CategorySettings.Enabled = value;

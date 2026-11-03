@@ -187,4 +187,15 @@
   <data name="QuickMenu_ScanSale" xml:space="preserve"><value>مسح بيع جديد</value></data>
   <data name="QuickMenu_LongPressHint" xml:space="preserve"><value>اضغط مطولاً لمزيد من الخيارات</value></data>
   <data name="QuickMenu_CheckProduct" xml:space="preserve"><value>فحص منتج / المخزون</value></data>
+  <data name="Settings_Inventory" xml:space="preserve"><value>المخزون</value></data>
+  <data name="Settings_AllowNegativeStock" xml:space="preserve"><value>السماح بالبيع بأكثر من المخزون</value></data>
+  <data name="Settings_AllowNegativeStockHint" xml:space="preserve"><value>عند التفعيل يمكن تأكيد بيع (أو مرتجع شراء) أكبر من المخزون المتوفر بعد تنبيه، ويصبح المخزون سالباً. عند الإيقاف يُرفض.</value></data>
+  <data name="Settings_Scanner" xml:space="preserve"><value>الماسح الضوئي</value></data>
+  <data name="Settings_AllowMultiScan" xml:space="preserve"><value>السماح بالمسح المتعدد</value></data>
+  <data name="Settings_AllowMultiScanHint" xml:space="preserve"><value>يُظهر مفتاح «مسح مرة أخرى» في صفحة المسح لإضافة عدة أصناف دون إغلاق الكاميرا. عند الإيقاف يُغلق الماسح بعد كل صنف.</value></data>
+  <data name="About_ContactDeveloper" xml:space="preserve"><value>التواصل مع المطوّر</value></data>
+  <data name="About_ContactDeveloperMessage" xml:space="preserve"><value>زر موقع المطوّر:
+{0}</value></data>
+  <data name="About_OpenWebsite" xml:space="preserve"><value>فتح الموقع</value></data>
+  <data name="About_TapToContact" xml:space="preserve"><value>اضغط على الشعار للتواصل مع المطوّر</value></data>
 </root>

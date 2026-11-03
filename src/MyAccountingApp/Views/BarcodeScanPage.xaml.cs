@@ -13,7 +13,6 @@ namespace MyAccountingApp.Views;
 /// </summary>
 public partial class BarcodeScanPage : ContentPage
 {
-    private const string ContinuousPreference = "scan_continuous";
     // A barcode seen again within this time is still in view: it counts again only after leaving the frame.
     private const long InViewMs = 1000;
     // Pause after each handled barcode so the result can be read and the next item brought in.
@@ -45,8 +44,10 @@ public partial class BarcodeScanPage : ContentPage
         if (onScanned is not null)
         {
             CloseButton.IsVisible = false;
-            CounterChip.IsVisible = ContinuousChip.IsVisible = true;
-            ContinuousSwitch.IsToggled = Preferences.Default.Get(ContinuousPreference, false);
+            CounterChip.IsVisible = true;
+            // Settings → Scanner can hide "Scan again": then the first added item always closes the scanner.
+            ContinuousChip.IsVisible = ScanSettings.MultiScanAllowed;
+            ContinuousSwitch.IsToggled = ScanSettings.Continuous;
             UpdateCounter();
         }
 
@@ -101,7 +102,7 @@ public partial class BarcodeScanPage : ContentPage
     // Switching "Scan again" off after scanning ends the session (back to the order).
     private void OnContinuousToggled(object? sender, ToggledEventArgs e)
     {
-        Preferences.Default.Set(ContinuousPreference, e.Value);
+        ScanSettings.Continuous = e.Value;
         if (!e.Value && _count > 0)
             _ = CloseAsync(_scanned);
     }

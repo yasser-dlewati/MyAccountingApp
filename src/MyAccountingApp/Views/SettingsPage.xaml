@@ -28,6 +28,20 @@
                 <Switch Grid.Column="1" IsToggled="{Binding ShowInactiveProducts}" VerticalOptions="Center" />
             </Grid>
 
+            <Label Text="{loc:Translate Settings_Inventory}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_AllowNegativeStock}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding AllowNegativeStock}" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_AllowNegativeStockHint}" Style="{StaticResource Caption}" />
+
+            <Label Text="{loc:Translate Settings_Scanner}" Style="{StaticResource SectionTitle}" />
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                <Label Text="{loc:Translate Settings_AllowMultiScan}" VerticalOptions="Center" />
+                <Switch Grid.Column="1" IsToggled="{Binding AllowMultiScan}" VerticalOptions="Center" />
+            </Grid>
+            <Label Text="{loc:Translate Settings_AllowMultiScanHint}" Style="{StaticResource Caption}" />
+
             <Label Text="{loc:Translate Settings_Categories}" Style="{StaticResource SectionTitle}" />
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Label Text="{loc:Translate Settings_UseCategories}" VerticalOptions="Center" />

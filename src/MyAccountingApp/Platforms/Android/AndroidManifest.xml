@@ -9,4 +9,11 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<!-- Camera is optional: the app still installs on devices without one (barcode is then typed). -->
 	<uses-feature android:name="android.hardware.camera.any" android:required="false" />
+	<!-- Android 11+: lets Browser.OpenAsync find a browser (More → About → developer website). -->
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="https" />
+		</intent>
+	</queries>
 </manifest>

@@ -194,6 +194,9 @@ public partial class OrderEditViewModel(
         {
             var detail = string.Join("\n", shortages.Select(s =>
                 $"{s.ProductName}: {Formats.Quantity(s.Available)} / {Formats.Quantity(s.Requested)}"));
+            // Settings → Inventory: selling below zero turned off.
+            if (!StockSettings.AllowNegative)
+                throw new BusinessRuleException(ErrorKeys.InsufficientStock, "\n" + detail);
             if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_ShortageConfirm", detail)))
             {
                 await LoadOrderAsync(_orderId);

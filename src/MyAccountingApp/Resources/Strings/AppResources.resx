@@ -187,4 +187,15 @@ Status: {6}</value></data>
   <data name="QuickMenu_ScanSale" xml:space="preserve"><value>Scan a new sale</value></data>
   <data name="QuickMenu_LongPressHint" xml:space="preserve"><value>Long press for more options</value></data>
   <data name="QuickMenu_CheckProduct" xml:space="preserve"><value>Check product / stock</value></data>
+  <data name="Settings_Inventory" xml:space="preserve"><value>Inventory</value></data>
+  <data name="Settings_AllowNegativeStock" xml:space="preserve"><value>Allow selling more than in stock</value></data>
+  <data name="Settings_AllowNegativeStockHint" xml:space="preserve"><value>When on, a sale (or purchase return) larger than the stock on hand can be confirmed after a warning, and the stock goes below zero. When off, it is refused.</value></data>
+  <data name="Settings_Scanner" xml:space="preserve"><value>Scanner</value></data>
+  <data name="Settings_AllowMultiScan" xml:space="preserve"><value>Allow multiple scans</value></data>
+  <data name="Settings_AllowMultiScanHint" xml:space="preserve"><value>Shows the “Scan again” switch on the scan page, to add several items without closing the camera. When off, the scanner closes after each item.</value></data>
+  <data name="About_ContactDeveloper" xml:space="preserve"><value>Contact the developer</value></data>
+  <data name="About_ContactDeveloperMessage" xml:space="preserve"><value>Visit the developer’s website:
+{0}</value></data>
+  <data name="About_OpenWebsite" xml:space="preserve"><value>Open website</value></data>
+  <data name="About_TapToContact" xml:space="preserve"><value>Tap the logo to contact the developer</value></data>
 </root>
