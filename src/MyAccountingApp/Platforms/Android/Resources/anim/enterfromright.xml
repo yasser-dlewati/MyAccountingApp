@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Overrides MAUI Shell's push "enter" animation (same resource name): Material fade-through.
+     The new page fades in after the old one is mostly gone and grows from 92 % - direction-neutral, so RTL looks right too. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:shareInterpolator="false">
+    <alpha android:fromAlpha="0" android:toAlpha="1" android:startOffset="80" android:duration="220"
+           android:interpolator="@android:interpolator/linear_out_slow_in" />
+    <scale android:fromXScale="0.92" android:toXScale="1" android:fromYScale="0.92" android:toYScale="1"
+           android:pivotX="50%" android:pivotY="50%" android:duration="300"
+           android:interpolator="@android:interpolator/fast_out_slow_in" />
+</set>

@@ -12,6 +12,23 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}" />
     </Style>
 
+    <!-- Flat list row separator (bottom border only), e.g. dashboard Low stock, phone contact import -->
+    <Style x:Key="ListDivider" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+    </Style>
+
+    <!-- Round initial avatar in flat lists -->
+    <Style x:Key="Avatar" TargetType="Border">
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8F5E9, Dark=#1B3A1D}" />
+    </Style>
+
     <Style x:Key="ItemTitle" TargetType="Label">
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="16" />

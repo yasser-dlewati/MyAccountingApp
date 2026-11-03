@@ -87,6 +87,9 @@ public partial class ContactsViewModel : BaseViewModel
     private Task AddAsync() => GoToAsync(Routes.ContactEdit, new Dictionary<string, object> { ["id"] = 0 });
 
     [RelayCommand]
+    private Task ImportAsync() => GoToAsync(Routes.ContactImport);
+
+    [RelayCommand]
     private Task OpenAsync(ContactRow row) =>
         GoToAsync(Routes.ContactEdit, new Dictionary<string, object> { ["id"] = row.Contact.Id });
 }

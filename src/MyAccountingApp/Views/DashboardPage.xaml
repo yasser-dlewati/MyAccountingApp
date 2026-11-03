@@ -34,7 +34,7 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto">
-        <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy, Mode=OneWay}">
+        <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsRefreshing, Mode=OneWay}">
             <ScrollView>
                 <VerticalStackLayout Padding="16" Spacing="12">
 
@@ -179,11 +179,16 @@
                             <Label Text="{loc:Translate Common_Empty}" Style="{StaticResource Caption}" />
                         </BindableLayout.EmptyView>
                         <BindableLayout.ItemTemplate>
+                            <!-- Flat row with a bottom border only -->
                             <DataTemplate x:DataType="vm:StockLine">
-                                <Border Style="{StaticResource Card}" Margin="0,4">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="{Binding Name}" VerticalOptions="Center" />
-                                        <Label Grid.Column="1" Text="{Binding Quantity}" Style="{StaticResource Amount}">
+                                <Grid RowDefinitions="*,1">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Padding="4,12">
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label Text="{Binding Name}" FontSize="15" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Barcode}" Style="{StaticResource Caption}" FontSize="12" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Text="{Binding Quantity}" Style="{StaticResource Amount}"
+                                               TextColor="{AppThemeBinding Light=#E65100, Dark=#FFB74D}">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsOutOfStock}" Value="True">
                                                     <Setter Property="TextColor" Value="IndianRed" />
@@ -191,7 +196,8 @@
                                             </Label.Triggers>
                                         </Label>
                                     </Grid>
-                                </Border>
+                                    <BoxView Grid.Row="1" Style="{StaticResource ListDivider}" />
+                                </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
@@ -200,5 +206,7 @@
         </RefreshView>
 
         <controls:BottomNavBar Grid.Row="1" Current="dashboard" />
+
+        <controls:StoreLoader Grid.RowSpan="2" IsRunning="{Binding IsInitialLoading}" />
     </Grid>
 </ContentPage>

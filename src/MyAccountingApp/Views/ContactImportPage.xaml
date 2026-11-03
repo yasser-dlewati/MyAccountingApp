@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:MyAccountingApp.Localization"
+             xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
+             x:Class="MyAccountingApp.Views.ContactImportPage"
+             x:DataType="vm:ContactImportViewModel"
+             Title="{loc:Translate Import_Title}">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <VerticalStackLayout Padding="16,8,16,4" Spacing="6">
+            <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Common_Search}" />
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Label Text="{loc:Translate Import_SaveAs}" Style="{StaticResource FormLabel}" VerticalOptions="Center" Margin="0" />
+                <Picker Grid.Column="1" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding Type}" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Select all + count -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Padding="10,0,16,0" ColumnSpacing="4">
+            <CheckBox IsChecked="{Binding AllSelected, Mode=OneWay}" InputTransparent="True" VerticalOptions="Center" />
+            <Label Grid.Column="1" Text="{loc:Translate Import_SelectAll}" VerticalOptions="Center" FontFamily="OpenSansSemibold" />
+            <Label Grid.Column="2" Text="{Binding SelectedLabel}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleAllCommand}" />
+            </Grid.GestureRecognizers>
+        </Grid>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="{loc:Translate Import_None}" Style="{StaticResource Caption}" HorizontalOptions="Center" Margin="0,24"
+                       IsVisible="{Binding IsEmpty}" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:PhoneContactRow">
+                    <Grid RowDefinitions="*,1" Opacity="{Binding Opacity}">
+                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="12" Padding="10,10,16,10">
+                            <CheckBox IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" VerticalOptions="Center" />
+                            <Border Grid.Column="1" Style="{StaticResource Avatar}">
+                                <Label Text="{Binding Initial}" FontFamily="OpenSansSemibold" FontSize="16"
+                                       HorizontalOptions="Center" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+                                <Label Text="{Binding Input.Name}" Style="{StaticResource ItemTitle}" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding Subtitle}" Style="{StaticResource Caption}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        <BoxView Grid.Row="1" Style="{StaticResource ListDivider}" Margin="16,0" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer CommandParameter="{Binding .}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactImportViewModel}}, Path=ToggleCommand, x:DataType=vm:ContactImportViewModel}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Sticky action bar -->
+        <Border Grid.Row="3" StrokeThickness="0" Padding="16,10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.12" Radius="10" Offset="0,-2" />
+            </Border.Shadow>
+            <Button Text="{Binding ImportLabel}" Command="{Binding ImportCommand}" HeightRequest="48" CornerRadius="24" />
+        </Border>
+
+        <controls:StoreLoader Grid.RowSpan="4" IsRunning="{Binding IsBusy}" />
+    </Grid>
+</ContentPage>

@@ -78,5 +78,7 @@
         </Grid>
 
         <controls:BottomNavBar Grid.Row="1" Current="inventory" />
+
+        <controls:StoreLoader Grid.RowSpan="2" IsRunning="{Binding IsBusy}" />
     </Grid>
 </ContentPage>

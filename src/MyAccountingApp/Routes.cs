@@ -9,6 +9,7 @@ public static class Routes
     public const string Settings = "settings";
 
     public const string ContactEdit = "contact-edit";
+    public const string ContactImport = "contact-import";
     public const string ProductEdit = "product-edit";
     public const string OrderEdit = "order-edit";
 }

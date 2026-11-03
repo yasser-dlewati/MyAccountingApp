@@ -10,6 +10,7 @@ public partial class AppShell : Shell
 	static AppShell()
 	{
 		Routing.RegisterRoute(Routes.ContactEdit, typeof(ContactEditPage));
+		Routing.RegisterRoute(Routes.ContactImport, typeof(ContactImportPage));
 		Routing.RegisterRoute(Routes.ProductEdit, typeof(ProductEditPage));
 		Routing.RegisterRoute(Routes.OrderEdit, typeof(OrderEditPage));
 		Routing.RegisterRoute(Routes.Contacts, typeof(ContactsPage));
@@ -68,5 +69,24 @@ public partial class AppShell : Shell
 		base.OnNavigated(args);
 		Handler?.MauiContext?.Services.GetService<ILogger<AppShell>>()
 			?.LogInformation("Navigated to {Location} ({Source})", args.Current?.Location, args.Source);
+		if (args.Source == ShellNavigationSource.ShellItemChanged)
+			AnimateTabEntrance();
+	}
+
+	/// <summary>
+	/// Bottom-nav tab switches are not animated by Shell (pushes / pops use the fade-through in Platforms/Android/Resources/anim):
+	/// the new root page's content fades in and rises 16 px.
+	/// </summary>
+	private void AnimateTabEntrance()
+	{
+		if (CurrentPage is not ContentPage { Content: View content }) return;
+		content.AbortAnimation("tab-enter");
+		content.Opacity = 0;
+		content.TranslationY = 16;
+		new Animation
+		{
+			{ 0, 1, new Animation(v => content.Opacity = v, 0, 1, Easing.CubicOut) },
+			{ 0, 1, new Animation(v => content.TranslationY = v, 16, 0, Easing.CubicOut) }
+		}.Commit(content, "tab-enter", length: 220, finished: (_, _) => { content.Opacity = 1; content.TranslationY = 0; });
 	}
 }

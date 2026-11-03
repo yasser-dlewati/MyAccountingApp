@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Overrides MAUI Shell's pop "enter" animation: the page underneath comes back, settling from 104 %. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:shareInterpolator="false">
+    <alpha android:fromAlpha="0" android:toAlpha="1" android:startOffset="80" android:duration="220"
+           android:interpolator="@android:interpolator/linear_out_slow_in" />
+    <scale android:fromXScale="1.04" android:toXScale="1" android:fromYScale="1.04" android:toYScale="1"
+           android:pivotX="50%" android:pivotY="50%" android:duration="300"
+           android:interpolator="@android:interpolator/fast_out_slow_in" />
+</set>

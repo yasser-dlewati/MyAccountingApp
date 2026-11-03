@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:MyAccountingApp.Localization"
              xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
              xmlns:e="clr-namespace:MyAccountingApp.Core.Entities;assembly=MyAccountingApp.Core"
              x:Class="MyAccountingApp.Views.OrderEditPage"
              x:DataType="vm:OrderEditViewModel"
@@ -99,5 +100,7 @@
                 </Grid>
             </VerticalStackLayout>
         </Border>
+
+        <controls:StoreLoader Grid.RowSpan="2" IsRunning="{Binding IsBusy}" />
     </Grid>
 </ContentPage>

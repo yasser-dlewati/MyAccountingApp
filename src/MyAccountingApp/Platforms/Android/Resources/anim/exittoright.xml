@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Overrides MAUI Shell's pop "exit" animation: the closing page shrinks a little and fades out. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:shareInterpolator="false">
+    <alpha android:fromAlpha="1" android:toAlpha="0" android:duration="100"
+           android:interpolator="@android:interpolator/fast_out_linear_in" />
+    <scale android:fromXScale="1" android:toXScale="0.92" android:fromYScale="1" android:toYScale="0.92"
+           android:pivotX="50%" android:pivotY="50%" android:duration="300"
+           android:interpolator="@android:interpolator/fast_out_slow_in" />
+</set>

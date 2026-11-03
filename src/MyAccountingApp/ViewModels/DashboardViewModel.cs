@@ -16,6 +16,19 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
 {
     public ObservableCollection<StockLine> LowStock { get; } = [];
 
+    /// <summary>The first load shows the store loader; later ones (pull to refresh, period tabs) the RefreshView spinner.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsRefreshing))]
+    public partial bool IsInitialLoading { get; set; } = true;
+
+    public bool IsRefreshing => IsBusy && !IsInitialLoading;
+
+    protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.PropertyName == nameof(IsBusy)) OnPropertyChanged(nameof(IsRefreshing));
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDay), nameof(IsWeek), nameof(IsMonth), nameof(IsYear))]
     public partial ReportPeriod Period { get; set; } = ReportPeriod.Day;
@@ -73,7 +86,13 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
     private void SelectPeriod(string period) => Period = Enum.Parse<ReportPeriod>(period);
 
     [RelayCommand]
-    private Task LoadAsync() => RunAsync(async () =>
+    private async Task LoadAsync()
+    {
+        await RunAsync(LoadOnceAsync);
+        IsInitialLoading = false;
+    }
+
+    private async Task LoadOnceAsync()
     {
         var report = await reports.GetDashboardAsync(Period);
         var sales = report.Sales;
@@ -106,7 +125,7 @@ public partial class DashboardViewModel(ReportService reports, InventoryService 
         foreach (var r in await inventory.GetStockReportAsync(StockSettings.LowStockThreshold))
             LowStock.Add(new StockLine(r.ProductName, r.Barcode, Formats.Quantity(r.Quantity),
                 Formats.Money(r.LastCost), Formats.Money(r.CostValue), r.Quantity <= 0));
-    });
+    }
 
     private static string Day(DateTime local) => local.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 

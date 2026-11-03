@@ -23,6 +23,13 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseBarcodeReader()
+			.ConfigureMauiHandlers(handlers =>
+			{
+#if ANDROID
+				// Pickers open a dropdown under the field instead of a centered dialog.
+				handlers.AddHandler<Picker, Controls.DropdownPickerHandler>();
+#endif
+			})
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -43,6 +50,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<BackupService>();
 		builder.Services.AddSingleton<BarcodeScannerService>();
 		builder.Services.AddSingleton<QuickScanService>();
+		builder.Services.AddSingleton<PhoneContactsService>();
 
 		builder.Services.AddTransient<DashboardPage>().AddTransient<DashboardViewModel>();
 		builder.Services.AddTransient<OrdersPage>().AddTransient<OrdersViewModel>();
@@ -52,6 +60,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<CategoriesPage>().AddTransient<CategoriesViewModel>();
 		builder.Services.AddTransient<ContactsPage>().AddTransient<ContactsViewModel>();
 		builder.Services.AddTransient<ContactEditPage>().AddTransient<ContactEditViewModel>();
+		builder.Services.AddTransient<ContactImportPage>().AddTransient<ContactImportViewModel>();
 		builder.Services.AddTransient<SettingsPage>().AddTransient<SettingsViewModel>();
 		builder.Services.AddTransient<MorePage>().AddTransient<MoreViewModel>();
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The store from the splash screen (Resources/Splash/splash.svg) without the name: used by Controls/StoreLoader. -->
+<svg width="148" height="148" viewBox="-4 -4 148 148" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="40" width="116" height="96" rx="4" fill="#E8F5E9" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="4" y="132" width="132" height="8" rx="4" fill="#FFFFFF" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="80" y="78" width="34" height="56" rx="5" fill="#1B5E20"/>
+    <circle cx="106" cy="108" r="3" fill="#FFB300"/>
+    <rect x="24" y="74" width="46" height="40" rx="4" fill="#A5D6A7"/>
+    <rect x="24" y="106" width="46" height="8" rx="2" fill="#8D6E63"/>
+    <circle cx="36" cy="98" r="8" fill="#E53935"/>
+    <path d="M36 90 q4 -7 9 -6 q-3 6 -9 6z" fill="#43A047"/>
+    <circle cx="55" cy="99" r="8" fill="#FB8C00"/>
+    <rect x="2" y="0" width="136" height="12" rx="6" fill="#FFFFFF" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M6.0 10 h25.6 v26 a12.8 12.8 0 0 1 -25.6 0 z" fill="#FFB300" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M31.6 10 h25.6 v26 a12.8 12.8 0 0 1 -25.6 0 z" fill="#FFFFFF" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M57.2 10 h25.6 v26 a12.8 12.8 0 0 1 -25.6 0 z" fill="#FFB300" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M82.8 10 h25.6 v26 a12.8 12.8 0 0 1 -25.6 0 z" fill="#FFFFFF" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M108.4 10 h25.6 v26 a12.8 12.8 0 0 1 -25.6 0 z" fill="#FFB300" stroke="#212121" stroke-width="2.5" stroke-linejoin="round"/>
+  </svg>

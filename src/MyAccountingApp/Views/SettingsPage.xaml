@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:loc="clr-namespace:MyAccountingApp.Localization"
              xmlns:vm="clr-namespace:MyAccountingApp.ViewModels"
+             xmlns:controls="clr-namespace:MyAccountingApp.Controls"
              x:Class="MyAccountingApp.Views.SettingsPage"
              x:DataType="vm:SettingsViewModel"
              Title="{loc:Translate Nav_Settings}">
 
+    <Grid>
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="8">
             <Label Text="{loc:Translate Settings_Language}" Style="{StaticResource SectionTitle}" />
@@ -75,4 +77,7 @@
             <Button Text="{loc:Translate Settings_Restore}" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreCommand}" />
         </VerticalStackLayout>
     </ScrollView>
+
+        <controls:StoreLoader IsRunning="{Binding IsBusy}" />
+    </Grid>
 </ContentPage>

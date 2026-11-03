@@ -90,23 +90,50 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:OrderRow">
-                        <Border Style="{StaticResource Card}" Margin="0,4">
-                            <Grid ColumnDefinitions="4,*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
-                                <BoxView Grid.RowSpan="2" Color="{Binding StatusColor}" CornerRadius="2" />
-                                <Label Grid.Column="1" Text="{Binding Title}" Style="{StaticResource ItemTitle}" />
-                                <Label Grid.Column="1" Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource Caption}" />
-                                <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Total}" Style="{StaticResource Amount}" />
-                            </Grid>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding .}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=OpenCommand, x:DataType=vm:OrdersViewModel}" />
-                            </Border.GestureRecognizers>
-                        </Border>
+                        <!-- Swipe left: Delete (draft) / Revoke invoice (confirmed) -->
+                        <SwipeView Margin="0,4" BackgroundColor="Transparent">
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Reveal" SwipeBehaviorOnInvoked="Close">
+                                    <!-- Hidden for cancelled orders: a SwipeView with no visible item doesn't swipe. -->
+                                    <SwipeItemView CommandParameter="{Binding .}" IsVisible="{Binding CanSwipe}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=SwipeActionCommand, x:DataType=vm:OrdersViewModel}">
+                                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="IndianRed"
+                                                WidthRequest="96" Margin="8,0,0,0">
+                                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="4">
+                                                <!-- trash (draft) / block (confirmed) -->
+                                                <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                                                      IsVisible="{Binding IsDraft}" Fill="White" Aspect="Uniform"
+                                                      WidthRequest="22" HeightRequest="22" HorizontalOptions="Center" />
+                                                <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+                                                      IsVisible="{Binding IsConfirmed}" Fill="White" Aspect="Uniform"
+                                                      WidthRequest="22" HeightRequest="22" HorizontalOptions="Center" />
+                                                <Label Text="{Binding SwipeLabel}" TextColor="White" FontSize="12" FontFamily="OpenSansSemibold"
+                                                       HorizontalTextAlignment="Center" MaxLines="2" />
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Border Style="{StaticResource Card}">
+                                <Grid ColumnDefinitions="4,*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                                    <BoxView Grid.RowSpan="2" Color="{Binding StatusColor}" CornerRadius="2" />
+                                    <Label Grid.Column="1" Text="{Binding Title}" Style="{StaticResource ItemTitle}" />
+                                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource Caption}" />
+                                    <Label Grid.Column="2" Grid.RowSpan="2" Text="{Binding Total}" Style="{StaticResource Amount}" />
+                                </Grid>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding .}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:OrdersViewModel}}, Path=OpenCommand, x:DataType=vm:OrdersViewModel}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
 
         <controls:BottomNavBar Grid.Row="1" Current="orders" />
+
+        <controls:StoreLoader Grid.RowSpan="2" IsRunning="{Binding IsBusy}" />
     </Grid>
 </ContentPage>

@@ -25,7 +25,7 @@ public static class RoundedInputs
         {
             EntryHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
             EditorHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
-            PickerHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
+            PickerHandler.Mapper.AppendToMapping(key, (h, _) => { Apply(h.PlatformView); SetChevronOpen(h.PlatformView, false); });
             DatePickerHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
             TimePickerHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
             SearchBarHandler.Mapper.AppendToMapping(key, (h, _) => ApplySearch(h.PlatformView));
@@ -43,6 +43,42 @@ public static class RoundedInputs
         var h = Px(view, 12);
         var v = Px(view, 8);
         view.SetPadding(h, v, h, v);
+    }
+
+    /// <summary>
+    /// Dropdown affordance at the end of a Picker: a chevron, gray when closed, green and pointing up while the
+    /// <see cref="DropdownPickerHandler"/> list is open. Relative (end) drawable, so it sits on the left in Arabic.
+    /// </summary>
+    public static void SetChevronOpen(AView view, bool open)
+    {
+        if (view is not Android.Widget.TextView text) return;
+        var dark = Application.Current?.RequestedTheme == AppTheme.Dark;
+        var color = open
+            ? ((Color)Application.Current!.Resources[dark ? "PrimaryDark" : "Primary"]).ToPlatform()
+            : AColor.ParseColor(dark ? "#ACACAC" : "#757575");
+        text.SetCompoundDrawablesRelativeWithIntrinsicBounds(null, null, Chevron(view, color, open), null);
+        text.CompoundDrawablePadding = Px(view, 8);
+    }
+
+    private static Drawable Chevron(AView view, AColor color, bool up)
+    {
+        var w = Px(view, 12);
+        var h = Px(view, 8);
+        var bitmap = Android.Graphics.Bitmap.CreateBitmap(w, h, Android.Graphics.Bitmap.Config.Argb8888!)!;
+        using var canvas = new Android.Graphics.Canvas(bitmap);
+        using var paint = new Android.Graphics.Paint(Android.Graphics.PaintFlags.AntiAlias)
+        {
+            Color = color, StrokeWidth = Px(view, 2), StrokeCap = Android.Graphics.Paint.Cap.Round, StrokeJoin = Android.Graphics.Paint.Join.Round
+        };
+        paint.SetStyle(Android.Graphics.Paint.Style.Stroke);
+        var inset = paint.StrokeWidth / 2 + 1;
+        using var path = new Android.Graphics.Path();
+        var (top, bottom) = up ? (h - inset, inset) : (inset, h - inset);
+        path.MoveTo(inset, top);
+        path.LineTo(w / 2f, bottom);
+        path.LineTo(w - inset, top);
+        canvas.DrawPath(path, paint);
+        return new BitmapDrawable(view.Resources, bitmap);
     }
 
     /// <summary>SearchView: round the whole bar and drop the inner underline ("search_plate").</summary>

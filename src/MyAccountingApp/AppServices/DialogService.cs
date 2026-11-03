@@ -27,8 +27,13 @@ public class DialogService(ILogger<DialogService>? logger = null)
     public async Task<string?> ChooseAsync(string title, params string[] options)
     {
         var cancel = LocalizationService.Get("Common_Cancel");
+#if ANDROID
+        // Bottom sheet instead of the centered action-sheet dialog.
+        return await BottomSheetChooser.ShowAsync(title, cancel, options);
+#else
         var choice = await Page.DisplayActionSheetAsync(title, cancel, null, options);
         return choice == cancel ? null : choice;
+#endif
     }
 
     public Task ShowErrorAsync(BusinessRuleException ex)

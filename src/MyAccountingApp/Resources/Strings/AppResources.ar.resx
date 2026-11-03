@@ -221,4 +221,17 @@
   <data name="ScanBeep_EveryRead" xml:space="preserve"><value>عند كل قراءة باركود</value></data>
   <data name="ScanBeep_ProductFound" xml:space="preserve"><value>المنتجات المعروفة (حتى لو نفد المخزون)</value></data>
   <data name="ScanBeep_InStock" xml:space="preserve"><value>المنتجات المعروفة طالما يوجد مخزون</value></data>
+  <data name="Import_Title" xml:space="preserve"><value>استيراد من الهاتف</value></data>
+  <data name="Import_FromPhone" xml:space="preserve"><value>استيراد من جهات اتصال الهاتف</value></data>
+  <data name="Import_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
+  <data name="Import_Selected" xml:space="preserve"><value>{0} محدد</value></data>
+  <data name="Import_Button" xml:space="preserve"><value>استيراد ({0})</value></data>
+  <data name="Import_AlreadyAdded" xml:space="preserve"><value>مضاف مسبقاً</value></data>
+  <data name="Import_Done" xml:space="preserve"><value>تم استيراد {0} جهة اتصال. تم تخطي {1}.</value></data>
+  <data name="Import_PermissionRationale" xml:space="preserve"><value>لاستيراد العملاء والموردين، يحتاج التطبيق إلى قراءة جهات اتصال الهاتف. لا يغادر أي شيء هاتفك.</value></data>
+  <data name="Import_PermissionDenied" xml:space="preserve"><value>الوصول إلى جهات الاتصال متوقف لهذا التطبيق. هل تريد فتح إعدادات التطبيق للسماح به؟</value></data>
+  <data name="Import_None" xml:space="preserve"><value>لا توجد جهات اتصال تحتوي على رقم هاتف.</value></data>
+  <data name="Import_SaveAs" xml:space="preserve"><value>حفظ كـ</value></data>
+  <data name="Common_Delete" xml:space="preserve"><value>حذف</value></data>
+  <data name="Common_Loading" xml:space="preserve"><value>جارٍ التحميل…</value></data>
 </root>

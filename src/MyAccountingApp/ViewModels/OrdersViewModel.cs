@@ -269,6 +269,25 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
         await GoToAsync(Routes.OrderEdit, new Dictionary<string, object> { ["type"] = type });
     }
 
+    /// <summary>
+    /// Swipe action, same prompts as the order page's Revoke invoice: a draft is deleted, a confirmed order is cancelled
+    /// (its stock movements reversed). The list (and the chip counts) reload afterwards.
+    /// </summary>
+    [RelayCommand]
+    private async Task SwipeActionAsync(OrderRow row)
+    {
+        if (!row.CanSwipe) return;
+        var draft = row.IsDraft;
+        if (!await Dialogs.ConfirmAsync(LocalizationService.Get(draft ? "Order_RevokeDraftPrompt" : "Order_CancelPrompt")))
+            return;
+        await RunAsync(async () =>
+        {
+            if (draft) await _orders.DeleteDraftAsync(row.Order.Id);
+            else await _orders.CancelAsync(row.Order.Id);
+        });
+        await LoadAsync();
+    }
+
     [RelayCommand]
     private Task OpenAsync(OrderRow row) =>
         GoToAsync(Routes.OrderEdit, new Dictionary<string, object> { ["id"] = row.Order.Id });
@@ -281,6 +300,12 @@ public record OrderRow(Order Order)
         + (Order.EditedAt is null ? "" : $" · {LocalizationService.Get("Order_Edited")}");
     public string Total => Formats.Money(Order.TotalAmount);
     public Color StatusColor => ColorOf(Order.Status);
+
+    /// <summary>Swipe left: Delete a draft, Revoke (cancel) a confirmed order; cancelled orders have no action.</summary>
+    public bool CanSwipe => Order.Status is OrderStatus.Draft or OrderStatus.Confirmed;
+    public bool IsDraft => Order.Status == OrderStatus.Draft;
+    public bool IsConfirmed => Order.Status == OrderStatus.Confirmed;
+    public string SwipeLabel => LocalizationService.Get(IsDraft ? "Common_Delete" : "Order_Revoke");
 
     public static Color ColorOf(OrderStatus status) => status switch
     {
