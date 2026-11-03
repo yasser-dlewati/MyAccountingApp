@@ -14,6 +14,7 @@ namespace MyAccountingApp.Controls;
 /// Android's underline: a filled background, a gray 1dp border that turns green (Primary) while focused, and a
 /// faded look when disabled. Applied app-wide by handler mapping, so XAML needs no changes.
 /// Re-applied on TextColor, which every input style binds with AppThemeBinding, so a theme switch recolors them.
+/// Entry / Editor / SearchBar also select all their text when tapped into.
 /// </summary>
 public static class RoundedInputs
 {
@@ -30,6 +31,16 @@ public static class RoundedInputs
             TimePickerHandler.Mapper.AppendToMapping(key, (h, _) => Apply(h.PlatformView));
             SearchBarHandler.Mapper.AppendToMapping(key, (h, _) => ApplySearch(h.PlatformView));
         }
+
+        // Tapping into a text box selects its whole text, so typing replaces it (a tap on an already focused box
+        // still just moves the cursor). Custom key = runs once when the handler connects.
+        EntryHandler.Mapper.AppendToMapping("SelectAllOnFocus", (h, _) => h.PlatformView.SetSelectAllOnFocus(true));
+        EditorHandler.Mapper.AppendToMapping("SelectAllOnFocus", (h, _) => h.PlatformView.SetSelectAllOnFocus(true));
+        SearchBarHandler.Mapper.AppendToMapping("SelectAllOnFocus", (h, _) =>
+        {
+            var id = h.PlatformView.Resources?.GetIdentifier("search_src_text", "id", h.PlatformView.Context?.PackageName) ?? 0;
+            if (id != 0 && h.PlatformView.FindViewById(id) is Android.Widget.EditText text) text.SetSelectAllOnFocus(true);
+        });
 #endif
     }
 

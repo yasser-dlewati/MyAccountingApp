@@ -21,7 +21,11 @@
                 <Switch IsToggled="{Binding IsActive}" />
                 <Label Text="{loc:Translate Field_Active}" VerticalOptions="Center" />
             </HorizontalStackLayout>
-            <Button Text="{loc:Translate Common_Save}" Command="{Binding SaveCommand}" Margin="0,12" />
+            <Button Text="{loc:Translate Common_Save}" Command="{Binding SaveCommand}" Margin="0,12,0,0" />
+            <!-- New contact only: pick several contacts from the phone instead of typing one. -->
+            <Button Text="{loc:Translate Import_FromPhone}" ImageSource="ic_contact_import.png" ContentLayout="Left,10"
+                    Style="{StaticResource SecondaryButton}" Command="{Binding ImportCommand}"
+                    IsVisible="{Binding IsNew}" Margin="0,8,0,12" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

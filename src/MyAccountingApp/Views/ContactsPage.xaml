@@ -9,7 +9,6 @@
              Title="{loc:Translate Nav_Contacts}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{loc:Translate Import_FromPhone}" IconImageSource="ic_contact_import.png" Command="{Binding ImportCommand}" />
         <ToolbarItem Text="{loc:Translate Common_Add}" IconImageSource="ic_add_circle.png" Command="{Binding AddCommand}" />
     </ContentPage.ToolbarItems>
 

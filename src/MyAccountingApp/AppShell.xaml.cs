@@ -54,7 +54,7 @@ public partial class AppShell : Shell
 		try
 		{
 			var dialogs = Handler?.MauiContext?.Services.GetRequiredService<DialogService>() ?? new DialogService();
-			if (await dialogs.ConfirmAsync(LocalizationService.Get("Exit_Prompt")))
+			if (await dialogs.ConfirmAsync(LocalizationService.Get("Exit_Title"), LocalizationService.Get("Exit_Prompt")))
 				Application.Current?.Quit();
 		}
 		finally

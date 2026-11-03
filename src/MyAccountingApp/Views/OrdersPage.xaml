@@ -14,23 +14,22 @@
 
     <Grid RowDefinitions="*,Auto">
         <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
-            <!-- Tabs: sales (+ returns) / purchases (+ returns) -->
-            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" Padding="4"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray600}}">
+            <!-- Tabs: sales (+ returns) / purchases (+ returns); same segmented look as the dashboard's period tabs -->
+            <Border Style="{StaticResource Card}" Padding="4">
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
-                    <Button Text="{loc:Translate Orders_SalesTab}" Style="{StaticResource TabButton}" Command="{Binding ShowSalesCommand}">
+                    <Button Text="{loc:Translate Orders_SalesTab}" Style="{StaticResource SegmentTab}" Command="{Binding ShowSalesCommand}">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsSalesTab}" Value="True">
                                 <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-                                <Setter Property="TextColor" Value="{StaticResource White}" />
+                                <Setter Property="TextColor" Value="White" />
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
-                    <Button Grid.Column="1" Text="{loc:Translate Orders_PurchasesTab}" Style="{StaticResource TabButton}" Command="{Binding ShowPurchasesCommand}">
+                    <Button Grid.Column="1" Text="{loc:Translate Orders_PurchasesTab}" Style="{StaticResource SegmentTab}" Command="{Binding ShowPurchasesCommand}">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsPurchasesTab}" Value="True">
                                 <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
-                                <Setter Property="TextColor" Value="{StaticResource White}" />
+                                <Setter Property="TextColor" Value="White" />
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
@@ -47,9 +46,8 @@
                             <Label Text="{loc:Translate Orders_Filters}" FontFamily="OpenSansSemibold" FontSize="14" />
                             <Label Text="{Binding FilterSummary}" Style="{StaticResource Caption}" LineBreakMode="TailTruncation" />
                         </VerticalStackLayout>
-                        <ImageButton Grid.Column="2" Source="ic_reset.png" Style="{StaticResource IconButton}"
+                        <ImageButton Grid.Column="2" Source="ic_reset.png" Style="{StaticResource SmallIconButton}"
                                      Command="{Binding ClearFiltersCommand}" IsVisible="{Binding HasActiveFilters}"
-                                     WidthRequest="34" HeightRequest="34" CornerRadius="17" Padding="7"
                                      ToolTipProperties.Text="{loc:Translate Orders_ClearFilters}"
                                      SemanticProperties.Description="{loc:Translate Orders_ClearFilters}" />
                         <Path Grid.Column="3" Data="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" Aspect="Uniform"

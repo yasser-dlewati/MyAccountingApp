@@ -9,8 +9,6 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="4">
-            <Label Text="{Binding StockInfo}" Style="{StaticResource Caption}" IsVisible="{Binding IsExisting}" />
-
             <Label Text="{loc:Translate Field_Name}" Style="{StaticResource FormLabel}" />
             <Entry Text="{Binding Name}" />
             <Label Text="{loc:Translate Field_Barcode}" Style="{StaticResource FormLabel}" />
@@ -21,29 +19,44 @@
                              SemanticProperties.Description="{loc:Translate Scan_Button}"
                              Command="{Binding ScanBarcodeCommand}" />
             </Grid>
-            <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
-            <Entry Text="{Binding Price}" Keyboard="Numeric" />
+            <!-- Selling price | cost price (new: the opening unit cost; existing: the last cost, read-only) -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto">
+                <Label Text="{loc:Translate Field_Price}" Style="{StaticResource FormLabel}" />
+                <Label Grid.Column="1" Text="{loc:Translate Product_CostPrice}" Style="{StaticResource FormLabel}" />
+                <!-- Currency suffix inside the box, at its end side (left in Arabic); taps go through to the Entry -->
+                <Grid Grid.Row="1">
+                    <Entry Text="{Binding Price}" Keyboard="Numeric" />
+                    <Label Text="{loc:Translate Currency_Symbol}" Style="{StaticResource InputSuffix}" />
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Entry Text="{Binding OpeningCost}" Keyboard="Numeric" Placeholder="0" IsEnabled="{Binding IsNew}" />
+                    <Label Text="{loc:Translate Currency_Symbol}" Style="{StaticResource InputSuffix}" />
+                </Grid>
+            </Grid>
             <Label Text="{loc:Translate Field_Category}" Style="{StaticResource FormLabel}" IsVisible="{Binding UseCategories}" />
             <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" IsVisible="{Binding UseCategories}" />
             <Label Text="{loc:Translate Field_DefaultSupplier}" Style="{StaticResource FormLabel}" />
             <Picker ItemsSource="{Binding Suppliers}" SelectedItem="{Binding DefaultSupplier}" />
-            <!-- New products only: stock on hand when the product is added (opening stock). -->
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" IsVisible="{Binding IsNew}">
-                <Label Text="{loc:Translate Field_OpeningQuantity}" Style="{StaticResource FormLabel}" />
-                <Label Grid.Column="1" Text="{loc:Translate Field_OpeningCost}" Style="{StaticResource FormLabel}" />
-                <Entry Grid.Row="1" Text="{Binding OpeningQuantity}" Keyboard="Numeric" Placeholder="0" />
-                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding OpeningCost}" Keyboard="Numeric" Placeholder="0" />
+            <!-- Status toggle | stock count (new: opening stock, editable; existing: stock on hand, read-only) -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto">
+                <Label Text="{loc:Translate Field_Status}" Style="{StaticResource FormLabel}" />
+                <Label Grid.Column="1" Text="{Binding StockLabel}" Style="{StaticResource FormLabel}" />
+                <HorizontalStackLayout Grid.Row="1" Spacing="8" VerticalOptions="Center">
+                    <Switch IsToggled="{Binding IsActive}" VerticalOptions="Center" />
+                    <Label Text="{loc:Translate Field_Active}" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Entry Text="{Binding OpeningQuantity}" Keyboard="Numeric" Placeholder="0" IsEnabled="{Binding IsNew}" />
+                    <Label Text="{loc:Translate Unit_Pieces}" Style="{StaticResource InputSuffix}" />
+                </Grid>
             </Grid>
             <Label Text="{loc:Translate Product_OpeningStockHint}" Style="{StaticResource Caption}" IsVisible="{Binding IsNew}" />
-            <HorizontalStackLayout Spacing="8" Margin="0,8">
-                <Switch IsToggled="{Binding IsActive}" />
-                <Label Text="{loc:Translate Field_Active}" VerticalOptions="Center" />
-            </HorizontalStackLayout>
             <Button Text="{loc:Translate Common_Save}" Command="{Binding SaveCommand}" Margin="0,8" />
 
             <VerticalStackLayout IsVisible="{Binding IsExisting}" Spacing="4">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="{loc:Translate Product_Suppliers}" Style="{StaticResource SectionTitle}" />
+                <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+                    <Label Text="{loc:Translate Product_Suppliers}" Style="{StaticResource SectionTitle}"
+                           Margin="0" VerticalOptions="Center" />
                     <ImageButton Grid.Column="1" Source="ic_plus.png" Style="{StaticResource IconButton}"
                                  ToolTipProperties.Text="{loc:Translate Product_AddSupplier}"
                                  SemanticProperties.Description="{loc:Translate Product_AddSupplier}"

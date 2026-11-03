@@ -18,7 +18,8 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     private readonly InventoryService _inventory;
     private readonly BarcodeScannerService _scanner;
     private Product _product = new();
-    private readonly Option<int?> _noSupplier = new(LocalizationService.Get("Product_NoSupplier"), null);
+    /// <summary>Null supplier = the walk-in (cash) supplier: always listed, even when there are no supplier contacts.</summary>
+    private readonly Option<int?> _noSupplier = new(DisplayNames.WalkIn(OrderType.Purchase), null);
 
     public ProductEditViewModel(ProductService products, CategoryService categories, ContactService contacts,
         InventoryService inventory, BarcodeScannerService scanner, DialogService dialogs) : base(dialogs)
@@ -42,17 +43,19 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty] public partial Category? Category { get; set; }
     [ObservableProperty] public partial Option<int?>? DefaultSupplier { get; set; }
     [ObservableProperty] public partial bool IsActive { get; set; } = true;
-    [ObservableProperty] public partial string? StockInfo { get; set; }
-    /// <summary>New products only: opening stock quantity and unit cost (blank = 0).</summary>
+    /// <summary>New products: opening stock quantity and unit cost (blank = 0). Existing products show their stock on hand
+    /// and last cost here, read-only (ignored on save).</summary>
     [ObservableProperty] public partial string OpeningQuantity { get; set; } = "";
     [ObservableProperty] public partial string OpeningCost { get; set; } = "";
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsExisting), nameof(IsNew))]
+    [NotifyPropertyChangedFor(nameof(IsExisting), nameof(IsNew), nameof(StockLabel))]
     public partial int ProductId { get; set; }
 
     public bool IsExisting => ProductId != 0;
     public bool IsNew => !IsExisting;
+
+    public string StockLabel => LocalizationService.Get(IsNew ? "Field_OpeningQuantity" : "Product_InStockNow");
 
     public bool UseCategories { get; } = CategorySettings.Enabled;
 
@@ -104,12 +107,14 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
         DefaultSupplier = Suppliers.First(s => s.Value == _product.SupplierId);
 
         SupplierCosts.Clear();
-        foreach (var ps in _product.ProductSuppliers.OrderBy(ps => ps.Contact!.Name))
-            SupplierCosts.Add(new SupplierCostRow(ps.ContactId, ps.Contact!.Name, Formats.Money(ps.CostPrice)));
+        // Walk-in (cash) supplier first, then by name.
+        foreach (var ps in _product.ProductSuppliers.OrderBy(ps => ps.ContactId is not null).ThenBy(ps => ps.Contact?.Name))
+            SupplierCosts.Add(new SupplierCostRow(ps.ContactId, ps.Contact?.Name ?? _noSupplier.Label, Formats.Money(ps.CostPrice)));
 
         var stock = await _inventory.GetStockAsync(id);
         var lastCost = await _inventory.GetLastPurchaseCostAsync(id);
-        StockInfo = LocalizationService.Format("Product_StockInfo", Formats.Quantity(stock), Formats.Money(lastCost));
+        OpeningQuantity = Formats.Quantity(stock);
+        OpeningCost = Formats.Input(lastCost); // plain number: the box shows the currency itself
     }
 
     [RelayCommand]
@@ -149,7 +154,8 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task AddSupplierAsync()
     {
-        var candidates = Suppliers.Where(s => s.Value is not null).ToList();
+        // Walk-in (cash) supplier first, so the list is never empty.
+        var candidates = Suppliers.ToList();
         var name = await Dialogs.ChooseAsync(LocalizationService.Get("Product_AddSupplier"),
             candidates.Select(c => c.Label).ToArray());
         var supplier = candidates.FirstOrDefault(c => c.Label == name);
@@ -162,7 +168,7 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
         {
             if (!Formats.TryParseDecimal(costText, out var cost))
                 throw new BusinessRuleException(ErrorKeys.PriceNegative);
-            await _products.SaveSupplierAsync(_product.Id, supplier.Value!.Value, cost);
+            await _products.SaveSupplierAsync(_product.Id, supplier.Value, cost);
             await LoadProductAsync(_product.Id);
         });
     }
@@ -170,7 +176,8 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task RemoveSupplierAsync(SupplierCostRow row)
     {
-        if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Product_RemoveSupplierConfirm", row.Name))) return;
+        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Product_RemoveSupplierTitle"),
+                LocalizationService.Format("Product_RemoveSupplierConfirm", row.Name), DialogTone.Danger)) return;
         await RunAsync(async () =>
         {
             await _products.RemoveSupplierAsync(_product.Id, row.ContactId);
@@ -179,4 +186,5 @@ public partial class ProductEditViewModel : BaseViewModel, IQueryAttributable
     }
 }
 
-public record SupplierCostRow(int ContactId, string Name, string Cost);
+/// <summary><see cref="ContactId"/> null = the walk-in (cash) supplier.</summary>
+public record SupplierCostRow(int? ContactId, string Name, string Cost);

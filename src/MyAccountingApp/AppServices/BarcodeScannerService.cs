@@ -94,7 +94,7 @@ public class BarcodeScannerService(
 
         // Android: true only after the user has denied once, i.e. the system prompt will show a second time.
         if (Permissions.ShouldShowRationale<Permissions.Camera>())
-            await dialogs.AlertAsync(LocalizationService.Get("Scan_PermissionRationale"));
+            await dialogs.AlertAsync(LocalizationService.Get("Scan_PermissionRationale"), LocalizationService.Get("Scan_PermissionTitle"));
 
         var status = await Permissions.RequestAsync<Permissions.Camera>();
         logger.LogInformation("Camera permission request: {Status}", status);
@@ -107,7 +107,7 @@ public class BarcodeScannerService(
 
         // Permanently denied ("don't ask again" / denied twice): Android won't show the prompt any more,
         // so the only way back is the app's system settings page.
-        if (await dialogs.ConfirmAsync(LocalizationService.Get("Scan_PermissionDenied")))
+        if (await dialogs.ConfirmAsync(LocalizationService.Get("Scan_PermissionTitle"), LocalizationService.Get("Scan_PermissionDenied")))
             AppInfo.Current.ShowSettingsUI();
         return false;
     }

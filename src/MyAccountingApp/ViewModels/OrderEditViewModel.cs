@@ -219,7 +219,8 @@ public partial class OrderEditViewModel(
         {
             var detail = string.Join("\n", belowCost.Select(l =>
                 $"{l.ProductName}: {Formats.Money(l.Cost)} / {Formats.Money(l.SellingPrice)}"));
-            if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_BelowCostConfirm", detail)))
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_BelowCostTitle"),
+                    LocalizationService.Format("Order_BelowCostConfirm", detail)))
             {
                 await LoadOrderAsync(_orderId);
                 return;
@@ -239,7 +240,8 @@ public partial class OrderEditViewModel(
     {
         if (IsDraft)
         {
-            if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_RevokeDraftPrompt"))) return;
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_Revoke"),
+                LocalizationService.Get("Order_RevokeDraftPrompt"), DialogTone.Danger)) return;
             await RunAsync(async () =>
             {
                 if (_orderId != 0)
@@ -249,7 +251,8 @@ public partial class OrderEditViewModel(
             return;
         }
 
-        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_CancelPrompt"))) return;
+        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_Revoke"),
+            LocalizationService.Get("Order_CancelPrompt"), DialogTone.Danger)) return;
         await RunAsync(async () =>
         {
             await orders.CancelAsync(_orderId);
@@ -291,7 +294,8 @@ public partial class OrderEditViewModel(
         {
             var detail = string.Join("\n", belowCost.Select(l =>
                 $"{l.ProductName}: {Formats.Money(l.Cost)} / {Formats.Money(l.SellingPrice)}"));
-            if (!await Dialogs.ConfirmAsync(LocalizationService.Format("Order_BelowCostConfirm", detail)))
+            if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_BelowCostTitle"),
+                    LocalizationService.Format("Order_BelowCostConfirm", detail)))
                 return false;
         }
 
@@ -311,7 +315,8 @@ public partial class OrderEditViewModel(
     private Task BackAsync() => RunAsync(async () =>
     {
         // Editing a confirmed order: ask whether to keep the changes (No = discard them).
-        if (IsEditing && await Dialogs.ConfirmAsync(LocalizationService.Get("Order_SaveEditPrompt"))
+        if (IsEditing && await Dialogs.ConfirmAsync(LocalizationService.Get("Order_SaveEditTitle"),
+                          LocalizationService.Get("Order_SaveEditPrompt"))
                       && !await SaveEditCoreAsync())
             return;
 

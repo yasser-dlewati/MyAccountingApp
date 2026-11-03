@@ -49,14 +49,12 @@
   <data name="ContactType_Supplier" xml:space="preserve"><value>Supplier</value></data>
   <data name="ContactType_Both" xml:space="preserve"><value>Customer &amp; supplier</value></data>
   <data name="Product_New" xml:space="preserve"><value>New product</value></data>
-  <data name="Product_NoSupplier" xml:space="preserve"><value>(none)</value></data>
   <data name="Product_SearchHint" xml:space="preserve"><value>Name or barcode</value></data>
   <data name="Product_Stock" xml:space="preserve"><value>Stock</value></data>
-  <data name="Product_StockInfo" xml:space="preserve"><value>In stock: {0} · Last cost: {1}</value></data>
   <data name="Product_Suppliers" xml:space="preserve"><value>Suppliers</value></data>
   <data name="Product_AddSupplier" xml:space="preserve"><value>Add supplier</value></data>
   <data name="Product_CostPrice" xml:space="preserve"><value>Cost price</value></data>
-  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>Remove supplier {0} from this product?</value></data>
+  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>{0} will be removed from this product's suppliers. Do you want to continue?</value></data>
   <data name="OrderType_Sale" xml:space="preserve"><value>Sale</value></data>
   <data name="OrderType_Purchase" xml:space="preserve"><value>Purchase</value></data>
   <data name="OrderType_SaleReturn" xml:space="preserve"><value>Sale return</value></data>
@@ -73,11 +71,11 @@
   <data name="Order_Items" xml:space="preserve"><value>Items</value></data>
   <data name="Order_Total" xml:space="preserve"><value>Total</value></data>
   <data name="Order_Confirm" xml:space="preserve"><value>Confirm</value></data>
-  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>Cost is above the selling price (cost / selling price):
+  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>These lines cost more than their selling price (cost / selling price):
 {0}
 
-Confirm anyway?</value></data>
-  <data name="Order_CancelPrompt" xml:space="preserve"><value>Revoke this invoice? Its stock movements will be reversed.</value></data>
+Do you want to confirm the invoice anyway?</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>The invoice will be cancelled and its stock movements reversed. Do you want to continue?</value></data>
   <data name="Stock_TotalValue" xml:space="preserve"><value>Stock value (at cost)</value></data>
   <data name="Stock_LastCost" xml:space="preserve"><value>Last cost</value></data>
   <data name="Dashboard_NewSale" xml:space="preserve"><value>New sale</value></data>
@@ -106,7 +104,7 @@ Confirm anyway?</value></data>
   <data name="Settings_Backup" xml:space="preserve"><value>Back up database</value></data>
   <data name="Settings_BackupFailed" xml:space="preserve"><value>Backup failed: {0}</value></data>
   <data name="Settings_Restore" xml:space="preserve"><value>Restore from backup</value></data>
-  <data name="Settings_RestorePrompt" xml:space="preserve"><value>Restoring replaces ALL current data with the backup. Continue?</value></data>
+  <data name="Settings_RestorePrompt" xml:space="preserve"><value>All current data will be replaced with the data in the backup. This can't be undone. Do you want to continue?</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>Backup restored.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>Restore failed: {0}</value></data>
   <data name="Settings_ShareLogs" xml:space="preserve"><value>Share logs</value></data>
@@ -121,7 +119,7 @@ Confirm anyway?</value></data>
   <data name="Scan_PermissionRationale" xml:space="preserve"><value>The camera is needed to scan barcodes. It is used only on this screen and nothing is recorded or sent.</value></data>
   <data name="Scan_PermissionDenied" xml:space="preserve"><value>Camera access is turned off for this app. Open the app settings to allow it?</value></data>
   <data name="Scan_ProductNotFound" xml:space="preserve"><value>No product with barcode {0}.</value></data>
-  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>No product with barcode {0}. Create one?</value></data>
+  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>No product has the barcode {0}. Do you want to add it as a new product?</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>Name is required.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>Phone is required.</value></data>
   <data name="Error_BarcodeRequired" xml:space="preserve"><value>Barcode is required.</value></data>
@@ -153,7 +151,7 @@ Confirm anyway?</value></data>
   <data name="Settings_ConfirmExitHint" xml:space="preserve"><value>Ask before the Back button on the dashboard closes the app.</value></data>
   <data name="Settings_Products" xml:space="preserve"><value>Products</value></data>
   <data name="Settings_ShowInactiveProducts" xml:space="preserve"><value>Show inactive products</value></data>
-  <data name="Exit_Prompt" xml:space="preserve"><value>Exit the app?</value></data>
+  <data name="Exit_Prompt" xml:space="preserve"><value>Are you sure you want to close the app?</value></data>
   <data name="Product_Details" xml:space="preserve"><value>Barcode: {0}
 Price: {1}
 In stock: {2}
@@ -202,10 +200,10 @@ Status: {6}</value></data>
   <data name="About_TapToContact" xml:space="preserve"><value>Tap the logo to contact the developer</value></data>
   <data name="Common_Edit" xml:space="preserve"><value>Edit</value></data>
   <data name="Order_Revoke" xml:space="preserve"><value>Revoke invoice</value></data>
-  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>Revoke this invoice? The draft will be deleted.</value></data>
+  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>This draft invoice will be deleted permanently. Do you want to continue?</value></data>
   <data name="Order_DiscardChanges" xml:space="preserve"><value>Discard changes</value></data>
   <data name="Order_SaveChanges" xml:space="preserve"><value>Save changes</value></data>
-  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>Save the changes to this invoice?</value></data>
+  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>You changed this invoice. Do you want to save the changes? No discards them.</value></data>
   <data name="Order_EditedOn" xml:space="preserve"><value>Modified on {0}</value></data>
   <data name="Order_Edited" xml:space="preserve"><value>Modified</value></data>
   <data name="OrderType_OpeningStock" xml:space="preserve"><value>Opening stock</value></data>
@@ -234,4 +232,25 @@ Status: {6}</value></data>
   <data name="Import_SaveAs" xml:space="preserve"><value>Save as</value></data>
   <data name="Common_Delete" xml:space="preserve"><value>Delete</value></data>
   <data name="Common_Loading" xml:space="preserve"><value>Loading…</value></data>
+  <data name="Dialog_NoticeTitle" xml:space="preserve"><value>Notice</value></data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve"><value>Can't continue</value></data>
+  <data name="Exit_Title" xml:space="preserve"><value>Exit the app</value></data>
+  <data name="Settings_RestoreTitle" xml:space="preserve"><value>Restore backup</value></data>
+  <data name="Product_RemoveSupplierTitle" xml:space="preserve"><value>Remove supplier</value></data>
+  <data name="Order_BelowCostTitle" xml:space="preserve"><value>Cost above selling price</value></data>
+  <data name="Order_SaveEditTitle" xml:space="preserve"><value>Save changes</value></data>
+  <data name="Scan_PermissionTitle" xml:space="preserve"><value>Camera access needed</value></data>
+  <data name="Scan_CreateProductTitle" xml:space="preserve"><value>Product not found</value></data>
+  <data name="Import_PermissionTitle" xml:space="preserve"><value>Contacts access needed</value></data>
+  <data name="Unit_Pieces" xml:space="preserve"><value>pieces</value></data>
+  <data name="Field_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Product_InStockNow" xml:space="preserve"><value>In stock</value></data>
+  <data name="Products_StockFilter" xml:space="preserve"><value>Stock</value></data>
+  <data name="Products_StatusFilter" xml:space="preserve"><value>Status</value></data>
+  <data name="Products_SupplierFilter" xml:space="preserve"><value>Suppliers (choose one or more)</value></data>
+  <data name="Products_NoSuppliers" xml:space="preserve"><value>No suppliers linked to products yet.</value></data>
+  <data name="Products_SuppliersSelected" xml:space="preserve"><value>{0} suppliers</value></data>
+  <data name="Stock_InStock" xml:space="preserve"><value>In stock</value></data>
+  <data name="Stock_Low" xml:space="preserve"><value>Low</value></data>
+  <data name="Stock_Out" xml:space="preserve"><value>Out of stock</value></data>
 </root>

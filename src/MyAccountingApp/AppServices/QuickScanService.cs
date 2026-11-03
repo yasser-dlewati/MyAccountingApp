@@ -66,7 +66,8 @@ public class QuickScanService(
             var found = await products.GetByBarcodeAsync(barcode);
             if (found is null)
             {
-                if (await dialogs.ConfirmAsync(LocalizationService.Format("Scan_CreateProductPrompt", barcode)))
+                if (await dialogs.ConfirmAsync(LocalizationService.Get("Scan_CreateProductTitle"),
+                        LocalizationService.Format("Scan_CreateProductPrompt", barcode)))
                     await GoToAsync(Routes.ProductEdit, new() { ["id"] = 0, ["barcode"] = barcode });
                 return;
             }
@@ -78,7 +79,7 @@ public class QuickScanService(
                 Formats.Quantity(await inventory.GetStockAsync(product.Id)),
                 Formats.Money(await inventory.GetLastPurchaseCostAsync(product.Id)),
                 DisplayNames.CategoryOf(product),
-                product.Supplier?.Name ?? LocalizationService.Get("Product_NoSupplier"),
+                product.Supplier?.Name ?? DisplayNames.WalkIn(OrderType.Purchase),
                 LocalizationService.Get(product.IsActive ? "Product_Active" : "Product_Inactive"));
 
             if (await dialogs.DetailsAsync(product.Name, details, LocalizationService.Get("Product_Edit")))

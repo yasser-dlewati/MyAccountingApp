@@ -9,20 +9,67 @@
              Title="{loc:Translate Nav_Inventory}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{loc:Translate Common_Add}" IconImageSource="ic_add_circle.png" Command="{Binding AddCommand}" />
+        <!-- Scan: a known barcode shows the product (with Edit); an unknown one offers to add it as a new product. -->
+        <ToolbarItem Text="{loc:Translate Scan_Button}" IconImageSource="ic_barcode_scan.png" Command="{Binding ScanCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="*,Auto">
         <Grid RowDefinitions="Auto,Auto,*" Padding="16,8" RowSpacing="4">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
-                           SearchCommand="{Binding LoadCommand}" />
-                <ImageButton Grid.Column="1" Source="ic_barcode.png" Style="{StaticResource IconButton}"
-                             ToolTipProperties.Text="{loc:Translate Scan_Button}"
-                             SemanticProperties.Description="{loc:Translate Scan_Button}"
-                             Command="{Binding ScanCommand}" />
-            </Grid>
-            <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+            <!-- Filters: collapsible card (search, stock, status, suppliers); collapsed it shows a summary -->
+            <Border Style="{StaticResource Card}" Padding="12,6">
+                <VerticalStackLayout Spacing="6">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" BackgroundColor="Transparent">
+                        <Path Data="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" Aspect="Uniform" WidthRequest="20" HeightRequest="20"
+                              VerticalOptions="Center"
+                              Fill="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{loc:Translate Orders_Filters}" FontFamily="OpenSansSemibold" FontSize="14" />
+                            <Label Text="{Binding FilterSummary}" Style="{StaticResource Caption}" LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                        <ImageButton Grid.Column="2" Source="ic_reset.png" Style="{StaticResource SmallIconButton}"
+                                     Command="{Binding ClearFiltersCommand}" IsVisible="{Binding HasActiveFilters}"
+                                     ToolTipProperties.Text="{loc:Translate Orders_ClearFilters}"
+                                     SemanticProperties.Description="{loc:Translate Orders_ClearFilters}" />
+                        <Path Grid.Column="3" Data="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" Aspect="Uniform"
+                              WidthRequest="14" HeightRequest="10" VerticalOptions="Center"
+                              Fill="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray300}}">
+                            <Path.Triggers>
+                                <DataTrigger TargetType="Path" Binding="{Binding FiltersExpanded}" Value="True">
+                                    <Setter Property="Rotation" Value="180" />
+                                </DataTrigger>
+                            </Path.Triggers>
+                        </Path>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleFiltersCommand}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+
+                    <VerticalStackLayout IsVisible="{Binding FiltersExpanded}" Spacing="6" Padding="0,0,0,6">
+                        <SearchBar Text="{Binding SearchText}" Placeholder="{loc:Translate Product_SearchHint}"
+                                   SearchCommand="{Binding LoadCommand}" />
+
+                        <Label Text="{loc:Translate Products_StockFilter}" Style="{StaticResource FormLabel}" />
+                        <controls:FilterChipBar ItemsSource="{Binding StockChips}" Command="{Binding SelectStockCommand}" />
+
+                        <Label Text="{loc:Translate Products_StatusFilter}" Style="{StaticResource FormLabel}" IsVisible="{Binding ShowStatusFilter}" />
+                        <controls:FilterChipBar ItemsSource="{Binding StatusChips}" Command="{Binding SelectStatusCommand}"
+                                                IsVisible="{Binding ShowStatusFilter}" />
+
+                        <Label Text="{loc:Translate Products_SupplierFilter}" Style="{StaticResource FormLabel}" />
+                        <controls:FilterChipBar ItemsSource="{Binding SupplierChips}" Command="{Binding ToggleSupplierCommand}"
+                                                IsVisible="{Binding HasSuppliers}" />
+                        <Label Text="{loc:Translate Products_NoSuppliers}" Style="{StaticResource Caption}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HasSuppliers}" Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                 <Label Text="{loc:Translate Stock_TotalValue}" Style="{StaticResource ItemTitle}" VerticalOptions="Center" />
                 <Label Grid.Column="1" Text="{Binding TotalValue}" Style="{StaticResource KpiValue}" />
             </Grid>

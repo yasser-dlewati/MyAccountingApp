@@ -49,14 +49,12 @@
   <data name="ContactType_Supplier" xml:space="preserve"><value>مورد</value></data>
   <data name="ContactType_Both" xml:space="preserve"><value>عميل ومورد</value></data>
   <data name="Product_New" xml:space="preserve"><value>منتج جديد</value></data>
-  <data name="Product_NoSupplier" xml:space="preserve"><value>(بدون)</value></data>
   <data name="Product_SearchHint" xml:space="preserve"><value>الاسم أو الباركود</value></data>
   <data name="Product_Stock" xml:space="preserve"><value>المخزون</value></data>
-  <data name="Product_StockInfo" xml:space="preserve"><value>المتوفر: {0} · آخر تكلفة: {1}</value></data>
   <data name="Product_Suppliers" xml:space="preserve"><value>الموردون</value></data>
   <data name="Product_AddSupplier" xml:space="preserve"><value>إضافة مورد</value></data>
   <data name="Product_CostPrice" xml:space="preserve"><value>سعر التكلفة</value></data>
-  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>إزالة المورد {0} من هذا المنتج؟</value></data>
+  <data name="Product_RemoveSupplierConfirm" xml:space="preserve"><value>ستتم إزالة {0} من موردي هذا المنتج. هل تريد المتابعة؟</value></data>
   <data name="OrderType_Sale" xml:space="preserve"><value>بيع</value></data>
   <data name="OrderType_Purchase" xml:space="preserve"><value>شراء</value></data>
   <data name="OrderType_SaleReturn" xml:space="preserve"><value>مرتجع بيع</value></data>
@@ -73,11 +71,11 @@
   <data name="Order_Items" xml:space="preserve"><value>الأصناف</value></data>
   <data name="Order_Total" xml:space="preserve"><value>الإجمالي</value></data>
   <data name="Order_Confirm" xml:space="preserve"><value>تأكيد</value></data>
-  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>التكلفة أعلى من سعر البيع (التكلفة / سعر البيع):
+  <data name="Order_BelowCostConfirm" xml:space="preserve"><value>تكلفة هذه البنود أعلى من سعر بيعها (التكلفة / سعر البيع):
 {0}
 
-التأكيد على أي حال؟</value></data>
-  <data name="Order_CancelPrompt" xml:space="preserve"><value>إلغاء هذه الفاتورة؟ سيتم عكس حركات المخزون الخاصة بها.</value></data>
+هل تريد تأكيد الفاتورة على أي حال؟</value></data>
+  <data name="Order_CancelPrompt" xml:space="preserve"><value>سيتم إلغاء الفاتورة وعكس حركات المخزون الخاصة بها. هل تريد المتابعة؟</value></data>
   <data name="Stock_TotalValue" xml:space="preserve"><value>قيمة المخزون (بالتكلفة)</value></data>
   <data name="Stock_LastCost" xml:space="preserve"><value>آخر تكلفة</value></data>
   <data name="Dashboard_NewSale" xml:space="preserve"><value>بيع جديد</value></data>
@@ -106,7 +104,7 @@
   <data name="Settings_Backup" xml:space="preserve"><value>نسخ احتياطي لقاعدة البيانات</value></data>
   <data name="Settings_BackupFailed" xml:space="preserve"><value>فشل النسخ الاحتياطي: {0}</value></data>
   <data name="Settings_Restore" xml:space="preserve"><value>استعادة من نسخة احتياطية</value></data>
-  <data name="Settings_RestorePrompt" xml:space="preserve"><value>الاستعادة ستستبدل كل البيانات الحالية بالنسخة الاحتياطية. متابعة؟</value></data>
+  <data name="Settings_RestorePrompt" xml:space="preserve"><value>سيتم استبدال كل البيانات الحالية ببيانات النسخة الاحتياطية، ولا يمكن التراجع عن ذلك. هل تريد المتابعة؟</value></data>
   <data name="Settings_RestoreDone" xml:space="preserve"><value>تمت الاستعادة.</value></data>
   <data name="Settings_RestoreFailed" xml:space="preserve"><value>فشلت الاستعادة: {0}</value></data>
   <data name="Settings_ShareLogs" xml:space="preserve"><value>مشاركة السجلات</value></data>
@@ -121,7 +119,7 @@
   <data name="Scan_PermissionRationale" xml:space="preserve"><value>نحتاج إلى الكاميرا لمسح الباركود. تُستخدم في هذه الشاشة فقط ولا يتم تسجيل أو إرسال أي شيء.</value></data>
   <data name="Scan_PermissionDenied" xml:space="preserve"><value>الوصول إلى الكاميرا متوقف لهذا التطبيق. هل تريد فتح إعدادات التطبيق للسماح به؟</value></data>
   <data name="Scan_ProductNotFound" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}.</value></data>
-  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}. هل تريد إنشاءه؟</value></data>
+  <data name="Scan_CreateProductPrompt" xml:space="preserve"><value>لا يوجد منتج بالباركود {0}. هل تريد إضافته كمنتج جديد؟</value></data>
   <data name="Error_NameRequired" xml:space="preserve"><value>الاسم مطلوب.</value></data>
   <data name="Error_PhoneRequired" xml:space="preserve"><value>رقم الهاتف مطلوب.</value></data>
   <data name="Error_BarcodeRequired" xml:space="preserve"><value>الباركود مطلوب.</value></data>
@@ -153,7 +151,7 @@
   <data name="Settings_ConfirmExitHint" xml:space="preserve"><value>السؤال قبل أن يغلق زر الرجوع في الصفحة الرئيسية التطبيق.</value></data>
   <data name="Settings_Products" xml:space="preserve"><value>المنتجات</value></data>
   <data name="Settings_ShowInactiveProducts" xml:space="preserve"><value>إظهار المنتجات غير النشطة</value></data>
-  <data name="Exit_Prompt" xml:space="preserve"><value>الخروج من التطبيق؟</value></data>
+  <data name="Exit_Prompt" xml:space="preserve"><value>هل أنت متأكد من أنك تريد إغلاق التطبيق؟</value></data>
   <data name="Product_Details" xml:space="preserve"><value>الباركود: {0}
 السعر: {1}
 المتوفر: {2}
@@ -165,10 +163,10 @@
   <data name="Product_Active" xml:space="preserve"><value>نشط</value></data>
   <data name="Product_Inactive" xml:space="preserve"><value>غير نشط</value></data>
   <data name="Common_Close" xml:space="preserve"><value>إغلاق</value></data>
-  <data name="Period_Day" xml:space="preserve"><value>يوم</value></data>
-  <data name="Period_Week" xml:space="preserve"><value>أسبوع</value></data>
-  <data name="Period_Month" xml:space="preserve"><value>شهر</value></data>
-  <data name="Period_Year" xml:space="preserve"><value>سنة</value></data>
+  <data name="Period_Day" xml:space="preserve"><value>اليوم</value></data>
+  <data name="Period_Week" xml:space="preserve"><value>هذا الأسبوع</value></data>
+  <data name="Period_Month" xml:space="preserve"><value>هذا الشهر</value></data>
+  <data name="Period_Year" xml:space="preserve"><value>هذه السنة</value></data>
   <data name="Dashboard_Purchases" xml:space="preserve"><value>المشتريات</value></data>
   <data name="Dashboard_Margin" xml:space="preserve"><value>هامش الربح</value></data>
   <data name="Dashboard_SaleInvoices" xml:space="preserve"><value>فواتير البيع</value></data>
@@ -202,10 +200,10 @@
   <data name="About_TapToContact" xml:space="preserve"><value>اضغط على الشعار للتواصل مع المطوّر</value></data>
   <data name="Common_Edit" xml:space="preserve"><value>تعديل</value></data>
   <data name="Order_Revoke" xml:space="preserve"><value>إلغاء الفاتورة</value></data>
-  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>إلغاء هذه الفاتورة؟ سيتم حذف المسودة.</value></data>
+  <data name="Order_RevokeDraftPrompt" xml:space="preserve"><value>سيتم حذف مسودة الفاتورة هذه نهائياً. هل تريد المتابعة؟</value></data>
   <data name="Order_DiscardChanges" xml:space="preserve"><value>تجاهل التعديلات</value></data>
   <data name="Order_SaveChanges" xml:space="preserve"><value>حفظ التعديلات</value></data>
-  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>حفظ التعديلات على هذه الفاتورة؟</value></data>
+  <data name="Order_SaveEditPrompt" xml:space="preserve"><value>لقد عدّلت هذه الفاتورة. هل تريد حفظ التعديلات؟ اختيار «لا» يتجاهلها.</value></data>
   <data name="Order_EditedOn" xml:space="preserve"><value>عُدّلت في {0}</value></data>
   <data name="Order_Edited" xml:space="preserve"><value>معدّلة</value></data>
   <data name="OrderType_OpeningStock" xml:space="preserve"><value>رصيد أول المدة</value></data>
@@ -234,4 +232,25 @@
   <data name="Import_SaveAs" xml:space="preserve"><value>حفظ كـ</value></data>
   <data name="Common_Delete" xml:space="preserve"><value>حذف</value></data>
   <data name="Common_Loading" xml:space="preserve"><value>جارٍ التحميل…</value></data>
+  <data name="Dialog_NoticeTitle" xml:space="preserve"><value>تنبيه</value></data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve"><value>تعذّرت المتابعة</value></data>
+  <data name="Exit_Title" xml:space="preserve"><value>الخروج من التطبيق</value></data>
+  <data name="Settings_RestoreTitle" xml:space="preserve"><value>استعادة نسخة احتياطية</value></data>
+  <data name="Product_RemoveSupplierTitle" xml:space="preserve"><value>إزالة المورد</value></data>
+  <data name="Order_BelowCostTitle" xml:space="preserve"><value>التكلفة أعلى من سعر البيع</value></data>
+  <data name="Order_SaveEditTitle" xml:space="preserve"><value>حفظ التعديلات</value></data>
+  <data name="Scan_PermissionTitle" xml:space="preserve"><value>مطلوب الوصول إلى الكاميرا</value></data>
+  <data name="Scan_CreateProductTitle" xml:space="preserve"><value>المنتج غير موجود</value></data>
+  <data name="Import_PermissionTitle" xml:space="preserve"><value>مطلوب الوصول إلى جهات الاتصال</value></data>
+  <data name="Unit_Pieces" xml:space="preserve"><value>قطعة</value></data>
+  <data name="Field_Status" xml:space="preserve"><value>الحالة</value></data>
+  <data name="Product_InStockNow" xml:space="preserve"><value>المتوفر</value></data>
+  <data name="Products_StockFilter" xml:space="preserve"><value>المخزون</value></data>
+  <data name="Products_StatusFilter" xml:space="preserve"><value>الحالة</value></data>
+  <data name="Products_SupplierFilter" xml:space="preserve"><value>الموردون (اختر واحداً أو أكثر)</value></data>
+  <data name="Products_NoSuppliers" xml:space="preserve"><value>لا يوجد موردون مرتبطون بالمنتجات بعد.</value></data>
+  <data name="Products_SuppliersSelected" xml:space="preserve"><value>{0} موردين</value></data>
+  <data name="Stock_InStock" xml:space="preserve"><value>متوفر</value></data>
+  <data name="Stock_Low" xml:space="preserve"><value>منخفض</value></data>
+  <data name="Stock_Out" xml:space="preserve"><value>نفد</value></data>
 </root>

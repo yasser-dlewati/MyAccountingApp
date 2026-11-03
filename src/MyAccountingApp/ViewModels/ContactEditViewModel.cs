@@ -31,12 +31,15 @@ public partial class ContactEditViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty] public partial Option<ContactType> Type { get; set; }
     [ObservableProperty] public partial bool IsActive { get; set; } = true;
 
+    [ObservableProperty] public partial bool IsNew { get; set; } = true;
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (!query.TryGetValue("id", out var value) || value is not int id || id == 0) return;
         await RunAsync(async () =>
         {
             _contact = await _contacts.GetAsync(id) ?? throw new BusinessRuleException(ErrorKeys.NotFound);
+            IsNew = false;
             Title = _contact.Name;
             Name = _contact.Name;
             Phone = _contact.Phone;
@@ -57,4 +60,7 @@ public partial class ContactEditViewModel : BaseViewModel, IQueryAttributable
         await _contacts.SaveAsync(_contact);
         await GoBackAsync();
     });
+
+    [RelayCommand]
+    private Task ImportAsync() => GoToAsync(Routes.ContactImport);
 }

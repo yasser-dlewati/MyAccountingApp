@@ -374,14 +374,15 @@ public class OrderService(IDbContextFactory<AppDbContext> dbFactory, ILogger<Ord
 
     private static async Task UpdateSupplierCostsAsync(AppDbContext db, Order order)
     {
-        // Walk-in purchases have no supplier to remember a cost for.
-        if (order.ContactId is not int supplierId) return;
-
+        // A walk-in purchase records the walk-in (cash) supplier's cost (null contact).
         foreach (var item in order.Items)
         {
-            await ProductService.UpsertSupplierCostAsync(db, item.ProductId, supplierId, item.UnitPrice);
+            await ProductService.UpsertSupplierCostAsync(db, item.ProductId, order.ContactId, item.UnitPrice);
             await db.SaveChangesAsync(); // so a repeated product in the same order finds the new link
         }
+
+        // ... but never becomes a default supplier (null already means walk-in).
+        if (order.ContactId is not int supplierId) return;
 
         // First supplier a product is bought from becomes its default supplier.
         var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();

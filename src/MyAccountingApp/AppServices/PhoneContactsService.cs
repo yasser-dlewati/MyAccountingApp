@@ -35,7 +35,7 @@ public class PhoneContactsService(DialogService dialogs, ILogger<PhoneContactsSe
             return true;
 
         if (Permissions.ShouldShowRationale<Permissions.ContactsRead>())
-            await dialogs.AlertAsync(LocalizationService.Get("Import_PermissionRationale"));
+            await dialogs.AlertAsync(LocalizationService.Get("Import_PermissionRationale"), LocalizationService.Get("Import_PermissionTitle"));
 
         var status = await Permissions.RequestAsync<Permissions.ContactsRead>();
         logger.LogInformation("Contacts permission request: {Status}", status);
@@ -44,7 +44,7 @@ public class PhoneContactsService(DialogService dialogs, ILogger<PhoneContactsSe
         if (Permissions.ShouldShowRationale<Permissions.ContactsRead>())
             return false;
 
-        if (await dialogs.ConfirmAsync(LocalizationService.Get("Import_PermissionDenied")))
+        if (await dialogs.ConfirmAsync(LocalizationService.Get("Import_PermissionTitle"), LocalizationService.Get("Import_PermissionDenied")))
             AppInfo.Current.ShowSettingsUI();
         return false;
     }

@@ -76,10 +76,12 @@ public class OrderServiceTests : IDisposable
         Assert.Null(sale!.ContactId);
         Assert.Null(sale.Contact);
 
-        // No supplier, so no supplier cost link / default supplier is recorded.
+        // Walk-in supplier: its cost is recorded on a null-contact link; no default supplier is set.
         var saved = await _t.Products.GetAsync(product.Id);
         Assert.Null(saved!.SupplierId);
-        Assert.Empty(saved.ProductSuppliers);
+        var link = Assert.Single(saved.ProductSuppliers);
+        Assert.Null(link.ContactId);
+        Assert.Equal(1m, link.CostPrice);
     }
 
     [Fact]

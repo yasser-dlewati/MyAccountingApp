@@ -55,6 +55,42 @@ public class ProductAndInventoryTests : IDisposable
     }
 
     [Fact]
+    public async Task Supplier_links_combine_default_supplier_and_active_links()
+    {
+        var (supplier, _, product) = await _t.SeedAsync();
+        var other = await _t.Contacts.SaveAsync(new Contact { Name = "Supplier B", Phone = "3", Type = ContactType.Supplier });
+        product.SupplierId = supplier.Id;
+        await _t.Products.SaveAsync(product);
+        await _t.Products.SaveSupplierAsync(product.Id, supplier.Id, 1m); // same as the default: listed once
+        await _t.Products.SaveSupplierAsync(product.Id, other.Id, 1m);
+
+        var links = await _t.Products.GetSupplierLinksAsync();
+        Assert.Equal([supplier.Id, other.Id], links.Select(l => l.SupplierId).Order());
+        Assert.All(links, l => Assert.Equal(product.Id, l.ProductId));
+
+        await _t.Products.RemoveSupplierAsync(product.Id, other.Id);
+        Assert.Equal([supplier.Id], (await _t.Products.GetSupplierLinksAsync()).Select(l => l.SupplierId));
+    }
+
+    [Fact]
+    public async Task Walk_in_supplier_cost_is_one_link_per_product()
+    {
+        var (_, _, product) = await _t.SeedAsync();
+        await _t.Products.SaveSupplierAsync(product.Id, null, 3m);
+        await _t.Products.SaveSupplierAsync(product.Id, null, 4m); // updates, no second link
+
+        var loaded = await _t.Products.GetAsync(product.Id);
+        var link = Assert.Single(loaded!.ProductSuppliers);
+        Assert.Null(link.ContactId);
+        Assert.Equal(4m, link.CostPrice);
+        var only = Assert.Single(await _t.Products.GetSupplierLinksAsync());
+        Assert.Null(only.SupplierId);
+
+        await _t.Products.RemoveSupplierAsync(product.Id, null);
+        Assert.Empty((await _t.Products.GetAsync(product.Id))!.ProductSuppliers);
+    }
+
+    [Fact]
     public async Task Contact_search_by_role_includes_both()
     {
         await _t.SeedAsync();

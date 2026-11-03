@@ -271,7 +271,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<int>("ContactId")
+                    b.Property<int?>("ContactId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("contact_id");
 
@@ -363,8 +363,7 @@ namespace MyAccountingApp.Core.Data.Migrations
                     b.HasOne("MyAccountingApp.Core.Entities.Contact", "Contact")
                         .WithMany()
                         .HasForeignKey("ContactId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MyAccountingApp.Core.Entities.Product", "Product")
                         .WithMany("ProductSuppliers")

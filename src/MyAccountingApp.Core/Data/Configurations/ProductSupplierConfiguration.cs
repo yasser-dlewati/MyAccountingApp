@@ -16,6 +16,7 @@ public class ProductSupplierConfiguration : IEntityTypeConfiguration<ProductSupp
         b.Property(x => x.IsActive).HasColumnName("is_active");
         b.Property(x => x.CreatedAt).HasColumnName("created_at");
 
+        // SQLite treats NULLs as distinct here, so one walk-in link per product is enforced by UpsertSupplierCostAsync.
         b.HasIndex(x => new { x.ProductId, x.ContactId }).IsUnique();
         b.HasOne(x => x.Product).WithMany(p => p.ProductSuppliers).HasForeignKey(x => x.ProductId);
         b.HasOne(x => x.Contact).WithMany().HasForeignKey(x => x.ContactId);

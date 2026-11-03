@@ -109,7 +109,8 @@ public partial class ContactImportViewModel(ContactService contacts, PhoneContac
         logger.LogInformation("Imported {Imported} phone contacts as {Type}, skipped {Skipped}", result.Imported, Type.Value, result.Skipped);
         await Dialogs.AlertAsync(LocalizationService.Format("Import_Done",
             Formats.Quantity(result.Imported), Formats.Quantity(result.Skipped)));
-        await GoBackAsync();
+        // Opened from the (still empty) new-contact page: skip it and land on the contacts list.
+        await Shell.Current.GoToAsync("../..");
     });
 }
 

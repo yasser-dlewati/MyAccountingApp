@@ -26,11 +26,6 @@
             <Setter Property="Data" Value="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z" />
             <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray300}}" />
         </Style>
-        <Style x:Key="PeriodTab" TargetType="Button" BasedOn="{StaticResource TabButton}">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="HeightRequest" Value="36" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto">
@@ -41,7 +36,7 @@
                     <!-- Period: Day / Week / Month / Year (all KPIs and charts below follow it) -->
                     <Border Style="{StaticResource Card}" Padding="4">
                         <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="4">
-                            <Button Text="{loc:Translate Period_Day}" Style="{StaticResource PeriodTab}"
+                            <Button Text="{loc:Translate Period_Day}" Style="{StaticResource SegmentTab}"
                                     Command="{Binding SelectPeriodCommand}" CommandParameter="Day">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsDay}" Value="True">
@@ -50,7 +45,7 @@
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
-                            <Button Grid.Column="1" Text="{loc:Translate Period_Week}" Style="{StaticResource PeriodTab}"
+                            <Button Grid.Column="1" Text="{loc:Translate Period_Week}" Style="{StaticResource SegmentTab}"
                                     Command="{Binding SelectPeriodCommand}" CommandParameter="Week">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsWeek}" Value="True">
@@ -59,7 +54,7 @@
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
-                            <Button Grid.Column="2" Text="{loc:Translate Period_Month}" Style="{StaticResource PeriodTab}"
+                            <Button Grid.Column="2" Text="{loc:Translate Period_Month}" Style="{StaticResource SegmentTab}"
                                     Command="{Binding SelectPeriodCommand}" CommandParameter="Month">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsMonth}" Value="True">
@@ -68,7 +63,7 @@
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
-                            <Button Grid.Column="3" Text="{loc:Translate Period_Year}" Style="{StaticResource PeriodTab}"
+                            <Button Grid.Column="3" Text="{loc:Translate Period_Year}" Style="{StaticResource SegmentTab}"
                                     Command="{Binding SelectPeriodCommand}" CommandParameter="Year">
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding IsYear}" Value="True">

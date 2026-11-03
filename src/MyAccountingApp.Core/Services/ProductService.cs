@@ -5,6 +5,9 @@ using MyAccountingApp.Core.Enums;
 
 namespace MyAccountingApp.Core.Services;
 
+/// <summary>A product's supplier; <see cref="SupplierId"/> / <see cref="SupplierName"/> null = the walk-in (cash) supplier.</summary>
+public record ProductSupplierLink(int ProductId, int? SupplierId, string? SupplierName);
+
 public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
 {
     /// <summary>Search by name or barcode (exact barcode matches first).</summary>
@@ -25,6 +28,22 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
         }
 
         return await query.OrderBy(p => p.Name).ToListAsync();
+    }
+
+    /// <summary>
+    /// Every (product, supplier) pair: the default supplier and the active product_suppliers links, without duplicates.
+    /// Used by the Inventory page's supplier filter.
+    /// </summary>
+    public async Task<List<ProductSupplierLink>> GetSupplierLinksAsync()
+    {
+        await using var db = await dbFactory.CreateDbContextAsync();
+        var defaults = await db.Products.AsNoTracking().Where(p => p.SupplierId != null)
+            .Select(p => new ProductSupplierLink(p.Id, p.SupplierId, p.Supplier!.Name))
+            .ToListAsync();
+        var links = await db.ProductSuppliers.AsNoTracking().Where(ps => ps.IsActive)
+            .Select(ps => new ProductSupplierLink(ps.ProductId, ps.ContactId, ps.ContactId == null ? null : ps.Contact!.Name))
+            .ToListAsync();
+        return defaults.Concat(links).DistinctBy(l => (l.ProductId, l.SupplierId)).ToList();
     }
 
     public async Task<Product?> GetAsync(int id)
@@ -115,28 +134,31 @@ public class ProductService(IDbContextFactory<AppDbContext> dbFactory)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.IsActive, isActive));
     }
 
-    /// <summary>Adds or updates the (product, supplier) link and its cost price; re-activates it if it was removed.</summary>
-    public async Task SaveSupplierAsync(int productId, int contactId, decimal costPrice)
+    /// <summary>Adds or updates the (product, supplier) link and its cost price; re-activates it if it was removed.
+    /// <paramref name="contactId"/> null = the walk-in (cash) supplier.</summary>
+    public async Task SaveSupplierAsync(int productId, int? contactId, decimal costPrice)
     {
         if (costPrice < 0)
             throw new BusinessRuleException(ErrorKeys.PriceNegative);
 
         await using var db = await dbFactory.CreateDbContextAsync();
-        await EnsureSupplierAsync(db, contactId);
+        if (contactId is int id)
+            await EnsureSupplierAsync(db, id);
         await UpsertSupplierCostAsync(db, productId, contactId, costPrice);
         await db.SaveChangesAsync();
     }
 
-    public async Task RemoveSupplierAsync(int productId, int contactId)
+    public async Task RemoveSupplierAsync(int productId, int? contactId)
     {
         await using var db = await dbFactory.CreateDbContextAsync();
         await db.ProductSuppliers.Where(ps => ps.ProductId == productId && ps.ContactId == contactId)
             .ExecuteUpdateAsync(s => s.SetProperty(ps => ps.IsActive, false));
+        if (contactId is null) return; // walk-in is never a stored default supplier
         await db.Products.Where(p => p.Id == productId && p.SupplierId == contactId)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.SupplierId, (int?)null));
     }
 
-    internal static async Task UpsertSupplierCostAsync(AppDbContext db, int productId, int contactId, decimal costPrice)
+    internal static async Task UpsertSupplierCostAsync(AppDbContext db, int productId, int? contactId, decimal costPrice)
     {
         var link = await db.ProductSuppliers.FirstOrDefaultAsync(ps => ps.ProductId == productId && ps.ContactId == contactId);
         if (link is null)

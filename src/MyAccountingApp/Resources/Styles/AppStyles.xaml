@@ -77,11 +77,37 @@
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
+    <!-- Smaller round icon button inside a card header (filters reset): 30dp, the size of the toolbar icons. -->
+    <Style x:Key="SmallIconButton" TargetType="ImageButton" BasedOn="{StaticResource IconButton}">
+        <Setter Property="WidthRequest" Value="30" />
+        <Setter Property="HeightRequest" Value="30" />
+        <Setter Property="CornerRadius" Value="15" />
+        <Setter Property="Padding" Value="7" />
+    </Style>
+
     <!-- Orders page tabs (Sales / Purchases) -->
     <Style x:Key="TabButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
         <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <!-- Segmented tabs inside a Card with Padding 4 + ColumnSpacing 4 (dashboard period, Orders Sales / Purchases);
+         the selected one gets Primary + White text by a trigger -->
+    <Style x:Key="SegmentTab" TargetType="Button" BasedOn="{StaticResource TabButton}">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HeightRequest" Value="36" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- Unit shown inside an Entry (currency, pieces): put both in one Grid cell, the Label after the Entry -->
+    <Style x:Key="InputSuffix" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+        <Setter Property="InputTransparent" Value="True" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
     </Style>
 
     <Style x:Key="FormLabel" TargetType="Label">

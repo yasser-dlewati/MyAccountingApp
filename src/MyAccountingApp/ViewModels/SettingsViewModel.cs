@@ -135,7 +135,8 @@ public partial class SettingsViewModel : BaseViewModel
     [RelayCommand]
     private async Task RestoreAsync()
     {
-        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Settings_RestorePrompt"))) return;
+        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Settings_RestoreTitle"),
+                LocalizationService.Get("Settings_RestorePrompt"), DialogTone.Danger)) return;
         await RunAsync(async () =>
         {
             try

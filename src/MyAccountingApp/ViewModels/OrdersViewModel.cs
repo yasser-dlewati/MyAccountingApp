@@ -278,7 +278,8 @@ public partial class OrdersViewModel : BaseViewModel, IQueryAttributable
     {
         if (!row.CanSwipe) return;
         var draft = row.IsDraft;
-        if (!await Dialogs.ConfirmAsync(LocalizationService.Get(draft ? "Order_RevokeDraftPrompt" : "Order_CancelPrompt")))
+        if (!await Dialogs.ConfirmAsync(LocalizationService.Get("Order_Revoke"),
+                LocalizationService.Get(draft ? "Order_RevokeDraftPrompt" : "Order_CancelPrompt"), DialogTone.Danger))
             return;
         await RunAsync(async () =>
         {
